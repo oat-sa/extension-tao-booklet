@@ -1,6 +1,6 @@
 {
 
-    "name": "oat/taoBooklet",
+    "name": "oat-sa/extension-tao-booklet",
     "description" : "An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)",
     "type" : "tao-extension",
     "authors" : [
