@@ -18,7 +18,7 @@
                 </trees>
                 <actions>
                 	
-                	<action id="booklet-class-properties" name="Properties" url="/taoBooklet/Booklet/editClass" group="content" context="class">
+                	<action id="booklet-class-properties" name="Properties" url="/taoBooklet/Booklet/editClassProperties" group="content" context="class">
                         <icon id="icon-edit"/>
                     </action>
                     <action id="booklet-properties" name="Properties"  url="/taoBooklet/Booklet/editInstance" group="content" context="instance">
