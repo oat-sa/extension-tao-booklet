@@ -61,6 +61,7 @@ class BookletGenerator
         \tao_helpers_File::delTree($tmpFolder);
         
         // return report with instance
+        $report->setMessage(__('%s created', $instance->getLabel()));
         $report->setData($instance);
         return $report;
     }
