@@ -13,23 +13,25 @@
                           selectClass="booklet-class-properties"
                           selectInstance="booklet-properties"
                           moveInstance="booklet-move"
-                          delete="booklet-delete" 
+                          delete="booklet-delete"
                     />
                 </trees>
                 <actions>
-                	
                 	<action id="booklet-class-properties" name="Properties" url="/taoBooklet/Booklet/editClassProperties" group="content" context="class">
                         <icon id="icon-edit"/>
                     </action>
                     <action id="booklet-properties" name="Properties"  url="/taoBooklet/Booklet/editInstance" group="content" context="instance">
                         <icon id="icon-edit"/>
-                    </action> 
+                    </action>
+                    <action id="booklet-print" name="Print" url="/taoBooklet/PrintTest/index" group="content" context="instance">
+                        <icon id="icon-print"/>
+                    </action>
                     <action id="booklet-filter" name="Filter" context="*" group="search" binding="filter">
                         <icon id="icon-filter"/>
                     </action>
                     <action id="booklet-search" name="Search" url="/taoBooklet/Booklet/search" context="*" group="search" binding="launchFinder">
                         <icon id="icon-find"/>
-                    </action>  
+                    </action>
                     <action id="booklet-class-new" name="New class" url="/taoBooklet/Booklet/addSubClass" context="class" group="tree" binding="subClass">
                         <icon id="icon-folder-open"/>
                     </action>
