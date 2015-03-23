@@ -40,22 +40,44 @@ class BookletClassService extends tao_models_classes_ClassService
     {
         return new core_kernel_classes_Class(self::CLASS_URI);
     }
-    
+
     /**
      * 
      * @param core_kernel_classes_Class $class
      * @param string $label
+     * @param string $test
      * @param string $tmpFile
      * @return core_kernel_classes_Resource
      */
-    public function createBookletInstance(core_kernel_classes_Class $class, $label, $tmpFile) {
+    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile) {
         
         $fileResource = StorageService::storeFile($tmpFile);
-        
+
         $instance = $class->createInstanceWithProperties(array(
             RDFS_LABEL => $label,
-            self::PROPERTY_FILE_CONTENT => $fileResource
+            self::PROPERTY_FILE_CONTENT => $fileResource,
+            INSTANCE_TEST_MODEL_QTI => $test
         ));
+
         return $instance;
+    }
+
+    /**
+     * @param core_kernel_classes_Resource $instance
+     * @param $tmpFile
+     *
+     * @return \common_report_Report
+     */
+    public function updateInstanceAttachment($instance, $tmpFile){
+        $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
+
+        StorageService::removeAttachedFile( $instance );
+        $fileResource = StorageService::storeFile($tmpFile);
+        $property = new \core_kernel_classes_Property(self::PROPERTY_FILE_CONTENT);
+        $instance->editPropertyValues($property, $fileResource);
+
+        $report->setMessage(__('%s updated', $instance->getLabel()));
+        $report->setData($instance);
+        return $report;
     }
 }

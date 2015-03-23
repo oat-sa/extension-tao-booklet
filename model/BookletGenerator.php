@@ -45,18 +45,12 @@ class BookletGenerator
             $report->setMessage(__('%s is not a QTI test', $test->getLabel()));
             return $report;
         }
-        
-        // generate file content
+
         $tmpFolder = \tao_helpers_File::createTempDir();
-        $tmpFile = $tmpFolder.'test.txt';
-        $content = '';
-        foreach (self::getItems($test) as $item) {
-            $content .= self::renderItem($item);
-        }
-        file_put_contents($tmpFile, $content);
-        
+        $tmpFile = self::generatePdf( $test, $tmpFolder );
+
         // generate tao instance
-        $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $tmpFile);
+        $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test, $tmpFile);
         
         \tao_helpers_File::delTree($tmpFolder);
         
@@ -71,7 +65,7 @@ class BookletGenerator
      * 
      * @param core_kernel_classes_Resource $test
      * @return array
-     * @todo Analyse test content and determin items to use
+     * @todo Analyse test content and determine items to use
      */
     static protected function getItems(core_kernel_classes_Resource $test) {
         
@@ -88,5 +82,25 @@ class BookletGenerator
      */
     static protected function renderItem(core_kernel_classes_Resource $item) {
         return 'Item '.$item->getLabel().PHP_EOL;
+    }
+
+    /**
+     * Creates pdf in target directory
+     *
+     * @param core_kernel_classes_Resource $test
+     * @param string $targetFolder path
+     *
+     * @return string path to file
+     */
+    public static function generatePdf( core_kernel_classes_Resource $test, $targetFolder )
+    {
+        $tmpFile = $targetFolder . 'test.txt';
+        $content = '';
+        foreach (self::getItems( $test ) as $item) {
+            $content .= self::renderItem( $item );
+        }
+        file_put_contents( $tmpFile, $content );
+
+        return $tmpFile;
     }
 }

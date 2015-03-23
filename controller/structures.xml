@@ -21,9 +21,14 @@
                 	<action id="booklet-class-properties" name="Properties" url="/taoBooklet/Booklet/editClassProperties" group="content" context="class">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="booklet-properties" name="Properties"  url="/taoBooklet/Booklet/editInstance" group="content" context="instance">
+                    <action id="booklet-properties" name="Properties"  url="/taoBooklet/Booklet/editBooklet" group="content" context="instance">
                         <icon id="icon-edit"/>
-                    </action> 
+                    </action>
+
+                    <action id="booklet-regenerate" name="Regenerate"  url="/taoBooklet/Booklet/regenerate" group="content" context="instance">
+                        <icon id="icon-new-page"/>
+                    </action>
+
                     <action id="booklet-filter" name="Filter" context="*" group="search" binding="filter">
                         <icon id="icon-filter"/>
                     </action>
