@@ -5,6 +5,7 @@
         xml:base="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet#"
         xmlns:tao="http://www.tao.lu/Ontologies/TAO.rdf#"
         xmlns:widget="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#"
+        xmlns:generis="http://www.tao.lu/Ontologies/generis.rdf#"
         >
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet">
         <rdfs:label xml:lang="en-US"><![CDATA[Booklet]]></rdfs:label>
@@ -24,5 +25,15 @@
         <rdfs:label xml:lang="en-US"><![CDATA[QTI 2.1 Test]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[]]></rdfs:comment>
     </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOGroup.rdf#Booklets">
+        <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:label xml:lang="en-US"><![CDATA[Booklets]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Booklets of the group]]></rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOGroup.rdf#Group"/>
+        <generis:Multiple rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True" />
+        <tao:TAOGUIOrder><![CDATA[20]]></tao:TAOGUIOrder>
+    </rdf:Description>
+
 
 </rdf:RDF>

@@ -20,6 +20,9 @@
  */
 namespace oat\taoBooklet\controller;
 
+use core_kernel_classes_Property;
+use core_kernel_versioning_File;
+use oat\tao\helpers\Template;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\model\StorageService;
 use tao_actions_SaSModule;
@@ -28,6 +31,10 @@ use oat\taoBooklet\model\BookletGenerator;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use oat\taoBooklet\form\WizardForm;
+use tao_helpers_File;
+use tao_helpers_form_GenerisTreeForm;
+use tao_models_classes_dataBinding_GenerisFormDataBinder;
+use taoSimpleDelivery_actions_form_NoTestsException;
 
 /**
  * Controller to managed assembled deliveries
@@ -86,9 +93,16 @@ class Booklet extends tao_actions_SaSModule
             $this->setData( 'reload', true );
         }
 
+        // define the groups related to the current booklet
+        $property = new core_kernel_classes_Property(BookletClassService::GROUP_PROPERTY_URI);
+        $tree = tao_helpers_form_GenerisTreeForm::buildReverseTree($instance, $property);
+        $tree->setTitle(__('Assigned to'));
+        $tree->setTemplate(Template::getTemplate('Booklet/assignGroup.tpl'));
+        $this->setData('groupTree', $tree->render());
+
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
-        $this->setView( 'form.tpl', 'tao' );
+        $this->setView( 'Booklet/edit.tpl' );
     }
 
     /**
@@ -100,15 +114,15 @@ class Booklet extends tao_actions_SaSModule
     {
         $instance = $this->getCurrentInstance();
 
-        $testUri = $instance->getOnePropertyValue( new \core_kernel_classes_Property( INSTANCE_TEST_MODEL_QTI ) );
+        $testUri = $instance->getOnePropertyValue( new core_kernel_classes_Property( INSTANCE_TEST_MODEL_QTI ) );
         $test    = new core_kernel_classes_Resource( $testUri );
 
-        $tmpFolder = \tao_helpers_File::createTempDir();
+        $tmpFolder = tao_helpers_File::createTempDir();
         $tmpFile   = BookletGenerator::generatePdf( $test, $tmpFolder );
 
         $report = $this->getClassService()->updateInstanceAttachment( $instance, $tmpFile );
 
-        \tao_helpers_File::delTree( $tmpFolder );
+        tao_helpers_File::delTree( $tmpFolder );
 
         $this->returnReport( $report );
 
@@ -124,9 +138,9 @@ class Booklet extends tao_actions_SaSModule
         $instance = $this->getCurrentInstance();
 
         $contentUri = $instance->getOnePropertyValue(
-            new \core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
+            new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
         );
-        $file       = new \core_kernel_versioning_File( $contentUri );
+        $file       = new core_kernel_versioning_File( $contentUri );
 
         header( 'Content-Disposition: attachment; filename="' . basename( $file->getAbsolutePath() ) . '"' );
         \tao_helpers_Http::returnFile( $file->getAbsolutePath() );
@@ -167,7 +181,7 @@ class Booklet extends tao_actions_SaSModule
 
                 // save properties from form
                 $values   = $myForm->getValues();
-                $binder   = new \tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
+                $binder   = new tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
                 $instance = $binder->bind( $values );
 
                 $this->setData( 'message', __( 'Booklet created' ) );
@@ -181,7 +195,7 @@ class Booklet extends tao_actions_SaSModule
                 $this->setView( 'form.tpl', 'tao' );
             }
 
-        } catch ( \taoSimpleDelivery_actions_form_NoTestsException $e ) {
+        } catch ( taoSimpleDelivery_actions_form_NoTestsException $e ) {
             $this->setView( 'Booklet/wizard.tpl' );
         }
     }
