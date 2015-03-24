@@ -22,6 +22,7 @@ namespace oat\taoBooklet\test;
 
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoBooklet\model\export\PdfBookletExporter;
+use oat\taoBooklet\model\export\BookletExporterException;
 
 /**
  * 
@@ -43,6 +44,11 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
                 <body>Body content</body>
             </html>';
     
+    public function __construct($name = null, array $data = array(), $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        ob_start();
+    }
     
     /**
      * tests initialization
@@ -50,7 +56,30 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
     public function setUp()
     {
         TaoPhpUnitTestRunner::initTest();
-        $this->pdfBookletExporter = new PdfBookletExporter();
+        try {
+            $this->pdfBookletExporter = new PdfBookletExporter();
+        } catch (BookletExporterException $e) {
+            $this->markTestSkipped(
+                $e->getMessage()
+            );
+        }
+    }
+    
+    /**
+     * Check pdf file export
+     */
+    public function testExport()
+    {
+        $name = 'filename';
+        $this->pdfBookletExporter->setContent($this->HTMLString);
+        ob_start();
+        $this->assertTrue($this->pdfBookletExporter->export($name));
+        $pdfFileContent = ob_get_clean();
+        
+        $headers = xdebug_get_headers();
+        
+        $this->assertStringStartsWith('%PDF', $pdfFileContent);
+        $this->assertTrue(in_array('Content-Type: application/pdf', $headers));
     }
     
     /**
@@ -84,26 +113,6 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
         $this->pdfBookletExporter->setContent(null);
     }
     
-    /**
-     * Check pdf file export
-     * 
-     * @preserveGlobalState disabled
-     * @runInSeparateProcess
-     */
-    public function testExport()
-    {
-        $name = 'filename';
-        
-        $this->pdfBookletExporter->setContent($this->HTMLString);
-        ob_start();
-        $this->assertTrue($this->pdfBookletExporter->export($name));
-        $pdfFileContent = ob_get_clean();
-        
-        $headers = xdebug_get_headers();
-        
-        $this->assertStringStartsWith('%PDF', $pdfFileContent);
-        $this->assertTrue(in_array('Content-Type: application/pdf', $headers));
-    }
     
     /**
      * Check pdf file saving

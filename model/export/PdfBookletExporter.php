@@ -37,6 +37,9 @@ class PdfBookletExporter extends BookletExporter
     
     public function __construct()
     {
+        if (!$this->isWkhtmltopdfInstalled()) {
+            throw new BookletExporterException('wkhtmltopdf tool is not installed'); 
+        }
         $this->pdf = new Pdf;
     }
     
@@ -112,5 +115,14 @@ class PdfBookletExporter extends BookletExporter
     public function getError()
     {
         return $this->pdf->getError();
+    }
+    
+    /**
+     * @return whether wkhtmltopdf tool is installed
+     */
+    public function isWkhtmltopdfInstalled()
+    {
+        $shellOutput = `wkhtmltopdf -V`;
+        return preg_match('/wkhtmltopdf\s\d\..*/', $shellOutput);
     }
 }
