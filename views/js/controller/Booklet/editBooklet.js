@@ -31,18 +31,11 @@ define(['module', 'helpers', 'jquery'], function (module, helpers, $) {
                 var $form = $(e.target).closest('form');
 
                 $downloader.attr('src', helpers._url('download', 'Booklet', 'taoBooklet', {
-                    uri: $('input[name="uri"]').val(),
-                    classUri: $('input[name="classUri"]').val(),
-                    id: $('input[name="id"]').val()
+                    uri: $form.find('input[name="uri"]').val(),
+                    classUri: $form.find('input[name="classUri"]').val(),
+                    id: $form.find('input[name="id"]').val()
                 }));
             });
-
-            //$('.btn-regenerate').on('click', function (e) {
-            //    e.preventDefault();
-            //    var $form = $(e.target).closest('form')
-            //    $form.attr('action', helpers._url('regenerate', 'Booklet', 'taoBooklet'));
-            //    $form.submit();
-            //});
         }
     };
 });
