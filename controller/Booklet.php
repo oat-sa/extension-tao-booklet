@@ -105,6 +105,12 @@ class Booklet extends tao_actions_SaSModule
         $this->setView( 'Booklet/edit.tpl' );
     }
 
+    public function preview(){
+        $instance        = $this->getCurrentInstance();
+        $this->setData( 'instance', $instance );
+        $this->setView( 'Booklet/preview.tpl');
+    }
+
     /**
      * Used for regeneration of attached pdf
      * @throws \core_kernel_persistence_Exception
