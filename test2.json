@@ -1,0 +1,424 @@
+{
+  " items": [{
+    "type": "qti",
+    "data": {
+      "identifier": "space-shuttle-30-years-of-adventure",
+      "serial": "item_5509a1dcb4cef522454061",
+      "qtiClass": "assessmentItem",
+      "attributes": {
+        "identifier": "space-shuttle-30-years-of-adventure",
+        "title": "The Space Shuttle, 30 years of adventure",
+        "label": "",
+        "xml:lang": "en-US",
+        "adaptive": false,
+        "timeDependent": false,
+        "toolName": "TAO",
+        "toolVersion": "3.0-RC04"
+      },
+      "body": {
+        "serial": "container_containeritembody_5509a1dcb4cd1408423819",
+        "body": "<p id=\"stimulus\">\n            During more than 30 years, the American Space Shuttle transported 355 astronauts in space over 135\n            orbital launchings from Cap Canaveral, Florida. This 2046-ton Behemoth traveled 870 million kilometers\n            around the Earth from 12th of April 1981 to 21st of July 2011. The National Aeronautics and Space\n            Administration (NASA) built 5 Space Shuttles: Columbia, Challenger, Discovery, Atlantis and Endeavour.\n\t\t<\/p>\n    {{interaction_choiceinteraction_5509a1dcb564e558239670}}",
+        "elements": {
+          "interaction_choiceinteraction_5509a1dcb564e558239670": {
+            "serial": "interaction_choiceinteraction_5509a1dcb564e558239670",
+            "qtiClass": "choiceInteraction",
+            "attributes": {
+              "responseIdentifier": "RESPONSE",
+              "shuffle": false,
+              "maxChoices": 1,
+              "minChoices": 0,
+              "id": "interaction"
+            },
+            "choices": {
+              "choice_simplechoice_5509a1dcb5ad0225010448": {
+                "identifier": "Discovery",
+                "serial": "choice_simplechoice_5509a1dcb5ad0225010448",
+                "qtiClass": "simpleChoice",
+                "attributes": {
+                  "identifier": "Discovery",
+                  "fixed": false
+                },
+                "body": {
+                  "serial": "container_containerstatic_5509a1dcb5bd4080168170",
+                  "body": "Discovery",
+                  "elements": [],
+                  "debug": {
+                    "relatedItem": "item_5509a1dcb4cef522454061"
+                  }
+                }
+              },
+              "choice_simplechoice_5509a1dcb5cab633344159": {
+                "identifier": "Challenger",
+                "serial": "choice_simplechoice_5509a1dcb5cab633344159",
+                "qtiClass": "simpleChoice",
+                "attributes": {
+                  "identifier": "Challenger",
+                  "fixed": false
+                },
+                "body": {
+                  "serial": "container_containerstatic_5509a1dcb5cfb696671182",
+                  "body": "Challenger",
+                  "elements": [],
+                  "debug": {
+                    "relatedItem": "item_5509a1dcb4cef522454061"
+                  }
+                }
+              },
+              "choice_simplechoice_5509a1dcb5db1151337371": {
+                "identifier": "Pathfinder",
+                "serial": "choice_simplechoice_5509a1dcb5db1151337371",
+                "qtiClass": "simpleChoice",
+                "attributes": {
+                  "identifier": "Pathfinder",
+                  "fixed": false
+                },
+                "body": {
+                  "serial": "container_containerstatic_5509a1dcb5dfe056540617",
+                  "body": "Pathfinder",
+                  "elements": [],
+                  "debug": {
+                    "relatedItem": "item_5509a1dcb4cef522454061"
+                  }
+                }
+              },
+              "choice_simplechoice_5509a1dcb5ee3137816690": {
+                "identifier": "Atlantis",
+                "serial": "choice_simplechoice_5509a1dcb5ee3137816690",
+                "qtiClass": "simpleChoice",
+                "attributes": {
+                  "identifier": "Atlantis",
+                  "fixed": false
+                },
+                "body": {
+                  "serial": "container_containerstatic_5509a1dcb5f2f038586212",
+                  "body": "Atlantis",
+                  "elements": [],
+                  "debug": {
+                    "relatedItem": "item_5509a1dcb4cef522454061"
+                  }
+                }
+              },
+              "choice_simplechoice_5509a1dcb5fe0789046636": {
+                "identifier": "Endeavour",
+                "serial": "choice_simplechoice_5509a1dcb5fe0789046636",
+                "qtiClass": "simpleChoice",
+                "attributes": {
+                  "identifier": "Endeavour",
+                  "fixed": false
+                },
+                "body": {
+                  "serial": "container_containerstatic_5509a1dcb602b537676583",
+                  "body": "Endeavour",
+                  "elements": [],
+                  "debug": {
+                    "relatedItem": "item_5509a1dcb4cef522454061"
+                  }
+                }
+              }
+            },
+            "prompt": {
+              "serial": "container_containerstatic_5509a1dcb5993661566225",
+              "body": "Which was the last Space Shuttle going into space during the STS-135 mission in July 2011?",
+              "elements": [],
+              "debug": {
+                "relatedItem": "item_5509a1dcb4cef522454061"
+              }
+            }
+          }
+        },
+        "debug": {
+          "relatedItem": "item_5509a1dcb4cef522454061"
+        }
+      },
+      "namespaces": {
+        "xml": "http:\/\/www.w3.org\/XML\/1998\/namespace",
+        "xsi": "http:\/\/www.w3.org\/2001\/XMLSchema-instance",
+        "": "http:\/\/www.imsglobal.org\/xsd\/imsqti_v2p1"
+      },
+      "stylesheets": [],
+      "outcomes": {
+        "outcomedeclaration_5509a1dcb5287199619981": {
+          "identifier": "SCORE",
+          "serial": "outcomedeclaration_5509a1dcb5287199619981",
+          "qtiClass": "outcomeDeclaration",
+          "attributes": {
+            "identifier": "SCORE",
+            "cardinality": "single",
+            "baseType": "float"
+          },
+          "defaultValue": "0"
+        }
+      },
+      "responses": {
+        "responsedeclaration_5509a1dcb50ec340469252": {
+          "identifier": "RESPONSE",
+          "serial": "responsedeclaration_5509a1dcb50ec340469252",
+          "qtiClass": "responseDeclaration",
+          "attributes": {
+            "identifier": "RESPONSE",
+            "cardinality": "single",
+            "baseType": "identifier"
+          },
+          "correctResponses": ["Atlantis"],
+          "mapping": [],
+          "areaMapping": [],
+          "howMatch": "http:\/\/www.imsglobal.org\/question\/qti_v2p1\/rptemplates\/match_correct",
+          "mappingAttributes": {
+            "defaultValue": 0
+          },
+          "feedbackRules": []
+        }
+      },
+      "feedbacks": [],
+      "responseProcessing": {
+        "serial": "response_templatesdriven_5509a1dcb62a6919965305",
+        "qtiClass": "responseProcessing",
+        "attributes": [],
+        "processingType": "templateDriven",
+        "responseRules": [{
+          "qtiClass": "responseCondition",
+          "responseIf": {
+            "qtiClass": "responseIf",
+            "expression": {
+              "qtiClass": "match",
+              "expressions": [{
+                "qtiClass": "variable",
+                "attributes": {
+                  "identifier": "RESPONSE"
+                }
+              }, {
+                "qtiClass": "correct",
+                "attributes": {
+                  "identifier": "RESPONSE"
+                }
+              }]
+            },
+            "responseRules": [{
+              "qtiClass": "setOutcomeValue",
+              "attributes": {
+                "identifier": "SCORE"
+              },
+              "expression": {
+                "qtiClass": "baseValue",
+                "attributes": {
+                  "baseType": "float"
+                },
+                "value": "1"
+              }
+            }]
+          },
+          "responseElse": {
+            "qtiClass": "responseElse",
+            "responseRules": [{
+              "qtiClass": "setOutcomeValue",
+              "attributes": {
+                "identifier": "SCORE"
+              },
+              "expression": {
+                "qtiClass": "baseValue",
+                "attributes": {
+                  "baseType": "float"
+                },
+                "value": "0"
+              }
+            }]
+          }
+        }]
+      }
+    },
+    "assets": []
+  }, {
+    "type": "qti",
+    "data": {
+      "identifier": "i14266944822248195",
+      "serial": "item_5509a1dd34d9d875178786",
+      "qtiClass": "assessmentItem",
+      "attributes": {
+        "identifier": "i14266944822248195",
+        "title": "Item title",
+        "label": "",
+        "adaptive": false,
+        "timeDependent": false,
+        "toolName": "TAO",
+        "toolVersion": "3.0-RC04"
+      },
+      "body": {
+        "serial": "container_containeritembody_5509a1dd34d7e564164879",
+        "body": "<div class=\"grid-row\">\n      <div class=\"col-12\">\n        <p class=\"\">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fringilla tortor sed ipsum pulvinar, a mollis urna accumsan. In fringilla sagittis dui sed auctor. Morbi eu tincidunt lacus. Etiam velit nisi, volutpat a velit at, mattis pharetra mi. Sed at est hendrerit, rhoncus nisl sit amet, tincidunt ante. Vestibulum tristique vehicula dolor. Cras ac neque ac risus egestas scelerisque. Maecenas euismod tincidunt tellus. Proin vehicula sed leo id fermentum. Pellentesque eget varius nulla. Aliquam vitae quam dui. Nam magna velit, pulvinar eu tortor a, ultrices blandit nulla. Mauris maximus auctor elit non faucibus.<\/p>\n        <p class=\"\">Maecenas vitae auctor sem. Phasellus sapien urna, vehicula sed porttitor lacinia, accumsan sed nisl. Etiam ligula sapien, tincidunt id risus a, iaculis scelerisque erat. Pellentesque habitant morbi tristique senectus et netus et {{interaction_textentryinteraction_5509a1dd356c5908546697}}malesuada fames ac turpis egestas. Nullam turpis lorem, varius vitae bibendum eget, ornare suscipit urna. Morbi sodales fermentum dapibus. Fusce sit amet congue ante, ut tincidunt nibh. Fusce lobortis mattis orci, vitae finibus lectus. Sed laoreet risus ligula, ut hendrerit quam malesuada et. Sed tristique massa eu pulvinar posuere. Fusce gravida justo felis, quis auctor enim sagittis sed. Suspendisse potenti. Maecenas eu sodales mauris, vel porttitor nisi. Donec felis sapien, vestibulum a justo mollis, rhoncus efficitur sem. Pellentesque porta ex sapien, in aliquet orci ultricies ac. Proin consequat enim nisl, sed vulputate arcu tempor a.<\/p>\n        <p class=\"\">Quisque dignissim orci sed felis rutrum, ac porttitor lectus iaculis. Sed eu arcu dapibus, semper ligula non, vehicula lectus. Duis dolor ipsum, dictum eget est vel, consectetur rutrum est. Fusce vitae quam tellus. Pellentesque non laoreet nisi. Suspendisse varius sollicitudin enim, ut pellentesque diam placerat et. Proin posuere lacus dui, nec bibendum nunc sodales ac. Praesent cursus, enim a scelerisque tincidunt, est urna tempus lorem, ut congue augue nulla vel nunc.<\/p>\n        <p class=\"\">Sed sit amet porttitor urna. Integer erat sem, fermentum quis ultricies id, ultrices ut velit. Vestibulum interdum, tellus iaculis blandit semper, lacus dui convallis eros, et sollicitudin massa ante quis mi. Ut id magna ac diam pulvinar facilisis. Praesent sed sapien euismod, sollicitudin neque vel, faucibus ex. Nulla eget commodo urna. Pellentesque habitant morbi tristique senectus et netus et {{interaction_textentryinteraction_5509a1dd358e2393257873}}malesuada fames ac turpis egestas. Aliquam sed odio ipsum. In lectus magna, semper ac mollis in, posuere sit amet est. Nullam egestas erat ut arcu condimentum iaculis.<\/p>\n        <p class=\"\">Ut efficitur suscipit risus vitae facilisis. Duis ante ligula, condimentum et lorem quis, commodo luctus odio. Sed at dolor eget lacus commodo aliquet. Integer cursus, eros vel dapibus egestas, justo dolor commodo ligula, quis condimentum leo risus ultrices lorem. Nulla eget eleifend massa. Morbi vulputate nunc magna, et suscipit nisi tincidunt id. Aenean semper, nunc quis sollicitudin consectetur, tellus erat cursus magna, at venenatis nibh orci non turpis. Pellentesque et risus nulla. Quisque pharetra tellus purus, id blandit enim rutrum scelerisque. Integer vel metus nibh. Vivamus nibh purus, interdum vitae luctus ut, tincidunt nec lorem.<\/p>\n      <\/div>\n    <\/div>",
+        "elements": {
+          "interaction_textentryinteraction_5509a1dd356c5908546697": {
+            "serial": "interaction_textentryinteraction_5509a1dd356c5908546697",
+            "qtiClass": "textEntryInteraction",
+            "attributes": {
+              "responseIdentifier": "RESPONSE",
+              "base": 10,
+              "placeholderText": ""
+            },
+            "choices": []
+          },
+          "interaction_textentryinteraction_5509a1dd358e2393257873": {
+            "serial": "interaction_textentryinteraction_5509a1dd358e2393257873",
+            "qtiClass": "textEntryInteraction",
+            "attributes": {
+              "responseIdentifier": "RESPONSE_1",
+              "base": 10,
+              "placeholderText": ""
+            },
+            "choices": []
+          }
+        },
+        "debug": {
+          "relatedItem": "item_5509a1dd34d9d875178786"
+        }
+      },
+      "namespaces": {
+        "xml": "http:\/\/www.w3.org\/XML\/1998\/namespace",
+        "m": "http:\/\/www.w3.org\/1998\/Math\/MathML",
+        "xsi": "http:\/\/www.w3.org\/2001\/XMLSchema-instance",
+        "": "http:\/\/www.imsglobal.org\/xsd\/imsqti_v2p1"
+      },
+      "stylesheets": [],
+      "outcomes": {
+        "outcomedeclaration_5509a1dd35439394252453": {
+          "identifier": "SCORE",
+          "serial": "outcomedeclaration_5509a1dd35439394252453",
+          "qtiClass": "outcomeDeclaration",
+          "attributes": {
+            "identifier": "SCORE",
+            "cardinality": "single",
+            "baseType": "float"
+          },
+          "defaultValue": null
+        }
+      },
+      "responses": {
+        "responsedeclaration_5509a1dd34f2b212681020": {
+          "identifier": "RESPONSE",
+          "serial": "responsedeclaration_5509a1dd34f2b212681020",
+          "qtiClass": "responseDeclaration",
+          "attributes": {
+            "identifier": "RESPONSE",
+            "cardinality": "single",
+            "baseType": "string"
+          },
+          "correctResponses": [],
+          "mapping": [],
+          "areaMapping": [],
+          "howMatch": "http:\/\/www.imsglobal.org\/question\/qti_v2p1\/rptemplates\/match_correct",
+          "mappingAttributes": {
+            "defaultValue": 0
+          },
+          "feedbackRules": []
+        },
+        "responsedeclaration_5509a1dd3538f946298230": {
+          "identifier": "RESPONSE_1",
+          "serial": "responsedeclaration_5509a1dd3538f946298230",
+          "qtiClass": "responseDeclaration",
+          "attributes": {
+            "identifier": "RESPONSE_1",
+            "cardinality": "single",
+            "baseType": "string"
+          },
+          "correctResponses": [],
+          "mapping": [],
+          "areaMapping": [],
+          "howMatch": "http:\/\/www.imsglobal.org\/question\/qti_v2p1\/rptemplates\/match_correct",
+          "mappingAttributes": {
+            "defaultValue": 0
+          },
+          "feedbackRules": []
+        }
+      },
+      "feedbacks": [],
+      "responseProcessing": {
+        "serial": "response_templatesdriven_5509a1dd35d7b032491946",
+        "qtiClass": "responseProcessing",
+        "attributes": [],
+        "processingType": "templateDriven",
+        "responseRules": [{
+          "qtiClass": "responseCondition",
+          "responseIf": {
+            "qtiClass": "responseIf",
+            "expression": {
+              "qtiClass": "match",
+              "expressions": [{
+                "qtiClass": "variable",
+                "attributes": {
+                  "identifier": "RESPONSE"
+                }
+              }, {
+                "qtiClass": "correct",
+                "attributes": {
+                  "identifier": "RESPONSE"
+                }
+              }]
+            },
+            "responseRules": [{
+              "qtiClass": "setOutcomeValue",
+              "attributes": {
+                "identifier": "SCORE"
+              },
+              "expression": {
+                "qtiClass": "sum",
+                "expressions": [{
+                  "qtiClass": "variable",
+                  "attributes": {
+                    "identifier": "SCORE"
+                  }
+                }, {
+                  "qtiClass": "baseValue",
+                  "attributes": {
+                    "baseType": "integer"
+                  },
+                  "value": "1"
+                }]
+              }
+            }]
+          }
+        }, {
+          "qtiClass": "responseCondition",
+          "responseIf": {
+            "qtiClass": "responseIf",
+            "expression": {
+              "qtiClass": "match",
+              "expressions": [{
+                "qtiClass": "variable",
+                "attributes": {
+                  "identifier": "RESPONSE_1"
+                }
+              }, {
+                "qtiClass": "correct",
+                "attributes": {
+                  "identifier": "RESPONSE_1"
+                }
+              }]
+            },
+            "responseRules": [{
+              "qtiClass": "setOutcomeValue",
+              "attributes": {
+                "identifier": "SCORE"
+              },
+              "expression": {
+                "qtiClass": "sum",
+                "expressions": [{
+                  "qtiClass": "variable",
+                  "attributes": {
+                    "identifier": "SCORE"
+                  }
+                }, {
+                  "qtiClass": "baseValue",
+                  "attributes": {
+                    "baseType": "integer"
+                  },
+                  "value": "1"
+                }]
+              }
+            }]
+          }
+        }]
+      }
+    },
+    "assets": []
+  }]
+}
+

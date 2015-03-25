@@ -22,24 +22,37 @@
 define([
     'jquery',
     'lodash',
+    'async',
     'taoQtiItemPrint/runner/qtiItemPrintRunner'
-], function($, _, itemRunner){
+], function($, _, async, itemRunner){
     'use strict';
 
-    var runner = function runner($elt, items){
+    var runner = function runner($elt, testData){
+        var itemRunners = [];
 
+        _.forEach(testData.items, function(itemData){
 
-        //FIXME order isn't garantee, use async or an array
-        _.forEach(items, function(itemData, i){
-            var $itemContainer = $('<div></div');
-             itemRunner('qtiprint', itemData)
-                .on('render', function(){
-                    console.log("done " + i);
-                    $elt.append($itemContainer);
-                })
-                .init()
-                .render($itemContainer);
-                console.log('render' + i);
+            var runItem = function runItem(done){
+                var $itemContainer = $('<div style="page-break-after: always;"></div');
+
+                itemRunner('qtiprint', itemData)
+                    .on('error', function(err){
+                        done(err);
+                    })
+                    .on('render', function(){
+                        done(null, $itemContainer);
+                    })
+                    .init()
+                    .render($itemContainer);
+            };
+            itemRunners.push(runItem);
+        });
+
+        async.parallel(itemRunners, function itemDone(err, results){
+            if(err){
+                throw new Error(err);
+            }
+            $elt.empty().append(results);
         });
     };
 
