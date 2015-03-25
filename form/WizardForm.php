@@ -52,7 +52,6 @@ class WizardForm extends \tao_actions_form_Instance
 
         $options = array();
 
-//        $user = \common_session_SessionManager::getSession()->getUser();
         foreach ($testClass->getInstances( true ) as $test) {
             $options[$test->getUri()] = $test->getLabel();
         }
