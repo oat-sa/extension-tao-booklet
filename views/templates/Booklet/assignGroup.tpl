@@ -6,7 +6,10 @@
          data-open-nodes='<?=json_encode(get_data("openNodes"))?>'
          data-root-node='<?=get_data("rootNode")?>'
          data-uri='<?=get_data("resourceUri")?>'
-         data-checked-nodes='<?=json_encode(tao_helpers_Uri::encodeArray(get_data("values")))?>'>
+         data-checked-nodes='<?=json_encode(tao_helpers_Uri::encodeArray(get_data("values")))?>'
+         data-anonymous-class='<?=tao_helpers_Uri::encode(get_data("anonymousClass"))?>'
+         data-anonymous='<?=tao_helpers_Uri::encode(get_data("anonymous"))?>'
+        >
     <header>
         <h1><?=get_data('title')?></h1>
     </header>

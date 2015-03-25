@@ -20,6 +20,15 @@
         <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#File"/>
         <tao:TAOGUIOrder><![CDATA[20]]></tao:TAOGUIOrder>
     </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous">
+        <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:label xml:lang="en-US"><![CDATA[Anonymous]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Indicate whether it should be anonymous]]></rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"/>
+        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#RadioBox"/>
+        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#Boolean"/>
+        <tao:TAOGUIOrder><![CDATA[30]]></tao:TAOGUIOrder>
+    </rdf:Description>
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOTest.rdf#QtiTestModel">
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOTest.rdf#TestModel"/>
         <rdfs:label xml:lang="en-US"><![CDATA[QTI 2.1 Test]]></rdfs:label>
@@ -32,8 +41,7 @@
         <rdfs:comment xml:lang="en-US"><![CDATA[Booklets of the group]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOGroup.rdf#Group"/>
         <generis:Multiple rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True" />
-        <tao:TAOGUIOrder><![CDATA[20]]></tao:TAOGUIOrder>
+        <tao:TAOGUIOrder><![CDATA[40]]></tao:TAOGUIOrder>
     </rdf:Description>
-
 
 </rdf:RDF>

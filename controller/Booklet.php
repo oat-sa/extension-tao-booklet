@@ -98,6 +98,9 @@ class Booklet extends tao_actions_SaSModule
         $tree = tao_helpers_form_GenerisTreeForm::buildReverseTree($instance, $property);
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('Booklet/assignGroup.tpl'));
+        $tree->setData('anonymousClass', BookletClassService::ANONYMOUS_URI);
+        $tree->setData('anonymous', 'http://www.tao.lu/Ontologies/generis.rdf#True');
+
         $this->setData('groupTree', $tree->render());
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );

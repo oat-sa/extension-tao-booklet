@@ -27,6 +27,16 @@ define(['jquery', 'lodash', 'module', 'helpers', 'generis.tree.select', 'layout/
 
         var treeOptions = $container.data();
 
+        var toggleTree = function(val) {
+            $container.toggle(val !== treeOptions.anonymous);
+        };
+
+        toggleTree($('[name="' + treeOptions.anonymousClass + '"]:checked').val());
+
+        $('[name="' + treeOptions.anonymousClass + '"]').on('change', function (e) {
+            toggleTree($(e.target).val());
+        });
+
         new GenerisTreeSelectClass('#' + treeOptions.actionId + '-tree', helpers._url('getData', 'GenerisTree', 'tao'), {
             actionId: treeOptions.actionId,
             saveUrl: treeOptions.saveUrl,
