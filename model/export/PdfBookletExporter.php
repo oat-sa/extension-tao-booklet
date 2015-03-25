@@ -120,9 +120,27 @@ class PdfBookletExporter extends BookletExporter
     /**
      * @return whether wkhtmltopdf tool is installed
      */
-    public function isWkhtmltopdfInstalled()
+    private function isWkhtmltopdfInstalled()
     {
-        $shellOutput = `wkhtmltopdf -V`;
-        return preg_match('/wkhtmltopdf\s\d\..*/', $shellOutput);
+        $whereIsCommand = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'where' : 'which';
+
+        $process = proc_open(
+            "$whereIsCommand wkhtmltopdf", 
+            array(
+                0 => array("pipe", "r"), //STDIN
+                1 => array("pipe", "w"), //STDOUT
+                2 => array("pipe", "w"), //STDERR
+            ), 
+            $pipes
+        );
+        if ($process !== false) {
+            $stdout = stream_get_contents($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            proc_close($process);
+            return $stdout != '';
+        }
+        return false;
     }
 }

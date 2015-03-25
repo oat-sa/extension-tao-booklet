@@ -44,12 +44,6 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
                 <body>Body content</body>
             </html>';
     
-    public function __construct($name = null, array $data = array(), $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-        ob_start();
-    }
-    
     /**
      * tests initialization
      */
@@ -67,6 +61,9 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
     
     /**
      * Check pdf file export
+     * 
+     * @preserveGlobalState disabled
+     * @runInSeparateProcess
      */
     public function testExport()
     {
