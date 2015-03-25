@@ -17,8 +17,36 @@
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
  * 
  */
-define(['module', 'helpers', 'jquery'], function (module, helpers, $) {
+define(['jquery', 'lodash', 'module', 'helpers', 'generis.tree.select'], function ($, _, module, helpers, GenerisTreeSelectClass) {
     'use strict';
+
+
+    function buildGroupsTree(container) {
+
+        var treeOptions = container.data();
+
+        new GenerisTreeSelectClass('#' + treeOptions.actionId + '-tree', helpers._url('getData', 'GenerisTree', 'tao'), {
+            actionId: treeOptions.actionId,
+            saveUrl: treeOptions.saveUrl,
+            saveData: {
+                resourceUri: treeOptions.resourceUri,
+                propertyUri: treeOptions.propertyUri
+            },
+            checkedNodes: treeOptions.checkedNodes,
+            serverParameters: {
+                openNodes: treeOptions.openNodes,
+                rootNode: treeOptions.rootNode
+            },
+            saveCallback: function () {
+                helpers._load(
+                    helpers.getMainContainerSelector(),
+                    helpers._url('editBooklet', 'Booklet', 'taoBooklet'),
+                    {uri: treeOptions.resourceUri}
+                );
+            },
+            paginate: 10
+        });
+    }
 
     return {
         start: function () {
@@ -36,6 +64,8 @@ define(['module', 'helpers', 'jquery'], function (module, helpers, $) {
                     id: $form.find('input[name="id"]').val()
                 }));
             });
+
+            buildGroupsTree($('.group-container'));
         }
     };
 });
