@@ -20,7 +20,6 @@
  */
 namespace oat\taoBooklet\form;
 
-
 /**
  * Create a form from a resource of your ontology.
  * Each property will be a field, regarding it's widget.
@@ -31,6 +30,9 @@ namespace oat\taoBooklet\form;
  */
 namespace oat\taoBooklet\form;
 
+use tao_helpers_form_FormFactory;
+use tao_helpers_Uri;
+
 class EditForm extends \tao_actions_form_Instance
 {
 
@@ -38,12 +40,23 @@ class EditForm extends \tao_actions_form_Instance
     {
         parent::initElements();
 
+        /** @var \tao_helpers_form_elements_xhtml_Combobox $originalTestElement */
+        $originalTestElement = $this->getForm()->getElement( tao_helpers_Uri::encode( TAO_TEST_CLASS ) );
+        $options             = $originalTestElement->getOptions();
+
+        $formatElt = tao_helpers_form_FormFactory::getElement( 'test', 'Readonly' );
+        $formatElt->setDescription( __( 'Selected test' ) );
+        $formatElt->setValue( isset($options[$originalTestElement->getRawValue()])?$options[$originalTestElement->getRawValue()]:__('Test has been removed') );
+
         $downloadBtn = \tao_helpers_form_FormFactory::getElement( 'Download', 'Button' );
         $downloadBtn->setValue( __( 'Download' ) . ' PDF' );
         $downloadBtn->setIcon( 'icon-download' );
         $downloadBtn->addClass( 'btn-download btn-success small' );
 
-        $this->form->setActions( array_merge( $this->form->getActions(), array( $downloadBtn ) ), 'bottom' );
+        $this->getForm()->removeElement( tao_helpers_Uri::encode( TAO_TEST_CLASS ) );
+        $this->getForm()->setActions( array_merge( $this->form->getActions(), array( $downloadBtn ) ), 'bottom' );
+        $this->getForm()->addElement( $formatElt );
+
     }
 
 }

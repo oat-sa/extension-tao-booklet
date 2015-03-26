@@ -20,8 +20,9 @@
  */
 namespace oat\taoBooklet\form;
 
+use oat\taoBooklet\model\BookletClassService;
 use tao_helpers_form_FormFactory;
-use core_kernel_classes_Class;
+use tao_helpers_Uri;
 
 /**
  * Create a form from a booklet
@@ -44,25 +45,22 @@ class WizardForm extends \tao_actions_form_Instance
     public function initElements()
     {
         parent::initElements();
-        //create the element to select the import format
 
-        $formatElt = tao_helpers_form_FormFactory::getElement( 'test', 'Combobox' );
-        $formatElt->setDescription( __( 'Select the test you want to prepare for printing' ) );
-        $testClass = new core_kernel_classes_Class( TAO_TEST_CLASS );
 
-        $options = array();
+        $formatElt = tao_helpers_form_FormFactory::getElement( 'anonymousClass', 'Hidden' );
+        $formatElt->setValue(tao_helpers_Uri::encode( BookletClassService::ANONYMOUS_URI ));
+        $this->getForm()->addElement($formatElt);
 
-        foreach ($testClass->getInstances( true ) as $test) {
-            $options[$test->getUri()] = $test->getLabel();
-        }
+        $testElement = $this->getForm()->getElement( tao_helpers_Uri::encode( TAO_TEST_CLASS ) );
 
-        if (empty( $options )) {
+        if ( ! count( $testElement->getOptions() )) {
             throw new \taoSimpleDelivery_actions_form_NoTestsException();
         }
 
-        $formatElt->setOptions( $options );
-        $formatElt->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
-        $this->form->addElement( $formatElt );
+        $anonymousElm = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::ANONYMOUS_URI ) );
+        $anonymousElm->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
+
+        $testElement->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
 
         $createElt = \tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
         $createElt->setValue( __( 'Generate' ) );

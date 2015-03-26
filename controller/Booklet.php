@@ -33,6 +33,7 @@ use core_kernel_classes_Class;
 use oat\taoBooklet\form\WizardForm;
 use tao_helpers_File;
 use tao_helpers_form_GenerisTreeForm;
+use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 use taoSimpleDelivery_actions_form_NoTestsException;
 
@@ -184,7 +185,7 @@ class Booklet extends tao_actions_SaSModule
             if ($myForm->isValid() && $myForm->isSubmited()) {
 
                 $clazz    = new core_kernel_classes_Class( $this->getCurrentClass() );
-                $test     = new core_kernel_classes_Resource( $myForm->getValue( 'test' ) );
+                $test     = new core_kernel_classes_Resource( $myForm->getValue( tao_helpers_Uri::encode(TAO_TEST_CLASS) ) );
                 $report   = BookletGenerator::generate( $test, $clazz );
                 $instance = $report->getData();
 

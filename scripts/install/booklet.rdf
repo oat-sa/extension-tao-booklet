@@ -29,10 +29,15 @@
         <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#Boolean"/>
         <tao:TAOGUIOrder><![CDATA[30]]></tao:TAOGUIOrder>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOTest.rdf#QtiTestModel">
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOTest.rdf#TestModel"/>
-        <rdfs:label xml:lang="en-US"><![CDATA[QTI 2.1 Test]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[]]></rdfs:comment>
+
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOTest.rdf#Test">
+        <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"/>
+        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAOTest.rdf#Test"/>
+        <rdfs:label xml:lang="en-US"><![CDATA[Test]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Related test]]></rdfs:comment>
+        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#ComboBox"/>
+        <tao:TAOGUIOrder><![CDATA[32]]></tao:TAOGUIOrder>
     </rdf:Description>
 
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOGroup.rdf#Booklets">
