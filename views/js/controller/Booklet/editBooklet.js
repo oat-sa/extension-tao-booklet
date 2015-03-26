@@ -31,9 +31,11 @@ define(['jquery', 'lodash', 'module', 'helpers', 'generis.tree.select', 'layout/
             $container.toggle(val !== treeOptions.anonymous);
         };
 
-        toggleTree($('[name="' + treeOptions.anonymousClass + '"]:checked').val());
+        var $radio = $('[name="' + treeOptions.anonymousClass + '"]');
 
-        $('[name="' + treeOptions.anonymousClass + '"]').on('change', function (e) {
+        toggleTree($radio.filter(':checked').val());
+
+        $radio.on('change', function (e) {
             toggleTree($(e.target).val());
         });
 
