@@ -1,22 +1,22 @@
 <?php
-/**  
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *               
- * 
+ *
+ *
  */
 
 namespace oat\taoBooklet\model;
@@ -24,13 +24,18 @@ namespace oat\taoBooklet\model;
 use common_report_Report;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
+use oat\taoBooklet\model\export\PdfBookletExporter;
+use tao_helpers_Uri;
 
 class BookletGenerator
+
 {
+    static $exporter;
+
     /**
      * Generate a new Booklet from a specific test
      * in a specific class and return a report
-     * 
+     *
      * @param core_kernel_classes_Resource $test
      * @param core_kernel_classes_Class $class
      * @return common_report_Report
@@ -51,38 +56,15 @@ class BookletGenerator
 
         // generate tao instance
         $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test, $tmpFile);
-        
+
         \tao_helpers_File::delTree($tmpFolder);
-        
+
         // return report with instance
         $report->setMessage(__('%s created', $instance->getLabel()));
         $report->setData($instance);
         return $report;
     }
-    
-    /**
-     * Get items of test
-     * 
-     * @param core_kernel_classes_Resource $test
-     * @return array
-     * @todo Analyse test content and determine items to use
-     */
-    static protected function getItems(core_kernel_classes_Resource $test) {
-        
-        $items = \taoTests_models_classes_TestsService::singleton()->getTestItems($test);
-        return $items;
-    }
-    
-    /**
-     * Render a single item
-     * 
-     * @param core_kernel_classes_Resource $item
-     * @return string
-     * @todo Real item rendering
-     */
-    static protected function renderItem(core_kernel_classes_Resource $item) {
-        return 'Item '.$item->getLabel().PHP_EOL;
-    }
+
 
     /**
      * Creates pdf in target directory
@@ -94,13 +76,23 @@ class BookletGenerator
      */
     public static function generatePdf( core_kernel_classes_Resource $test, $targetFolder )
     {
-        $tmpFile = $targetFolder . 'test.txt';
-        $content = '';
-        foreach (self::getItems( $test ) as $item) {
-            $content .= self::renderItem( $item );
-        }
-        file_put_contents( $tmpFile, $content );
+        $tmpFile = $targetFolder . 'test.pdf';
+        $uri     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri() ) );
+        self::getExporter()->setContent( $uri );
+        self::getExporter()->saveAs( $tmpFile );
 
         return $tmpFile;
+    }
+
+    /**
+     * @return PdfBookletExporter
+     */
+    protected static function getExporter()
+    {
+        if ( ! self::$exporter) {
+            self::$exporter = new PdfBookletExporter();
+        }
+
+        return self::$exporter;
     }
 }
