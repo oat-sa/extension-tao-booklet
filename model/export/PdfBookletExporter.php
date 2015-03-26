@@ -69,11 +69,14 @@ class PdfBookletExporter extends BookletExporter
             $opts = array( 
                 'http'=>array( 
                     'method'=>"GET",
-                    'Cookie: ' . session_name() . '=' . session_id() . "\r\n" 
+                    'header'=>"Accept-language: en\r\n" .
+                              "Cookie: ".session_name()."=".session_id()."\r\n"
                 ) 
             );
             $context = stream_context_create($opts);
-            $result = $file = file_get_contents($content, false, $context);
+            session_write_close();
+            $result = file_get_contents($content, false, $context);
+            session_start();
         } elseif (file_exists($content) && is_file($content)) {  //file path
             $result = file_get_contents($content);
         } else { //HTML string
