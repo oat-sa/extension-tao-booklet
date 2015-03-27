@@ -20,6 +20,7 @@
 
 namespace oat\taoBooklet\model\export;
 
+use common_ext_ExtensionsManager;
 use mikehaertl\wkhtmlto\Pdf;
 
 /**
@@ -37,10 +38,21 @@ class PdfBookletExporter extends BookletExporter
     
     public function __construct()
     {
-        if (!$this->isWkhtmltopdfInstalled()) {
-            throw new BookletExporterException('wkhtmltopdf tool is not installed'); 
+
+        $this->pdf = new Pdf();
+        $this->pdf->ignoreWarnings = true;
+
+        $ext = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
+        $creatorConfig = $ext->getConfig('wkhtmltopdf');
+
+        if(is_array($creatorConfig)){
+            $this->pdf->binary = trim($creatorConfig['binary']);
         }
-        $this->pdf = new Pdf;
+
+        if (!$this->isWkhtmltopdfInstalled()) {
+            throw new BookletExporterException('wkhtmltopdf tool is not installed');
+        }
+
     }
     
     /**
@@ -121,19 +133,27 @@ class PdfBookletExporter extends BookletExporter
     }
     
     /**
-     * @return whether wkhtmltopdf tool is installed
+     * @return boolean whether wkhtmltopdf tool is installed
      */
     private function isWkhtmltopdfInstalled()
+    {
+        return file_exists( $this->pdf->binary ) && is_executable( $this->pdf->binary );
+    }
+
+    /**
+     * @return string guessed path to bin wkhtmltopdf
+     */
+    static public function guessWhereWkhtmltopdfInstalled()
     {
         $whereIsCommand = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'where' : 'which';
 
         $process = proc_open(
-            "$whereIsCommand wkhtmltopdf", 
+            "$whereIsCommand wkhtmltopdf",
             array(
                 0 => array("pipe", "r"), //STDIN
                 1 => array("pipe", "w"), //STDOUT
                 2 => array("pipe", "w"), //STDERR
-            ), 
+            ),
             $pipes
         );
         if ($process !== false) {
@@ -142,8 +162,8 @@ class PdfBookletExporter extends BookletExporter
             fclose($pipes[1]);
             fclose($pipes[2]);
             proc_close($process);
-            return $stdout != '';
+            return $stdout;
         }
-        return false;
+        return '';
     }
 }
