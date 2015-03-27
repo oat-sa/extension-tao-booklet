@@ -84,6 +84,12 @@ class Booklet extends tao_actions_SaSModule
 
         $myForm = $myFormContainer->getForm();
 
+        $fileResource = $instance->getOnePropertyValue(
+            new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
+        );
+
+        $myFormContainer->setAllowDownload( $fileResource instanceof core_kernel_classes_Resource );
+
         if ($myForm->isSubmited() && $myForm->isValid()) {
             $values = $myForm->getValues();
             // save properties
@@ -100,7 +106,7 @@ class Booklet extends tao_actions_SaSModule
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('Booklet/assignGroup.tpl'));
         $tree->setData('anonymousClass', BookletClassService::ANONYMOUS_URI);
-        $tree->setData('anonymous', 'http://www.tao.lu/Ontologies/generis.rdf#True');
+        $tree->setData('anonymous', INSTANCE_BOOLEAN_TRUE);
 
         $this->setData('groupTree', $tree->render());
 
@@ -147,13 +153,16 @@ class Booklet extends tao_actions_SaSModule
     {
         $instance = $this->getCurrentInstance();
 
-        $contentUri = $instance->getOnePropertyValue(
+        $fileResource = $instance->getOnePropertyValue(
             new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
         );
-        $file       = new core_kernel_versioning_File( $contentUri );
 
-        header( 'Content-Disposition: attachment; filename="' . basename( $file->getAbsolutePath() ) . '"' );
-        \tao_helpers_Http::returnFile( $file->getAbsolutePath() );
+        if ($fileResource instanceof core_kernel_classes_Resource) {
+            $file = new core_kernel_versioning_File( $fileResource );
+
+            header( 'Content-Disposition: attachment; filename="' . basename( $file->getAbsolutePath() ) . '"' );
+            \tao_helpers_Http::returnFile( $file->getAbsolutePath() );
+        }
 
     }
 

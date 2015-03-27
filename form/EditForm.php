@@ -36,6 +36,19 @@ use tao_helpers_Uri;
 class EditForm extends \tao_actions_form_Instance
 {
 
+    /**
+     * Disable download button
+     * @param boolean $allowDownload
+     */
+    public function setAllowDownload( $allowDownload )
+    {
+        $downloadBtn = $this->getForm()->getAction('Download');
+        if ( ! $allowDownload ) {
+            $downloadBtn->setAttribute( 'disabled', 'disabled' );
+        }
+    }
+
+
     protected function initElements()
     {
         parent::initElements();

@@ -19,8 +19,11 @@
 
 namespace oat\taoBooklet\model;
 
+use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
 use core_kernel_fileSystem_FileSystem;
 use common_ext_ExtensionsManager;
+use core_kernel_versioning_File;
 
 class StorageService
 {
@@ -29,7 +32,7 @@ class StorageService
     /**
      * @param string $filePath
      *
-     * @return \core_kernel_versioning_File
+     * @return core_kernel_versioning_File
      */
     static public function storeFile( $filePath )
     {
@@ -39,16 +42,17 @@ class StorageService
     /**
      * Removes file from FS attached to instance
      *
-     * @param $instance \core_kernel_classes_Resource
+     * @param $instance core_kernel_classes_Resource
      */
-    static public function removeAttachedFile( \core_kernel_classes_Resource $instance )
+    static public function removeAttachedFile( core_kernel_classes_Resource $instance )
     {
         if ( ! is_null( $instance )) {
             $contentUri = $instance->getOnePropertyValue(
-                new \core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
+                new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
             );
-            if ($contentUri) {
-                $file = new \core_kernel_versioning_File( $contentUri );
+
+            if ($contentUri instanceof core_kernel_classes_Resource) {
+                $file = new core_kernel_versioning_File( $contentUri );
                 $file->delete();
             }
         }

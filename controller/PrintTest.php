@@ -39,8 +39,8 @@ class PrintTest extends tao_actions_CommonModule
         $uri  = $this->getRequestParameter( 'uri' );
         $test = new core_kernel_classes_Resource( $uri );
         if ($test->hasType( new core_kernel_classes_Class( TAO_TEST_CLASS ) )) {
-            echo '<h1>TEST</h1>';
-            echo "<i>{$test->getLabel()}</i>";
+            $this->setData( 'label', $test->getLabel() );
+            $this->setView( 'Print/render.tpl' );
         } else {
             echo 'Invalid uri provided';
         }

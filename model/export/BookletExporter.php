@@ -36,15 +36,15 @@ abstract class BookletExporter
      * Export booklet content
      */
     abstract function export();
-    
+
     /**
      * Set booklet content
-     * 
-     * @param mixed $content booklet contnet
+     *
+     * @param mixed $content booklet content
      */
     public function setContent($content) 
     {
-        return $this->_content = $content;
+        $this->_content = $content;
     }
     
     /**
