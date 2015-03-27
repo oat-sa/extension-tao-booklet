@@ -30,6 +30,7 @@ namespace oat\taoBooklet\form;
  */
 namespace oat\taoBooklet\form;
 
+use oat\taoBooklet\model\BookletClassService;
 use tao_helpers_form_FormFactory;
 use tao_helpers_Uri;
 
@@ -54,7 +55,7 @@ class EditForm extends \tao_actions_form_Instance
         parent::initElements();
 
         /** @var \tao_helpers_form_elements_xhtml_Combobox $originalTestElement */
-        $originalTestElement = $this->getForm()->getElement( tao_helpers_Uri::encode( TAO_TEST_CLASS ) );
+        $originalTestElement = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::TEST_URI ) );
         $options             = $originalTestElement->getOptions();
 
         $formatElt = tao_helpers_form_FormFactory::getElement( 'test', 'Readonly' );
@@ -66,7 +67,7 @@ class EditForm extends \tao_actions_form_Instance
         $downloadBtn->setIcon( 'icon-download' );
         $downloadBtn->addClass( 'btn-download btn-success small' );
 
-        $this->getForm()->removeElement( tao_helpers_Uri::encode( TAO_TEST_CLASS ) );
+        $this->getForm()->removeElement( tao_helpers_Uri::encode( BookletClassService::TEST_URI ) );
         $this->getForm()->setActions( array_merge( $this->form->getActions(), array( $downloadBtn ) ), 'bottom' );
         $this->getForm()->addElement( $formatElt );
 

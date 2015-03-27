@@ -28,7 +28,8 @@ use core_kernel_classes_Resource;
 class BookletClassService extends tao_models_classes_ClassService
 {
     const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
-    const GROUP_PROPERTY_URI = 'http://www.tao.lu/Ontologies/TAOGroup.rdf#Booklets';
+    const TEST_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
+    const GROUP_PROPERTY_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Groups';
     const ANONYMOUS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous';
 
     const PROPERTY_FILE_CONTENT = 'http://www.tao.lu/Ontologies/Booklet.rdf#BookletFile';

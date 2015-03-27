@@ -51,7 +51,7 @@ class WizardForm extends \tao_actions_form_Instance
         $formatElt->setValue(tao_helpers_Uri::encode( BookletClassService::ANONYMOUS_URI ));
         $this->getForm()->addElement($formatElt);
 
-        $testElement = $this->getForm()->getElement( tao_helpers_Uri::encode( TAO_TEST_CLASS ) );
+        $testElement = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::TEST_URI ) );
 
         if ( ! count( $testElement->getOptions() )) {
             throw new \taoSimpleDelivery_actions_form_NoTestsException();

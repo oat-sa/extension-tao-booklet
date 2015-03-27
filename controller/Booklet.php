@@ -102,7 +102,7 @@ class Booklet extends tao_actions_SaSModule
 
         // define the groups related to the current booklet
         $property = new core_kernel_classes_Property(BookletClassService::GROUP_PROPERTY_URI);
-        $tree = tao_helpers_form_GenerisTreeForm::buildReverseTree($instance, $property);
+        $tree = tao_helpers_form_GenerisTreeForm::buildTree($instance, $property);
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('Booklet/assignGroup.tpl'));
         $tree->setData('anonymousClass', BookletClassService::ANONYMOUS_URI);
@@ -194,7 +194,7 @@ class Booklet extends tao_actions_SaSModule
             if ($myForm->isValid() && $myForm->isSubmited()) {
 
                 $clazz    = new core_kernel_classes_Class( $this->getCurrentClass() );
-                $test     = new core_kernel_classes_Resource( $myForm->getValue( tao_helpers_Uri::encode(TAO_TEST_CLASS) ) );
+                $test     = new core_kernel_classes_Resource( $myForm->getValue( tao_helpers_Uri::encode(BookletClassService::TEST_URI) ) );
                 $report   = BookletGenerator::generate( $test, $clazz );
                 $instance = $report->getData();
 
