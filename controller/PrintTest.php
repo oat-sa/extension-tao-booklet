@@ -25,6 +25,8 @@ use \core_kernel_classes_Class;
 use \taoTests_models_classes_TestsService;
 use \tao_actions_CommonModule;
 use oat\taoItems\model\pack\Packer;
+use oat\taoQtiPrint\model\QtiTestPacker;
+use \common_cache_FileCache;
 
 /**
  *
@@ -32,6 +34,8 @@ use oat\taoItems\model\pack\Packer;
  */
 class PrintTest extends tao_actions_CommonModule
 {
+
+    const CACHE_PREFIX = 'printed-test-pack_';
 
     /**
      */
@@ -49,15 +53,37 @@ class PrintTest extends tao_actions_CommonModule
 
     public function render()
     {
-        $uri = $this->getRequestParameter('uri');
-        if($uri == null || empty($uri)){
-            //throw
-        }
 
-        $booklet = new core_kernel_classes_Resource($uri);
+
+        $force = $this->hasRequestParameter('force');
+        $cache = common_cache_FileCache::singleton();
+
+
+
+        //$uri = $this->getRequestParameter('uri');
+        //if($uri == null || empty($uri)){
+            ////throw
+        //}
+
+        //$booklet = new core_kernel_classes_Resource($uri);
+
 
         //get test from booklet
-        $testUri = 'http://bertao/tao.rdf#i14266945395348197';
+        $testUri = "http://bertao/tao.rdf#i142729250359635";
+        $test    = new core_kernel_classes_Resource($testUri);
+        $entry   = self::$CACHE_PREFIX . $test->getUri();
+
+        if($force || !$cache->has($entry)){
+
+            $packer  = new QtiTestPacker();
+
+            $testData = $packer->packTest($test);
+
+            $cache->put($entry, $testData);
+        } else {
+            $testData = $cache->get($entry);
+        }
+
         $test = new core_kernel_classes_Resource($testUri);
 
         $testData = $this->getTestData($test);
@@ -65,23 +91,5 @@ class PrintTest extends tao_actions_CommonModule
         $this->setData('client_config_url', $this->getClientConfigUrl());
         $this->setData('testData', $testData);
         $this->setView('PrintTest/render.tpl');
-    }
-
-    private function getTestData(core_kernel_classes_Resource $test)
-    {
-        $testData = array(
-            'items' => array()
-        );
-        $testService = taoTests_models_classes_TestsService::singleton();
-        $model       = $testService->getTestModel($test);
-        if ($model->getUri() != INSTANCE_TEST_MODEL_QTI) {
-            //throw
-        }
-
-        foreach($testService->getTestItems($test) as $item){
-            $packer = new Packer($item);
-            $testData['items'][] = $packer->pack();
-        }
-        return $testData;
     }
 }
