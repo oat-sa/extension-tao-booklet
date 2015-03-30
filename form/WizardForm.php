@@ -20,35 +20,20 @@
  */
 namespace oat\taoBooklet\form;
 
-use tao_helpers_form_FormContainer;
+use oat\taoBooklet\model\BookletClassService;
 use tao_helpers_form_FormFactory;
-use tao_helpers_form_xhtml_Form;
-use common_Exception;
-use core_kernel_classes_Class;
+use tao_helpers_Uri;
 
 /**
- * Create a form from a  resource of your ontology. 
+ * Create a form from a booklet
  * Each property will be a field, regarding it's widget.
  *
  * @access public
  * @author Bertrand Chevrier, <bertrand.chevrier@tudor.lu>
- * @package tao
- 
+ * @package taoBooklet
  */
-class WizardForm
-    extends tao_helpers_form_FormContainer
+class WizardForm extends \tao_actions_form_Instance
 {
-
-    protected function initForm()
-    {
-        $this->form = new tao_helpers_form_xhtml_Form('bookletWizard');
-        
-        $createElt = tao_helpers_form_FormFactory::getElement('create', 'Free');
-		$createElt->setValue('<button class="form-submitter btn-success small" type="button"><span class="icon-publish"></span> ' .__('Publish').'</button>');
-		$this->form->setActions(array(), 'top');
-		$this->form->setActions(array($createElt), 'bottom');
-
-    }
 
     /*
     * Short description of method initElements
@@ -59,30 +44,29 @@ class WizardForm
     */
     public function initElements()
     {
-        $class = $this->data['class'];
-        if(!$class instanceof core_kernel_classes_Class) {
-            throw new common_Exception('missing class in simple delivery creation form');
-        }
-        
-        $classUriElt = tao_helpers_form_FormFactory::getElement('classUri', 'Hidden');
-        $classUriElt->setValue($class->getUri());
-        $this->form->addElement($classUriElt);
-        
-        //create the element to select the import format
+        parent::initElements();
 
-        $formatElt = tao_helpers_form_FormFactory::getElement('test', 'Combobox');
-        $formatElt->setDescription(__('Select the test you want to publish'));
-        $testClass = new core_kernel_classes_Class(TAO_TEST_CLASS);
-        $options = array();
-        foreach ($testClass->getInstances(true) as $test) {
-            $options[$test->getUri()] = $test->getLabel();
-        } 
-        
-        if (empty($options)) {
-            throw new taoSimpleDelivery_actions_form_NoTestsException();
+
+        $formatElt = tao_helpers_form_FormFactory::getElement( 'anonymousClass', 'Hidden' );
+        $formatElt->setValue(tao_helpers_Uri::encode( BookletClassService::ANONYMOUS_URI ));
+        $this->getForm()->addElement($formatElt);
+
+        $testElement = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::TEST_URI ) );
+
+        if ( ! count( $testElement->getOptions() )) {
+            throw new \taoSimpleDelivery_actions_form_NoTestsException();
         }
-        $formatElt->setOptions($options);
-        $formatElt->addValidator(tao_helpers_form_FormFactory::getValidator('NotEmpty'));
-        $this->form->addElement($formatElt);
+
+        $anonymousElm = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::ANONYMOUS_URI ) );
+        $anonymousElm->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
+
+        $testElement->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
+
+        $createElt = \tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
+        $createElt->setValue( __( 'Generate' ) );
+        $createElt->setIcon( "icon-publish" );
+        $createElt->addClass( "form-submitter btn-success small" );
+
+        $this->form->setActions( array( $createElt ), 'bottom' );
     }
 }
