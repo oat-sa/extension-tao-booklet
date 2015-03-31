@@ -22,6 +22,7 @@
     "minimum-stability" : "dev",
     "require": {
         "oat-sa/oatbox-extension-installer": "dev-master",
+        "mikehaertl/phpwkhtmltopdf": "dev-master",
         "tecnick.com/tcpdf" : "dev-master"
     },
     "autoload" : {

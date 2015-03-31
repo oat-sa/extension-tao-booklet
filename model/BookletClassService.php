@@ -28,7 +28,10 @@ use core_kernel_classes_Resource;
 class BookletClassService extends tao_models_classes_ClassService
 {
     const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
-    
+    const TEST_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
+    const GROUP_PROPERTY_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Groups';
+    const ANONYMOUS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous';
+
     const PROPERTY_FILE_CONTENT = 'http://www.tao.lu/Ontologies/Booklet.rdf#BookletFile';
 
     /**
@@ -40,22 +43,51 @@ class BookletClassService extends tao_models_classes_ClassService
     {
         return new core_kernel_classes_Class(self::CLASS_URI);
     }
-    
+
     /**
-     * 
+     *
      * @param core_kernel_classes_Class $class
      * @param string $label
+     * @param string $test
      * @param string $tmpFile
+     *
      * @return core_kernel_classes_Resource
+     * @throws \Exception
      */
-    public function createBookletInstance(core_kernel_classes_Class $class, $label, $tmpFile) {
+    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile) {
         
         $fileResource = StorageService::storeFile($tmpFile);
-        
-        $instance = $class->createInstanceWithProperties(array(
-            RDFS_LABEL => $label,
-            self::PROPERTY_FILE_CONTENT => $fileResource
-        ));
+
+        if ($fileResource){
+            $instance = $class->createInstanceWithProperties(array(
+                RDFS_LABEL => $label,
+                self::PROPERTY_FILE_CONTENT => $fileResource,
+                INSTANCE_TEST_MODEL_QTI => $test
+            ));
+        }else{
+            throw new \Exception('No file found to attach');
+        }
+
+
         return $instance;
+    }
+
+    /**
+     * @param core_kernel_classes_Resource $instance
+     * @param $tmpFile
+     *
+     * @return \common_report_Report
+     */
+    public function updateInstanceAttachment($instance, $tmpFile){
+        $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
+
+        StorageService::removeAttachedFile( $instance );
+        $fileResource = StorageService::storeFile($tmpFile);
+        $property = new \core_kernel_classes_Property(self::PROPERTY_FILE_CONTENT);
+        $instance->editPropertyValues($property, $fileResource);
+
+        $report->setMessage(__('%s updated', $instance->getLabel()));
+        $report->setData($instance);
+        return $report;
     }
 }

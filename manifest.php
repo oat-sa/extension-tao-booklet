@@ -58,7 +58,7 @@ return array(
     ),
     'routes' => array(
         '/taoBooklet' => 'oat\\taoBooklet\\controller'
-    ),    
+    ),
 	'constants' => array(
 	    # views directory
 	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
