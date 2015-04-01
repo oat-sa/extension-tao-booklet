@@ -1,22 +1,22 @@
 <?php
-/**  
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *               
- * 
+ *
+ *
  */
 
 namespace oat\taoBooklet\model;
@@ -24,11 +24,12 @@ namespace oat\taoBooklet\model;
 use tao_models_classes_ClassService;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
+use core_kernel_classes_Property;
 
 class BookletClassService extends tao_models_classes_ClassService
 {
     const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
-    const TEST_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
+    const PROPERY_TEST = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
     const GROUP_PROPERTY_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Groups';
     const ANONYMOUS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous';
 
@@ -36,7 +37,7 @@ class BookletClassService extends tao_models_classes_ClassService
 
     /**
      * (non-PHPdoc)
-     * 
+     *
      * @see tao_models_classes_ClassService::getRootClass()
      */
     public function getRootClass()
@@ -55,14 +56,14 @@ class BookletClassService extends tao_models_classes_ClassService
      * @throws \Exception
      */
     public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile) {
-        
+
         $fileResource = StorageService::storeFile($tmpFile);
 
         if ($fileResource){
             $instance = $class->createInstanceWithProperties(array(
                 RDFS_LABEL => $label,
                 self::PROPERTY_FILE_CONTENT => $fileResource,
-                INSTANCE_TEST_MODEL_QTI => $test
+                self::PROPERY_TEST => $test
             ));
         }else{
             throw new \Exception('No file found to attach');
@@ -70,6 +71,16 @@ class BookletClassService extends tao_models_classes_ClassService
 
 
         return $instance;
+    }
+
+    /**
+     * Get the test linked to a booklet
+     * @param core_kernel_classes_Resource $booklet
+     * @return core_kernel_classes_Resource
+     */
+    public function getTest(core_kernel_classes_Resource $booklet)
+    {
+       return $booklet->getOnePropertyValue(new core_kernel_classes_Property(self::PROPERY_TEST));
     }
 
     /**

@@ -1,13 +1,5 @@
-<?php
-use oat\tao\helpers\Template;
-Template::inc('form_context.tpl', 'tao');
-?>
-<?= tao_helpers_Scriptloader::render() ?>
-<header class="section-header flex-container-full">
-    <h2><?=__('Preview')?></h2>
-</header>
-<div class="main-container flex-container-main-form">
-    <?=get_data('instance')->getLabel()?>
-</div>
+<div class="print-test flex-container-full">
 
-<?php Template::inc('footer.tpl', 'tao'); ?>
+    <iframe class="test-content" src="<?=get_data('renderUrl')?>" width="100%" height="100%" style="min-height: 600px;"></iframe>
+
+</div>

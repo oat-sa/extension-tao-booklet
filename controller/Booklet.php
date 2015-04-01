@@ -116,8 +116,15 @@ class Booklet extends tao_actions_SaSModule
     }
 
     public function preview(){
-        $instance        = $this->getCurrentInstance();
-        $this->setData( 'instance', $instance );
+        $instance = $this->getCurrentInstance();
+        $test     = $this->getClassService()->getTest( $instance );
+
+        if(is_null($test)){
+            throw new \common_Exception('No test linked to the booklet');
+        }
+        $url = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri() ) );
+
+        $this->setData( 'renderUrl', $url);
         $this->setView( 'Booklet/preview.tpl');
     }
 

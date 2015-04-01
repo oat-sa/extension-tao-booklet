@@ -7,7 +7,7 @@ use oat\tao\helpers\Template;
     <script>
         (function(){
             var clientConfigUrl = <?= json_encode(get_data('client_config_url')) ?> ;
-            var testData     =  <?= json_encode(get_data('testData')) ?>;
+            var testData     =  <?= get_data('testData') ?>;
             require([clientConfigUrl], function(){
                 require(['taoBooklet/controller/printtest/render'], function(controller){
                     controller.start(testData);

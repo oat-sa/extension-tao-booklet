@@ -27,71 +27,48 @@
  */
 namespace oat\taoBooklet\controller;
 
-use core_kernel_classes_Class;
-use core_kernel_classes_Resource;
-use tao_actions_CommonModule;
+use \core_kernel_classes_Class;
+use \core_kernel_classes_Resource;
+use \tao_actions_CommonModule;
+use \taoTests_models_classes_TestsService;
+use \common_cache_FileCache;
+use \Exception;
+use oat\taoBooklet\model\BookletClassService;
+use oat\taoQtiPrint\model\QtiTestPacker;
 
 class PrintTest extends tao_actions_CommonModule
 {
     const CACHE_PREFIX = 'printed-test-pack_';
 
-    /**
-     */
-    public function index()
-    {
-        $uri = $this->getRequestParameter('uri');
-        if($uri == null || empty($uri)){
-            //throw
-        }
-
-        $this->setData('uri', $uri);
-        $this->setView('PrintTest/index.tpl');
-    }
-
     public function render()
     {
-        $uri  = $this->getRequestParameter( 'uri' );
-        $test = new core_kernel_classes_Resource( $uri );
-        if ($test->hasType( new core_kernel_classes_Class( TAO_TEST_CLASS ) )) {
-            $this->setData( 'label', $test->getLabel() );
-            $this->setView( 'Print/render.tpl' );
-        } else {
-            echo 'Invalid uri provided';
+        //session_write_close();
+
+        $testService    = taoTests_models_classes_TestsService::singleton();
+        $cache          = common_cache_FileCache::singleton();
+
+        $force          = $this->hasRequestParameter('force');
+        $test           = new core_kernel_classes_Resource($this->getRequestParameter('uri'));
+
+        $model          = $testService->getTestModel($test);
+        if ($model->getUri() != INSTANCE_TEST_MODEL_QTI) {
+            throw new Exception('Not a QTI test');
         }
 
-        ///
-         $force = $this->hasRequestParameter('force');
-        $cache = common_cache_FileCache::singleton();
-
-
-
-        //$uri = $this->getRequestParameter('uri');
-        //if($uri == null || empty($uri)){
-            ////throw
-        //}
-
-        //$booklet = new core_kernel_classes_Resource($uri);
-
-
-        //get test from booklet
-        $testUri = "http://bertao/tao.rdf#i142729250359635";
-        $test    = new core_kernel_classes_Resource($testUri);
-        $entry   = self::$CACHE_PREFIX . $test->getUri();
+        //we use the cache as the pack generation is heavy
+        $entry = self::CACHE_PREFIX . $test->getUri();
 
         if($force || !$cache->has($entry)){
 
-            $packer  = new QtiTestPacker();
+            //generate the pack
+            $packer   = new QtiTestPacker();
+            $testData = json_encode($packer->packTest($test));
 
-            $testData = $packer->packTest($test);
-
+            //put the pack in cache
             $cache->put($entry, $testData);
         } else {
             $testData = $cache->get($entry);
         }
-
-        $test = new core_kernel_classes_Resource($testUri);
-
-        $testData = $this->getTestData($test);
 
         $this->setData('client_config_url', $this->getClientConfigUrl());
         $this->setData('testData', $testData);
