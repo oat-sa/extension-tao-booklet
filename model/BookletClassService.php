@@ -29,9 +29,9 @@ use core_kernel_classes_Property;
 class BookletClassService extends tao_models_classes_ClassService
 {
     const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
-    const PROPERY_TEST = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
-    const GROUP_PROPERTY_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Groups';
-    const ANONYMOUS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous';
+    const PROPERTY_TEST = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
+    const PROPERTY_GROUP = 'http://www.tao.lu/Ontologies/Booklet.rdf#Groups';
+    const PROPERTY_ANONYMOUS = 'http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous';
 
     const PROPERTY_FILE_CONTENT = 'http://www.tao.lu/Ontologies/Booklet.rdf#BookletFile';
 
@@ -63,7 +63,7 @@ class BookletClassService extends tao_models_classes_ClassService
             $instance = $class->createInstanceWithProperties(array(
                 RDFS_LABEL => $label,
                 self::PROPERTY_FILE_CONTENT => $fileResource,
-                self::PROPERY_TEST => $test
+                self::PROPERTY_TEST => $test
             ));
         }else{
             throw new \Exception('No file found to attach');
@@ -80,7 +80,7 @@ class BookletClassService extends tao_models_classes_ClassService
      */
     public function getTest(core_kernel_classes_Resource $booklet)
     {
-       return $booklet->getOnePropertyValue(new core_kernel_classes_Property(self::PROPERY_TEST));
+       return $booklet->getOnePropertyValue(new core_kernel_classes_Property(self::PROPERTY_TEST));
     }
 
     /**

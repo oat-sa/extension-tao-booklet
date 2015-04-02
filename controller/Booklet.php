@@ -101,11 +101,11 @@ class Booklet extends tao_actions_SaSModule
         }
 
         // define the groups related to the current booklet
-        $property = new core_kernel_classes_Property(BookletClassService::GROUP_PROPERTY_URI);
+        $property = new core_kernel_classes_Property(BookletClassService::PROPERTY_GROUP);
         $tree = tao_helpers_form_GenerisTreeForm::buildTree($instance, $property);
         $tree->setTitle(__('Assigned to'));
         $tree->setTemplate(Template::getTemplate('Booklet/assignGroup.tpl'));
-        $tree->setData('anonymousClass', BookletClassService::ANONYMOUS_URI);
+        $tree->setData('anonymousClass', BookletClassService::PROPERTY_ANONYMOUS);
         $tree->setData('anonymous', INSTANCE_BOOLEAN_TRUE);
 
         $this->setData('groupTree', $tree->render());
@@ -135,15 +135,13 @@ class Booklet extends tao_actions_SaSModule
      */
     public function regenerate()
     {
-        $instance = $this->getCurrentInstance();
-
-        $testUri = $instance->getOnePropertyValue( new core_kernel_classes_Property( INSTANCE_TEST_MODEL_QTI ) );
-        $test    = new core_kernel_classes_Resource( $testUri );
+        $instance  = $this->getCurrentInstance();
+        $test      = $this->getClassService()->getTest($instance);
 
         $tmpFolder = tao_helpers_File::createTempDir();
         $tmpFile   = BookletGenerator::generatePdf( $test, $tmpFolder );
 
-        $report = $this->getClassService()->updateInstanceAttachment( $instance, $tmpFile );
+        $report    = $this->getClassService()->updateInstanceAttachment( $instance, $tmpFile );
 
         tao_helpers_File::delTree( $tmpFolder );
 
@@ -201,7 +199,7 @@ class Booklet extends tao_actions_SaSModule
             if ($myForm->isValid() && $myForm->isSubmited()) {
 
                 $clazz    = new core_kernel_classes_Class( $this->getCurrentClass() );
-                $test     = new core_kernel_classes_Resource( $myForm->getValue( tao_helpers_Uri::encode(BookletClassService::TEST_URI) ) );
+                $test     = new core_kernel_classes_Resource( $myForm->getValue( tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST) ) );
                 $report   = BookletGenerator::generate( $test, $clazz );
                 $instance = $report->getData();
 

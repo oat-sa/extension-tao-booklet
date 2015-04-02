@@ -84,10 +84,12 @@ class PdfBookletExporter extends BookletExporter
         $result = '';
         if (filter_var($content, FILTER_VALIDATE_URL)) { //url
 
-            //FIXME hacking the session creates a dead lock...
-            //$this->setOptions(array(
-                //'cookie' => array(session_name() => session_id())
-            //));
+            //if we call an external service with the same session, we need to close it before
+            session_write_close();
+
+            $this->setOptions(array(
+                'cookie' => array(session_name() => session_id())
+            ));
             $result = $content;
         } elseif (file_exists($content) && is_file($content)) {  //file path
             $result = file_get_contents($content);

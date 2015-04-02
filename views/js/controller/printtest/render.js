@@ -20,17 +20,15 @@
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
 define([
+    'jquery',
     'taoQtiPrint/runner/testRunner'
-], function(testRunner){
+], function($, testRunner){
     'use strict';
-
 
     /**
      * The renderer controller
      */
     var renderController = {
-
-
 
         /**
          * Controller entry point
@@ -39,21 +37,20 @@ define([
         start : function start(testData){
 
             //where to append the test content
-            var container = document.body;
+            var $mainContainer = $('<main>');
 
             testRunner(testData)
               .on('error', function(e){
-
-                    //TODO change this old school error management
                     console.error(e);
-                    container.innerHTML = '<span class="feedback-error">' + e + '</span>';
               })
               .on('ready', function(){
+
+                    $('body').append($mainContainer);
 
                     //this is made for the printer engine to known when the runner is ready
                     window.status = 'runner-ready';
               })
-              .render(container);
+              .render($mainContainer);
         }
     };
 

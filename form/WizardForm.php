@@ -48,16 +48,16 @@ class WizardForm extends \tao_actions_form_Instance
 
 
         $formatElt = tao_helpers_form_FormFactory::getElement( 'anonymousClass', 'Hidden' );
-        $formatElt->setValue(tao_helpers_Uri::encode( BookletClassService::ANONYMOUS_URI ));
+        $formatElt->setValue(tao_helpers_Uri::encode( BookletClassService::PROPERTY_ANONYMOUS ));
         $this->getForm()->addElement($formatElt);
 
-        $testElement = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::TEST_URI ) );
+        $testElement = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
 
         if ( ! count( $testElement->getOptions() )) {
             throw new \taoSimpleDelivery_actions_form_NoTestsException();
         }
 
-        $anonymousElm = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::ANONYMOUS_URI ) );
+        $anonymousElm = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_ANONYMOUS ) );
         $anonymousElm->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
 
         $testElement->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );

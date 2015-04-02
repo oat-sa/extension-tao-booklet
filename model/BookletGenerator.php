@@ -71,13 +71,14 @@ class BookletGenerator
      *
      * @param core_kernel_classes_Resource $test
      * @param string $targetFolder path
+     * @param boolean $force force the generation from new data
      *
      * @return string path to file
      */
     public static function generatePdf( core_kernel_classes_Resource $test, $targetFolder )
     {
         $tmpFile = $targetFolder . 'test.pdf';
-        $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri() ) );
+        $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri(), 'force' => true ) );
 
         self::getExporter()->setContent( $url );
         self::getExporter()->saveAs( $tmpFile );

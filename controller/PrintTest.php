@@ -42,7 +42,7 @@ class PrintTest extends tao_actions_CommonModule
 
     public function render()
     {
-        //session_write_close();
+        session_write_close();
 
         $testService    = taoTests_models_classes_TestsService::singleton();
         $cache          = common_cache_FileCache::singleton();
