@@ -57,15 +57,15 @@ class PrintTest extends tao_actions_CommonModule
 
         //we use the cache as the pack generation is heavy
         $entry = self::CACHE_PREFIX . $test->getUri();
-
-        if($force || !$cache->has($entry)){
+        if($force == true || !$cache->has($entry)){
 
             //generate the pack
             $packer   = new QtiTestPacker();
             $testData = json_encode($packer->packTest($test));
 
             //put the pack in cache
-            $cache->put($entry, $testData);
+            $cache->put($testData, $entry);
+
         } else {
             $testData = $cache->get($entry);
         }
