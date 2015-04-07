@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
  *
  */
 
@@ -27,6 +27,10 @@ use mikehaertl\wkhtmlto\Pdf;
  * PdfBookletExporter provides functionality to export booklet to
  * PDF format (directly send to end user or save into pdf file).
  *
+ * This implementation uses wkhtmltopdf to work (see {@link http://wkhtmltopdf.org/})
+ * and it's PHP wrapper ({@link https://github.com/mikehaertl/phpwkhtmltopdf}).
+ * Wkhtmltopdf needs to be installed on the server.
+ *
  * @author Aleh Hutnikau <hutnikau@1pt.com>
  */
 class PdfBookletExporter extends BookletExporter
@@ -36,40 +40,73 @@ class PdfBookletExporter extends BookletExporter
      */
     protected $pdf;
 
-    public function __construct()
+    /**
+     * Creates an new exporter
+     * @param string $title the document title
+     * @throws BookletExporterException when the binary isn't installed
+     */
+    public function __construct($title = '')
     {
 
-        $this->pdf = new Pdf(array(
+        //load the config
+        $ext = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
+        $config = $ext->getConfig('wkhtmltopdf');
+
+        //the default options
+        $options = array(
+
+            //as the page is built in JS, the engine is waiting for
+            //window.status to equal 'runner-ready' to capture the content
             'window-status' => 'runner-ready',
-            'load-error-handling' => 'ignore',
+
+            //enable browser media print
+            'print-media-type',
+
             'no-stop-slow-scripts',
-            'print-media-type'
-        ));
+            'load-error-handling' => 'ignore',
+
+            'dpi'   => 300,
+
+
+            //document title
+            'title'         => $title,
+            'header-right'  => $title,
+
+        );
+
+        //load the options defined in the config
+        if(is_array($config['options'])){
+            $options = array_merge($options, $config['options']);
+        }
+
+            print_r($options);
+
+        //instantiate the PDF wrapper
+        $this->pdf = new Pdf($options);
+
+        //ignore warnings, mainly SSL/TLS ones
         $this->pdf->ignoreWarnings = true;
 
-        $ext = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
-        $creatorConfig = $ext->getConfig('wkhtmltopdf');
-
-        if(is_array($creatorConfig)){
-            $this->pdf->binary = trim($creatorConfig['binary']);
+        //set the path of the wkhtml binary
+        if(is_array($config)){
+            $this->pdf->binary = trim($config['binary']);
         }
 
         if (!$this->isWkhtmltopdfInstalled()) {
-            throw new BookletExporterException('wkhtmltopdf tool is not installed');
+            throw new BookletExporterException('wkhtmltopdf binary is not installed on the server. Please contact your administrator.');
         }
-
     }
 
     /**
-     * Send PDF to client, either inline display or as download a file
+     * Set Pdf option(s)
      *
-     * @param string|null $filename the filename to send. If empty, the PDF is streamed inline.
-     * @return bool whether PDF was created successfully
+     * @param array $options list of global PDF options to set as name/value pairs
+     * @return PdfBookletExporter instance for method chaining
      */
-    public function export($filename = null)
+    public function setOptions($options = array())
     {
-        $this->pdf->addPage($this->_content);
-        return $this->pdf->send($filename);
+        $this->pdf->setOptions($options);
+        return $this;
     }
 
     /**
@@ -103,32 +140,44 @@ class PdfBookletExporter extends BookletExporter
         throw new BookletExporterException('Wrong content type');
     }
 
-    /**
-     * Set Pdf option(s)
-     *
-     * @param array $options list of global PDF options to set as name/value pairs
-     * @return PdfBookletExporter instance for method chaining
-     */
-    public function setOptions($options = array()) {
-        $this->pdf->setOptions($options);
-        return $this;
-    }
+
 
     /**
      * Save booklet into file
      *
      * @param string $path the file path
      * @return bool whether file was created successfully
+     * @throws BookletExporterException if something goes wrong during the generation
      */
     public function saveAs($path)
     {
         $this->pdf->addPage($this->_content);
         $result = $this->pdf->saveAs($path);
         if(!$result){
-            \common_Logger::e('PDF ERROR : '  . $this->pdf->getError());
+            throw new BookletExporterException('Unable to generate the PDF : '  . $this->pdf->getError());
         }
         return $result;
     }
+
+
+    /**
+     * Send PDF to client, either inline display or as download a file
+     *
+     * @param string|null $filename the filename to send. If empty, the PDF is streamed inline.
+     * @return bool whether PDF was created successfully
+     * @throws BookletExporterException if something goes wrong during the generation
+     */
+    public function export($filename = null)
+    {
+        $this->pdf->addPage($this->_content);
+
+        $result = $this->pdf->send($filename);
+        if(!$result){
+            throw new BookletExporterException('Unable to generate the PDF : '  . $this->pdf->getError());
+        }
+        return $result;
+    }
+
 
     /**
      * @return string the detailed error message. Empty string if none.
@@ -168,6 +217,9 @@ class PdfBookletExporter extends BookletExporter
             fclose($pipes[1]);
             fclose($pipes[2]);
             proc_close($process);
+            if($stderr){
+               \common_Logger::w('Got an error while trying to locate wkhtmltopdf : ' . $stderr);
+            }
             return $stdout;
         }
         return '';

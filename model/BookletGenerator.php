@@ -30,8 +30,6 @@ use tao_helpers_Uri;
 class BookletGenerator
 
 {
-    static $exporter;
-
     /**
      * Generate a new Booklet from a specific test
      * in a specific class and return a report
@@ -40,7 +38,7 @@ class BookletGenerator
      * @param core_kernel_classes_Class $class
      * @return common_report_Report
      */
-    static public function generate(core_kernel_classes_Resource $test, core_kernel_classes_Class $class)
+    public static function generate(core_kernel_classes_Resource $test, core_kernel_classes_Class $class)
     {
         $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
@@ -80,21 +78,10 @@ class BookletGenerator
         $tmpFile = $targetFolder . 'test.pdf';
         $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri(), 'force' => true ) );
 
-        self::getExporter()->setContent( $url );
-        self::getExporter()->saveAs( $tmpFile );
+        $exporter = new PdfBookletExporter($test->getLabel());
+        $exporter->setContent( $url );
+        $exporter->saveAs( $tmpFile );
 
         return $tmpFile;
-    }
-
-    /**
-     * @return PdfBookletExporter
-     */
-    protected static function getExporter()
-    {
-        if ( ! self::$exporter) {
-            self::$exporter = new PdfBookletExporter();
-        }
-
-        return self::$exporter;
     }
 }

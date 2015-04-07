@@ -64,7 +64,7 @@ class WizardForm extends \tao_actions_form_Instance
 
         $createElt = \tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
         $createElt->setValue( __( 'Generate' ) );
-        $createElt->setIcon( "icon-publish" );
+        $createElt->setIcon( "icon-play" );
         $createElt->addClass( "form-submitter btn-success small" );
 
         $this->form->setActions( array( $createElt ), 'bottom' );
