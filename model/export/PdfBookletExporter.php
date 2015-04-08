@@ -79,8 +79,6 @@ class PdfBookletExporter extends BookletExporter
             $options = array_merge($options, $config['options']);
         }
 
-            print_r($options);
-
         //instantiate the PDF wrapper
         $this->pdf = new Pdf($options);
 
