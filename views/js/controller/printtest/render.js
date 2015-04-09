@@ -44,7 +44,7 @@ define([
      */
     var showMessage = function showMessage(msg, type){
         type = type || 'info';
-        $('body').append('<div class="feedback-' + type + '"><pre>'  + msg + '</pre></div>');
+        $('body').append('<div class="feedback-' + type + '">'  + msg + '</div>');
     };
 
     /**
