@@ -1,4 +1,4 @@
-module.exports = function(grunt) { 
+module.exports = function(grunt) {
 
     'use strict';
 
@@ -15,16 +15,22 @@ module.exports = function(grunt) {
      * Remove bundled and bundling files
      */
     clean.taobookletbundle = [out];
-    
+
     /**
-     * Compile tao files into a bundle 
+     * Compile tao files into a bundle
      */
     requirejs.taobookletbundle = {
         options: {
             baseUrl : '../js',
             dir : out,
             mainConfigFile : './config/requirejs.build.js',
-            paths : { 'taoBooklet' : root + '/taoBooklet/views/js' },
+            paths : {
+                'taoBooklet' : root + '/taoBooklet/views/js',
+                'taoQtiPrint' : root + '/taoQtiPrint/views/js',
+                'taoQtiPrintCss' : root + '/taoQtiPrint/views/css',
+                'taoQtiItem' : root + '/taoQtiItem/views/js',
+                'taoItems' : root + '/taoItems/views/js'
+            },
             modules : [{
                 name: 'taoBooklet/controller/routes',
                 include : ext.getExtensionsControllers(['taoBooklet']),
