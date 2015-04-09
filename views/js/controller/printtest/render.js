@@ -115,7 +115,7 @@ define([
          * Controller entry point
          * @param {Object} testData - the packed test data required by the testRunner
          */
-        start : function start(testData){
+        start : function start(testData, options){
 
             //this is just in case something went wrong, but we weren't able to catch it.
             setTimeout(function(){
@@ -128,7 +128,7 @@ define([
             var $mainContainer = $('<main>');
 
             //instantiate the TestRunner
-            testRunner(testData)
+            testRunner(testData, options)
               .on('error', function(e){
                 console.error(e);
                 showMessage(e, 'error');
