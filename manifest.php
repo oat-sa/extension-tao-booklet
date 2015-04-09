@@ -36,7 +36,6 @@ return array(
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager', array('ext'=>'taoBooklet')),
-        //array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', array('ext'=>'taoBooklet','mod' => 'PrintTest'))
 	),
 	'models' => array(
 	   'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet'

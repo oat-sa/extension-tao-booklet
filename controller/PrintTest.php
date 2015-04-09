@@ -32,6 +32,7 @@ use \core_kernel_classes_Resource;
 use \tao_actions_CommonModule;
 use \taoTests_models_classes_TestsService;
 use \common_cache_FileCache;
+use \common_ext_ExtensionsManager;
 use \Exception;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoQtiPrint\model\QtiTestPacker;
@@ -43,6 +44,10 @@ class PrintTest extends tao_actions_CommonModule
     public function render()
     {
         session_write_close();
+
+        //load the rendering config
+        $ext = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
+        $config = $ext->getConfig('rendering');
 
         $testService    = taoTests_models_classes_TestsService::singleton();
         $cache          = common_cache_FileCache::singleton();
@@ -72,6 +77,7 @@ class PrintTest extends tao_actions_CommonModule
 
         $this->setData('client_config_url', $this->getClientConfigUrl());
         $this->setData('testData', $testData);
+        $this->setData('options', json_encode($config));
         $this->setView('PrintTest/render.tpl');
     }
 }
