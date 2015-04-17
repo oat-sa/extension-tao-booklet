@@ -1,0 +1,191 @@
+{
+  "test": {
+    "qti-type": "assessmentTest",
+    "identifier": "Test-1",
+    "title": "QTI Example Test",
+    "toolName": "tao",
+    "toolVersion": "2.7",
+    "outcomeDeclarations": [],
+    "timeLimits": {
+      "qti-type": "timeLimits",
+      "maxTime": 7810,
+      "allowLateSubmission": false
+    },
+    "testParts": [{
+      "qti-type": "testPart",
+      "identifier": "Introduction",
+      "navigationMode": 1,
+      "submissionMode": 0,
+      "preConditions": [],
+      "branchRules": [],
+      "itemSessionControl": {
+        "qti-type": "itemSessionControl",
+        "maxAttempts": 0,
+        "showFeedback": false,
+        "allowReview": true,
+        "showSolution": false,
+        "allowComment": false,
+        "validateResponses": false,
+        "allowSkipping": true
+      },
+      "assessmentSections": [{
+        "qti-type": "assessmentSection",
+        "title": "Section 1",
+        "visible": true,
+        "keepTogether": true,
+        "rubricBlocks": [],
+        "sectionParts": [{
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170932762238",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-1",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }],
+        "identifier": "assessmentSection-1",
+        "required": true,
+        "fixed": false,
+        "preConditions": [],
+        "branchRules": [],
+        "itemSessionControl": {
+          "qti-type": "itemSessionControl",
+          "maxAttempts": 1,
+          "showFeedback": false,
+          "allowReview": true,
+          "showSolution": false,
+          "allowComment": true,
+          "validateResponses": false,
+          "allowSkipping": true
+        }
+      }],
+      "testFeedbacks": []
+    }, {
+      "qti-type": "testPart",
+      "identifier": "QTIExamples",
+      "navigationMode": 0,
+      "submissionMode": 0,
+      "preConditions": [],
+      "branchRules": [],
+      "assessmentSections": [{
+        "qti-type": "assessmentSection",
+        "title": "Section 1",
+        "visible": false,
+        "keepTogether": true,
+        "rubricBlocks": [],
+        "sectionParts": [{
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170933236840",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-2",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }, {
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170934639642",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-3",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }, {
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i142617093522644",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-4",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }, {
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170936673946",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-5",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }, {
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170937601048",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-6",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }, {
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170937355050",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-7",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }, {
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170938336252",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-8",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }, {
+          "qti-type": "assessmentItemRef",
+          "href": "http:\/\/bertao\/tao.rdf#i1426170939192954",
+          "categories": [],
+          "variableMappings": {},
+          "weights": [],
+          "templateDefaults": {},
+          "identifier": "item-9",
+          "required": false,
+          "fixed": false,
+          "preConditions": [],
+          "branchRules": []
+        }],
+        "identifier": "assessmentSection-2",
+        "required": false,
+        "fixed": false,
+        "preConditions": [],
+        "branchRules": []
+      }],
+      "testFeedbacks": []
+    }],
+    "testFeedbacks": []
+  },
+  "items":
+
+
+}
+

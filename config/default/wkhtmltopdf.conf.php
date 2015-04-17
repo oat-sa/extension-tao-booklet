@@ -1,3 +1,4 @@
+<?php
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,22 +14,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
  *
  *
  */
+use oat\taoBooklet\model\export\PdfBookletExporter;
+$guessPath = PdfBookletExporter::guessWhereWkhtmltopdfInstalled();
+/**
+ * Configuration for wkhtmltopdf tool
+ */
+return array(
+    'binary'  => $guessPath ? $guessPath : 'wkhtmltopdf',
 
-//@see http://forge.taotesting.com/projects/tao/wiki/Front_js
-define(function () {
-    'use strict';
-
-    return {
-        'Booklet': {
-            'actions': {
-                'editBooklet' : 'controller/Booklet/editBooklet',
-                'wizard'      : 'controller/Booklet/wizard',
-                'preview'     : 'controller/Booklet/preview'
-            }
-        }
-    };
-});
+    'options' => array(
+        'footer-font-size' => 8,
+        'footer-font-name' => 'optima',
+        'footer-right'     => "[page] / [topage]",
+        'footer-left'      => "Built with TAO",
+        'footer-center'    => 'www.taotesting.com',
+        'header-font-size' => 8,
+        'header-font-name' => 'optima',
+    )
+);

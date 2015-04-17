@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE structures SYSTEM "../doc/structures.dtd">
+<!DOCTYPE structures SYSTEM "../../tao/doc/structures.dtd">
 <structures>
 	<structure id="taoBooklet_main" name="Booklets" level="15" group="main">
-		<description />
-		<icon id="icon-delivery" src=""/>
+        <description>Allow to generate publishable versions of deliveries </description>
+        <icon id="icon-delivery" src=""/>
 		<sections>
             <section id="manage_delivery_assembly" name="Booklet" url="/taoBooklet/Booklet/index">
                 <trees>
@@ -13,27 +13,37 @@
                           selectClass="booklet-class-properties"
                           selectInstance="booklet-properties"
                           moveInstance="booklet-move"
-                          delete="booklet-delete" 
+                          delete="booklet-delete"
                     />
                 </trees>
                 <actions>
-                	
+
                 	<action id="booklet-class-properties" name="Properties" url="/taoBooklet/Booklet/editClassProperties" group="content" context="class">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="booklet-properties" name="Properties"  url="/taoBooklet/Booklet/editInstance" group="content" context="instance">
+
+                    <action id="booklet-properties" name="Properties"  url="/taoBooklet/Booklet/editBooklet" group="content" context="instance">
                         <icon id="icon-edit"/>
-                    </action> 
+                    </action>
+
+                    <action id="booklet-preview" name="Preview"  url="/taoBooklet/Booklet/preview" group="content" context="instance">
+                        <icon id="icon-preview"/>
+                    </action>
+
+                    <action id="booklet-regenerate" name="Regenerate"  url="/taoBooklet/Booklet/regenerate" group="content" context="instance">
+                        <icon id="icon-reset"/>
+                    </action>
+
                     <action id="booklet-filter" name="Filter" context="*" group="search" binding="filter">
                         <icon id="icon-filter"/>
                     </action>
                     <action id="booklet-search" name="Search" url="/taoBooklet/Booklet/search" context="*" group="search" binding="launchFinder">
                         <icon id="icon-find"/>
-                    </action>  
-                    <action id="booklet-class-new" name="New class" url="/taoBooklet/Booklet/addSubClass" context="class" group="tree" binding="subClass">
+                    </action>
+                    <action id="booklet-class-new" name="New class" url="/taoBooklet/Booklet/addSubClass" context="class" group="content" binding="subClass">
                         <icon id="icon-folder-open"/>
                     </action>
-                    <action id="booklet-new" name="New booklet" url="taoBooklet/Booklet/wizard" context="class" group="tree">
+                    <action id="booklet-new" name="New booklet" url="taoBooklet/Booklet/wizard" context="class" group="content">
                         <icon id="icon-delivery"/>
                     </action>
                     <action id="booklet-delete" name="Delete" url="/taoBooklet/Booklet/delete" context="resource" group="tree" binding="removeNode">
