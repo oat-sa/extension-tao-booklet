@@ -36,6 +36,7 @@ use \common_ext_ExtensionsManager;
 use \Exception;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoQtiPrint\model\QtiTestPacker;
+use \tao_helpers_Uri;
 
 class PrintTest extends tao_actions_CommonModule
 {
@@ -53,7 +54,7 @@ class PrintTest extends tao_actions_CommonModule
         $cache          = common_cache_FileCache::singleton();
 
         $force          = $this->hasRequestParameter('force');
-        $test           = new core_kernel_classes_Resource($this->getRequestParameter('uri'));
+        $test           = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
 
         $model          = $testService->getTestModel($test);
         if ($model->getUri() != INSTANCE_TEST_MODEL_QTI) {

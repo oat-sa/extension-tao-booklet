@@ -76,7 +76,7 @@ class BookletGenerator
     public static function generatePdf( core_kernel_classes_Resource $test, $targetFolder )
     {
         $tmpFile = $targetFolder . 'test.pdf';
-        $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri(), 'force' => true ) );
+        $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => tao_helpers_Uri::encode($test->getUri()), 'force' => true ) );
 
         $exporter = new PdfBookletExporter($test->getLabel());
         $exporter->setContent( $url );
