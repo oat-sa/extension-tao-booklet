@@ -118,7 +118,7 @@ define([
         start : function start(testData, options){
 
             //this is just in case something went wrong, but we weren't able to catch it.
-            setTimeout(function(){
+            var timeout = setTimeout(function(){
                 showMessage("Something went wrong...", 'error');
                 ready();
             }, 45*1000);
@@ -141,6 +141,8 @@ define([
 
                 //hacky layout calculation
                 printLayoutHacking($mainContainer);
+
+                clearTimeout(timeout);
 
                 //we are done
                 ready();
