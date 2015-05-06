@@ -70,7 +70,6 @@ class PdfBookletExporter extends BookletExporter
 
             //document title
             'title'         => $title,
-            'header-right'  => $title,
 
         );
 
