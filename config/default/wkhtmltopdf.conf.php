@@ -27,12 +27,8 @@ return array(
     'binary'  => $guessPath ? $guessPath : 'wkhtmltopdf',
 
     'options' => array(
-        'footer-font-size' => 8,
-        'footer-font-name' => 'optima',
-        'footer-right'     => "[page] / [topage]",
-        'footer-left'      => "Built with TAO",
-        'footer-center'    => 'www.taotesting.com',
-        'header-font-size' => 8,
-        'header-font-name' => 'optima',
+        'footer-html'      => DIR_VIEWS.'templates/PrintTest/footer.html',
+        'margin-bottom'    => '10mm',
+        'margin-top'       => '10mm',
     )
 );
