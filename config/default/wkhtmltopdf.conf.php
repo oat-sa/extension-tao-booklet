@@ -23,11 +23,15 @@ $guessPath = PdfBookletExporter::guessWhereWkhtmltopdfInstalled();
 /**
  * Configuration for wkhtmltopdf tool
  */
+$extensionManager = common_ext_ExtensionsManager::singleton();
+$extension = $extensionManager->getExtensionById("taoBooklet");
+$dir = $extension->getConstant('DIR_VIEWS');
+
 return array(
     'binary'  => $guessPath ? $guessPath : 'wkhtmltopdf',
 
     'options' => array(
-        'footer-html'      => DIR_VIEWS.'templates/PrintTest/footer.html',
+        'footer-html'      => $dir.'templates/PrintTest/footer.html',
         'margin-bottom'    => '10mm',
         'margin-top'       => '10mm',
     )
