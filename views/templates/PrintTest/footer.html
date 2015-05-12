@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .line{
+            font-family: Optima, sans-serif;
+            font-size: 11px;
+            font-weight: 100;
+        }
+    </style>
+    <script>
+        function subst() {
+            var vars = {};
+
+            // explode the URL query string
+            var parameters = document.location.search.substring(1).split('&');
+
+            // loop through each query string segment and get keys/values
+            for (var i in parameters)
+            {
+                var z = parameters[i].split('=',2);
+                vars[z[0]] = decodeURIComponent(z[1]);
+            }
+
+            var line = document.getElementsByClassName('line');
+
+            var page = document.getElementById('page');
+            var topage = document.getElementById('topage');
+
+            page.innerHTML = vars['page'];
+            topage.innerHTML = vars['topage'];
+
+            // if current page equals total pages
+            if (vars['page'] == vars['frompage'])
+            {
+                for(var i in line){
+                    line[i].style.display="none";
+                }
+            }
+        }
+    </script>
+</head>
+<body onload="subst()">
+<table id="doc-footer">
+    <tr>
+        <th></th>
+        <th class="line" style="width: 25%; text-align: left;">Built with TAO</th>
+        <th class="line" style="width: 50%;">www.taotesting.com</th>
+        <th class="line" style="width:25%; text-align:right">
+            <span id="page"></span>/<span id="topage"></span>
+        </th>
+    </tr>
+</table>
+</body>
+</html>
