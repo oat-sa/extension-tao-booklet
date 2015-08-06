@@ -58,6 +58,7 @@ class PdfBookletExporter extends BookletExporter
             //as the page is built in JS, the engine is waiting for
             //window.status to equal 'runner-ready' to capture the content
             'window-status' => 'runner-ready',
+            'javascript-delay' => 12000,
 
             //enable browser media print
             'print-media-type',
