@@ -21,55 +21,51 @@
 
 return array(
     'name'        => 'taoBooklet',
-	'label'       => 'Test Booklets',
-	'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
+    'label'       => 'Test Booklets',
+    'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '0.1',
-	'author'      => 'Open Assessment Technologies SA',
-	'requires'    => array(
-	   'tao'          => '>=2.7.3',
-	   'taoQtiTest'   => '>=2.6',
-        'taoQtiPrint' => '>=0.1.0'
+    'version'     => '0.2.0',
+    'author'      => 'Open Assessment Technologies SA',
+    'requires'    => array(
+       'tao'          => '>=2.7.3',
+       'taoQtiTest'   => '>=2.6',
+       'taoQtiPrint' => '>=0.1.0'
     ),
-	// for compatibility
-	'dependencies' => array('tao','taoQtiTest'),
-	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager',
+    // for compatibility
+    'dependencies' => array('tao','taoQtiTest'),
+    'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager', array('ext'=>'taoBooklet')),
-	),
-	'models' => array(
-	   'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet'
-	),
-	'install' => array(
-    	'php' => array(
-    	    dirname(__FILE__).'/scripts/install/setupStorage.php',
-    	),
-		'rdf' => array(
-			dirname(__FILE__). '/scripts/install/booklet.rdf',
-		),
-		'checks' => array(
-		)
-	),
-    'uninstall' => array(
     ),
-    'autoload' => array (
-        'psr-4' => array(
-            'oat\\taoBooklet\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
+    'models' => array(
+       'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet'
+    ),
+    'install' => array(
+        'php' => array(
+            dirname(__FILE__).'/scripts/install/setupStorage.php',
+        ),
+        'rdf' => array(
+            dirname(__FILE__). '/scripts/install/booklet.rdf',
+        ),
+        'checks' => array(
         )
     ),
+    'uninstall' => array(
+    ),
+    'update' => 'oat\\taoBooklet\\scripts\\update\\Updater',
     'routes' => array(
         '/taoBooklet' => 'oat\\taoBooklet\\controller'
     ),
-	'constants' => array(
-	    # views directory
-	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
+    'constants' => array(
+        # views directory
+        "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
 
-		#BASE URL (usually the domain root)
-		'BASE_URL' => ROOT_URL.'taoBooklet/',
+        #BASE URL (usually the domain root)
+        'BASE_URL' => ROOT_URL.'taoBooklet/',
 
-	    #BASE WWW required by JS
-	    'BASE_WWW' => ROOT_URL.'taoBooklet/views/'
-	),
+        #BASE WWW required by JS
+        'BASE_WWW' => ROOT_URL.'taoBooklet/views/'
+    ),
     'extra' => array(
         'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
     )

@@ -13,12 +13,12 @@
                           selectClass="booklet-class-properties"
                           selectInstance="booklet-properties"
                           moveInstance="booklet-move"
-                          delete="booklet-delete"
+						  rootNode="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"
                     />
                 </trees>
                 <actions>
 
-                	<action id="booklet-class-properties" name="Properties" url="/taoBooklet/Booklet/editClassProperties" group="content" context="class">
+                	<action id="booklet-class-properties" name="Properties" url="/tao/PropertiesAuthoring/index" group="content" context="class">
                         <icon id="icon-edit"/>
                     </action>
 
@@ -30,7 +30,7 @@
                         <icon id="icon-preview"/>
                     </action>
 
-                    <action id="booklet-regenerate" name="Regenerate"  url="/taoBooklet/Booklet/regenerate" group="content" context="instance">
+                    <action id="booklet-regenerate" name="Regenerate"  url="/taoBooklet/Booklet/regenerate" group="tree" context="instance">
                         <icon id="icon-reset"/>
                     </action>
 
@@ -40,14 +40,14 @@
                     <action id="booklet-search" name="Search" url="/taoBooklet/Booklet/search" context="*" group="search" binding="launchFinder">
                         <icon id="icon-find"/>
                     </action>
-                    <action id="booklet-class-new" name="New class" url="/taoBooklet/Booklet/addSubClass" context="class" group="content" binding="subClass">
+                    <action id="booklet-class-new" name="New class" url="/taoBooklet/Booklet/addSubClass" context="class" group="tree" binding="subClass">
                         <icon id="icon-folder-open"/>
-                    </action>
-                    <action id="booklet-new" name="New booklet" url="taoBooklet/Booklet/wizard" context="class" group="content">
-                        <icon id="icon-delivery"/>
                     </action>
                     <action id="booklet-delete" name="Delete" url="/taoBooklet/Booklet/delete" context="resource" group="tree" binding="removeNode">
                         <icon id="icon-bin"/>
+                    </action>
+                    <action id="booklet-new" name="New booklet" url="taoBooklet/Booklet/wizard" context="class" group="tree">
+                        <icon id="icon-delivery"/>
                     </action>
                     <action id="booklet-move" name="Move" url="/taoBooklet/Booklet/moveInstance" context="instance" group="none" binding="moveNode">
                         <icon id="icon-move-item"/>
