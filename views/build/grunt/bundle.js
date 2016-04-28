@@ -34,7 +34,7 @@ module.exports = function(grunt) {
             modules : [{
                 name: 'taoBooklet/controller/routes',
                 include : ext.getExtensionsControllers(['taoBooklet']),
-                exclude : ['mathJax', 'mediaElement', 'css!taoQtiPrintCss/qti.css'].concat(libs)
+                exclude : ['mathJax', 'css!taoQtiPrintCss/qti.css'].concat(libs)
             }]
         }
     };
