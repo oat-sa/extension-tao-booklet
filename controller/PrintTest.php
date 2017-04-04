@@ -57,7 +57,7 @@ class PrintTest extends tao_actions_CommonModule
         $test           = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
 
         $model          = $testService->getTestModel($test);
-        if ($model->getUri() != INSTANCE_TEST_MODEL_QTI) {
+        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
             throw new Exception('Not a QTI test');
         }
 
