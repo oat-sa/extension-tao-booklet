@@ -67,6 +67,7 @@ class PrintTest extends tao_actions_CommonModule
 
             //generate the pack
             $packer   = new QtiTestPacker();
+            $this->getServiceManager()->propagate($packer);
             $testData = json_encode($packer->packTest($test));
 
             //put the pack in cache
