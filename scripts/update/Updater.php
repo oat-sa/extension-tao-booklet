@@ -35,5 +35,18 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         $this->skip('0.1.0','0.3.0');
 
+        if ($this->isVersion('0.3.0')) {
+
+            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
+            $config = $extension->getConfig('wkhtmltopdf');
+            $config['options'] = array_merge($config['options'], [
+                'page-size' => 'A4',
+                'orientation' => 'Portrait',
+            ]);
+
+            $extension->setConfig('wkhtmltopdf', $config);
+
+            $this->setVersion('0.4.0');
+        }
     }
 }
