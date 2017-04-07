@@ -20,28 +20,20 @@
  */
 namespace oat\taoBooklet\scripts\update;
 
-use oat\tao\scripts\update\OntologyUpdater;
-use oat\tao\model\entryPoint\EntryPointService;
-
 /**
- * 
+ *
  * @author Joel Bout <joel@taotesting.com>
  */
 class Updater extends \common_ext_ExtensionUpdater {
-    
+
     /**
-     * 
-     * @param string $currentVersion
+     *
+     * @param string $initialVersion
      * @return string $versionUpdatedTo
      */
     public function update($initialVersion) {
-        
-        $currentVersion = $initialVersion;
-        
-        // new menu structure
-        if ($currentVersion == '0.1') {
-            $currentVersion = '0.2.0';
-        }
-        return $currentVersion;
+
+        $this->skip('0.1.0','0.3.0');
+
     }
 }
