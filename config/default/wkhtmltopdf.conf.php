@@ -15,24 +15,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
- *
  */
+
 use oat\taoBooklet\model\export\PdfBookletExporter;
+use oat\tao\helpers\Template;
 $guessPath = PdfBookletExporter::guessWhereWkhtmltopdfInstalled();
+
 /**
  * Configuration for wkhtmltopdf tool
  */
-$extensionManager = common_ext_ExtensionsManager::singleton();
-$extension = $extensionManager->getExtensionById("taoBooklet");
-$dir = $extension->getConstant('DIR_VIEWS');
-
 return array(
     'binary'  => $guessPath ? $guessPath : 'wkhtmltopdf',
-
     'options' => array(
-        'footer-html'      => $dir.'templates/PrintTest/footer.html',
+        'footer-html'      => Template::getTemplate('PrintTest' . DIRECTORY_SEPARATOR . 'footer.html', 'taoBooklet'),
         'margin-bottom'    => '10mm',
         'margin-top'       => '10mm',
+
+        // the page size format: A4, Letter, etc.
+        'page-size' => 'A4',
+
+        // the page orientation: Portrait or Landscape
+        'orientation' => 'Portrait',
     )
 );
