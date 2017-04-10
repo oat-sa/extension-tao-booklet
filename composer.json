@@ -23,11 +23,11 @@
     "require": {
         "oat-sa/oatbox-extension-installer": "dev-master",
         "mikehaertl/phpwkhtmltopdf": "dev-master",
-        "tecnick.com/tcpdf" : "dev-master"
+        "tecnickcom/tcpdf" : "dev-master"
     },
     "autoload" : {
         "psr-4" : {
             "oat\\taoBooklet\\" : ""
         }
-    } 
+    }
 }

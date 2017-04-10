@@ -20,22 +20,23 @@
  */
 namespace oat\taoBooklet\controller;
 
+use core_kernel_classes_Class;
 use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
 use oat\tao\helpers\Template;
 use oat\taoBooklet\form\EditForm;
-use oat\taoBooklet\model\StorageService;
-use tao_actions_SaSModule;
+use oat\taoBooklet\form\WizardForm;
+use oat\taoBooklet\form\WizardTestForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletGenerator;
-use core_kernel_classes_Resource;
-use core_kernel_classes_Class;
-use oat\taoBooklet\form\WizardForm;
+use oat\taoBooklet\model\StorageService;
+use oat\taoDeliveryRdf\model\NoTestsException;
+use tao_actions_SaSModule;
 use tao_helpers_File;
 use tao_helpers_form_GenerisTreeForm;
 use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
-use taoSimpleDelivery_actions_form_NoTestsException;
 
 /**
  * Controller to managed assembled deliveries
@@ -219,9 +220,53 @@ class Booklet extends tao_actions_SaSModule
                 $this->setView( 'form.tpl', 'tao' );
             }
 
-        } catch ( taoSimpleDelivery_actions_form_NoTestsException $e ) {
+        } catch ( NoTestsException $e ) {
             $this->setView( 'Booklet/wizard.tpl' );
         }
     }
 
+    /**
+     * Creates new instance of booklet from a test instance
+     * @throws \tao_models_classes_dataBinding_GenerisFormDataBindingException
+     */
+    public function testBooklet()
+    {
+        $this->defaultData();
+
+        try {
+            $test = $this->getCurrentInstance();
+            $bookletClass = $this->getRootClass();
+            $formContainer = new WizardTestForm($bookletClass, $test);
+
+            $myForm = $formContainer->getForm();
+            if ($myForm->isValid() && $myForm->isSubmited()) {
+
+                $clazz = new core_kernel_classes_Class($bookletClass);
+                $report = BookletGenerator::generate($test, $clazz);
+                $instance = $report->getData();
+
+                // save properties from form
+                $values = $myForm->getValues();
+                $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+                $binder->bind($values);
+
+                $this->setData('message', __('Booklet created'));
+                $this->setData('reload', false);
+                $this->setData('selectNode', $test->getUri());
+
+                $this->returnReport($report, false);
+
+            } else {
+                $myForm->getElement(tao_helpers_Uri::encode(RDFS_LABEL))->setValue($test->getLabel());
+                $myForm->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_ANONYMOUS))->setValue(INSTANCE_BOOLEAN_FALSE);
+
+                $this->setData('myForm', $myForm->render());
+                $this->setData('formTitle', __('Create a new booklet'));
+                $this->setView('form.tpl', 'tao');
+            }
+
+        } catch (NoTestsException $e) {
+            $this->setView('Booklet/wizard.tpl');
+        }
+    }
 }
