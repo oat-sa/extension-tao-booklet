@@ -29,7 +29,7 @@ return array(
     'requires'    => array(
        'tao'          => '>=2.7.3',
        'taoQtiTest'   => '>=7.0.0',
-       'taoQtiPrint' => '>=0.1.0'
+       'taoQtiPrint' => '>=0.2.0'
     ),
     // for compatibility
     'dependencies' => array('tao','taoQtiTest'),
