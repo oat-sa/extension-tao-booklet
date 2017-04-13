@@ -19,6 +19,7 @@
 namespace oat\taoBooklet\form;
 
 use oat\taoBooklet\model\BookletClassService;
+use tao_helpers_form_FormFactory;
 use tao_helpers_Uri;
 
 /**
@@ -28,13 +29,25 @@ use tao_helpers_Uri;
  * @access public
  * @package taoBooklet
  */
-class WizardTestForm extends GenerateForm
+class GenerateForm extends \tao_actions_form_Instance
 {
 
     public function initElements()
     {
         parent::initElements();
 
-        $this->getForm()->removeElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
+        $formatElt = tao_helpers_form_FormFactory::getElement( 'anonymousClass', 'Hidden' );
+        $formatElt->setValue(tao_helpers_Uri::encode( BookletClassService::PROPERTY_ANONYMOUS ));
+        $this->getForm()->addElement($formatElt);
+
+        $anonymousElm = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_ANONYMOUS ) );
+        $anonymousElm->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
+
+        $createElt = \tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
+        $createElt->setValue( __( 'Generate' ) );
+        $createElt->setIcon( "icon-play" );
+        $createElt->addClass( "form-submitter btn-success small" );
+
+        $this->form->setActions( array( $createElt ), 'bottom' );
     }
 }
