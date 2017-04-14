@@ -43,7 +43,7 @@ class BookletGenerator
         $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
         $model = \taoTests_models_classes_TestsService::singleton()->getTestModel($test);
-        if ($model->getUri() != INSTANCE_TEST_MODEL_QTI) {
+        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
             $report->setType(common_report_Report::TYPE_ERROR);
             $report->setMessage(__('%s is not a QTI test', $test->getLabel()));
             return $report;
@@ -76,7 +76,7 @@ class BookletGenerator
     public static function generatePdf( core_kernel_classes_Resource $test, $targetFolder )
     {
         $tmpFile = $targetFolder . 'test.pdf';
-        $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri(), 'force' => true ) );
+        $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => tao_helpers_Uri::encode($test->getUri()), 'force' => true ) );
 
         $exporter = new PdfBookletExporter($test->getLabel());
         $exporter->setContent( $url );

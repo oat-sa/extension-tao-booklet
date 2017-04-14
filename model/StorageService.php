@@ -56,8 +56,6 @@ class StorageService
                 $file->delete();
             }
         }
-
-        \core_kernel_fileSystem_Cache::flushCache();
     }
 
     /**
