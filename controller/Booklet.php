@@ -30,6 +30,7 @@ use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardForm;
 use oat\taoBooklet\form\WizardTestForm;
 use oat\taoBooklet\model\BookletClassService;
+use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletGenerator;
 use oat\taoBooklet\model\StorageService;
 use oat\taoDeliveryRdf\model\NoTestsException;
@@ -276,6 +277,8 @@ class Booklet extends tao_actions_SaSModule
      */
     protected function renderForm($form)
     {
+        $this->getServiceManager()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
+
         $this->setData('myForm', $form->render());
         $this->setData('formTitle', __('Create a new booklet'));
         $this->setView('form.tpl', 'tao');

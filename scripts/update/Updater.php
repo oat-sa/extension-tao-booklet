@@ -20,6 +20,9 @@
  */
 namespace oat\taoBooklet\scripts\update;
 
+use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoBooklet\scripts\install\SetupBookletConfigService;
+
 /**
  *
  * @author Joel Bout <joel@taotesting.com>
@@ -47,6 +50,15 @@ class Updater extends \common_ext_ExtensionUpdater {
             $extension->setConfig('wkhtmltopdf', $config);
 
             $this->setVersion('0.4.0');
+        }
+
+        if ($this->isVersion('0.4.0')) {
+
+            OntologyUpdater::syncModels();
+
+            $this->runExtensionScript(SetupBookletConfigService::class);
+
+            $this->setVersion('0.5.0');
         }
     }
 }
