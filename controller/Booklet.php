@@ -24,7 +24,6 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
-use oat\tao\helpers\Template;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardForm;
@@ -36,7 +35,6 @@ use oat\taoBooklet\model\StorageService;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use tao_actions_SaSModule;
 use tao_helpers_File;
-use tao_helpers_form_GenerisTreeForm;
 use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
@@ -96,22 +94,12 @@ class Booklet extends tao_actions_SaSModule
         if ($myForm->isSubmited() && $myForm->isValid()) {
             $values = $myForm->getValues();
             // save properties
-            $binder   = new \tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
-            $instance = $binder->bind( $values );
+            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
+            $binder->bind( $values );
 
             $this->setData( 'message', __( 'Booklet saved' ) );
             $this->setData( 'reload', true );
         }
-
-        // define the groups related to the current booklet
-        $property = new core_kernel_classes_Property(BookletClassService::PROPERTY_GROUP);
-        $tree = tao_helpers_form_GenerisTreeForm::buildTree($instance, $property);
-        $tree->setTitle(__('Assigned to'));
-        $tree->setTemplate(Template::getTemplate('Booklet/assignGroup.tpl'));
-        $tree->setData('anonymousClass', BookletClassService::PROPERTY_ANONYMOUS);
-        $tree->setData('anonymous', INSTANCE_BOOLEAN_TRUE);
-
-        $this->setData('groupTree', $tree->render());
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
@@ -241,7 +229,6 @@ class Booklet extends tao_actions_SaSModule
                 $this->returnReport($report, false);
             } else {
                 $myForm->getElement(tao_helpers_Uri::encode(RDFS_LABEL))->setValue($test->getLabel());
-                $myForm->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_ANONYMOUS))->setValue(INSTANCE_BOOLEAN_FALSE);
 
                 $this->renderForm($myForm);
             }

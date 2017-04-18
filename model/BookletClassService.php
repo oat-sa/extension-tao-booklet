@@ -30,8 +30,6 @@ class BookletClassService extends tao_models_classes_ClassService
 {
     const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
     const PROPERTY_TEST = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
-    const PROPERTY_GROUP = 'http://www.tao.lu/Ontologies/Booklet.rdf#Groups';
-    const PROPERTY_ANONYMOUS = 'http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous';
     const PROPERTY_DESCRIPTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#Description';
     const PROPERTY_LAYOUT = 'http://www.tao.lu/Ontologies/Booklet.rdf#Layout';
     const PROPERTY_COVER_PAGE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPage';

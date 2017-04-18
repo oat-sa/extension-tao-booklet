@@ -36,13 +36,6 @@ class GenerateForm extends \tao_actions_form_Instance
     {
         parent::initElements();
 
-        $formatElt = tao_helpers_form_FormFactory::getElement( 'anonymousClass', 'Hidden' );
-        $formatElt->setValue(tao_helpers_Uri::encode( BookletClassService::PROPERTY_ANONYMOUS ));
-        $this->getForm()->addElement($formatElt);
-
-        $anonymousElm = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_ANONYMOUS ) );
-        $anonymousElm->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
-
         $createElt = \tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
         $createElt->setValue( __( 'Generate' ) );
         $createElt->setIcon( "icon-play" );

@@ -29,15 +29,6 @@
         <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#File"/>
         <tao:TAOGUIOrder><![CDATA[20]]></tao:TAOGUIOrder>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#Anonymous">
-        <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-        <rdfs:label xml:lang="en-US"><![CDATA[Anonymous]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Indicate whether it should be anonymous]]></rdfs:comment>
-        <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"/>
-        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#RadioBox"/>
-        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#Boolean"/>
-        <tao:TAOGUIOrder><![CDATA[30]]></tao:TAOGUIOrder>
-    </rdf:Description>
 
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#Test">
         <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
@@ -46,17 +37,7 @@
         <rdfs:label xml:lang="en-US"><![CDATA[Test]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Booklet's Test]]></rdfs:comment>
         <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#ComboBox"/>
-        <tao:TAOGUIOrder><![CDATA[32]]></tao:TAOGUIOrder>
-    </rdf:Description>
-
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#Groups">
-        <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-        <rdfs:label xml:lang="en-US"><![CDATA[Groups]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Group of the booklets]]></rdfs:comment>
-        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAOGroup.rdf#Group"/>
-        <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"/>
-        <generis:Multiple rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True" />
-        <tao:TAOGUIOrder><![CDATA[40]]></tao:TAOGUIOrder>
+        <tao:TAOGUIOrder><![CDATA[30]]></tao:TAOGUIOrder>
     </rdf:Description>
 
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#Layout">

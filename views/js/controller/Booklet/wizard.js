@@ -24,11 +24,6 @@ define(['jquery'], function ($) {
 
             var $form = $('.main-container ').find('form');
 
-            var $radio = $('[name="' + $form.find('#anonymousClass').val() + '"]');
-            if (!$radio.is(':checked')) {
-                $radio.filter(':first').attr('checked', true);
-            }
-
         }
     };
 });
