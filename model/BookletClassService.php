@@ -42,6 +42,7 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_LAYOUT_FOOTER = 'http://www.tao.lu/Ontologies/Booklet.rdf#LayoutFooter';
     const INSTANCE_LAYOUT_ONE_PAGE_SECTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#OnePageSection';
     const INSTANCE_LAYOUT_ONE_PAGE_ITEM = 'http://www.tao.lu/Ontologies/Booklet.rdf#OnePageItem';
+    const INSTANCE_LAYOUT_BLANK_PAGES = 'http://www.tao.lu/Ontologies/Booklet.rdf#BlankPages';
 
     const INSTANCE_COVER_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageTitle';
     const INSTANCE_COVER_PAGE_DESCRIPTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDescription';

@@ -79,6 +79,11 @@
         <rdfs:comment xml:lang="en-US"><![CDATA[Place each Item on a dedicated page]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#LayoutOptions"/>
     </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#BlankPages">
+        <rdfs:label xml:lang="en-US"><![CDATA[Add blank pages]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Add blank pages before sections]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#LayoutOptions"/>
+    </rdf:Description>
 
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#CoverPage">
         <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>

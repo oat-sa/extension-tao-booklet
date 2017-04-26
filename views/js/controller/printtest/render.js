@@ -24,9 +24,12 @@
  */
 define([
     'jquery',
+    'core/logger',
     'taoQtiPrint/runner/testRunner'
-], function($, testRunner){
+], function($, loggerFactory, testRunner){
     'use strict';
+
+    var logger = loggerFactory('printtest/render');
 
     /**
      * As the page can be called by an external tool and
@@ -117,6 +120,9 @@ define([
          */
         start : function start(testData, options){
 
+            var layoutOptions = options && options.layout || {};
+            console.log(options)
+
             //this is just in case something went wrong, but we weren't able to catch it.
             var timeout = setTimeout(function(){
                 showMessage("Something went wrong...", 'error');
@@ -127,27 +133,36 @@ define([
             //the content will be inserted in a detached element (to save time)
             var $mainContainer = $('<main>');
 
+            if (layoutOptions['one_page_item']) {
+                $('body').addClass('one-item-per-page');
+            }
+            if (layoutOptions['one_page_section']) {
+                $('body').addClass('one-section-per-page');
+            }
+
             //instantiate the TestRunner
             testRunner(testData, options)
-              .on('error', function(e){
-                console.error(e);
-                showMessage(e, 'error');
-                ready();
-              })
-              .on('ready', function(){
+                .on('error', function (e) {
+                    logger.error(e);
+                    showMessage(e, 'error');
+                    ready();
+                })
+                .on('ready', function () {
 
-                //we attach the container to the DOM
-                $('body').append($mainContainer);
+                    //we attach the container to the DOM
+                    $('body').append($mainContainer);
 
-                //hacky layout calculation
-                printLayoutHacking($mainContainer);
+                    //hack layout calculation
+                    if (layoutOptions['add_blank_pages']) {
+                        printLayoutHacking($mainContainer);
+                    }
 
-                clearTimeout(timeout);
+                    clearTimeout(timeout);
 
-                //we are done
-                ready();
-              })
-              .render($mainContainer);
+                    //we are done
+                    ready();
+                })
+                .render($mainContainer);
         }
     };
 
