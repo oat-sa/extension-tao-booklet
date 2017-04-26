@@ -41,7 +41,6 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_ONE_PAGE_ITEM = 'one_page_item';
     const CONFIG_ONE_PAGE_SECTION = 'one_page_section';
     const CONFIG_TITLE = 'title';
-    const CONFIG_SECTION = 'section';
     const CONFIG_DESCRIPTION = 'description';
     const CONFIG_DATE = 'date';
     const CONFIG_LOGO = 'logo';
@@ -74,16 +73,11 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_COVER_PAGE_LOGO => self::CONFIG_LOGO,
         BookletClassService::INSTANCE_COVER_PAGE_QRCODE => self::CONFIG_QRCODE,
 
-        BookletClassService::INSTANCE_HEADER_LOGO => self::CONFIG_LOGO,
-        BookletClassService::INSTANCE_HEADER_TITLE => self::CONFIG_TITLE,
-        BookletClassService::INSTANCE_HEADER_SECTION => self::CONFIG_SECTION,
-        BookletClassService::INSTANCE_HEADER_PAGE_NUMBER => self::CONFIG_PAGE_NUMBER,
-
-        BookletClassService::INSTANCE_FOOTER_MENTION => self::CONFIG_MENTION,
-        BookletClassService::INSTANCE_FOOTER_LINK => self::CONFIG_LINK,
-        BookletClassService::INSTANCE_FOOTER_TITLE => self::CONFIG_TITLE,
-        BookletClassService::INSTANCE_FOOTER_SECTION => self::CONFIG_SECTION,
-        BookletClassService::INSTANCE_FOOTER_PAGE_NUMBER => self::CONFIG_PAGE_NUMBER,
+        BookletClassService::INSTANCE_PAGE_LOGO => self::CONFIG_LOGO,
+        BookletClassService::INSTANCE_PAGE_TITLE => self::CONFIG_TITLE,
+        BookletClassService::INSTANCE_PAGE_MENTION => self::CONFIG_MENTION,
+        BookletClassService::INSTANCE_PAGE_LINK => self::CONFIG_LINK,
+        BookletClassService::INSTANCE_PAGE_NUMBER => self::CONFIG_PAGE_NUMBER,
     ];
 
     /**
@@ -112,18 +106,31 @@ class BookletConfigService extends ConfigurableService
     }
 
     /**
-     * Gets the config for a booklet instance
-     * @param core_kernel_classes_Resource $instance
+     * Gets the config for a booklet instance using either the instanc itself or an array of properties
+     * @param core_kernel_classes_Resource|array $instance
      * @return array
+     * @throws \common_exception_InvalidArgumentType
      */
-    public function getConfig(core_kernel_classes_Resource $instance)
+    public function getConfig($instance)
     {
-        $properties = $instance->getPropertiesValues([
-            BookletClassService::PROPERTY_LAYOUT,
-            BookletClassService::PROPERTY_COVER_PAGE,
-            BookletClassService::PROPERTY_PAGE_HEADER,
-            BookletClassService::PROPERTY_PAGE_FOOTER
-        ]);
+        if ($instance instanceof core_kernel_classes_Resource) {
+            $properties = $instance->getPropertiesValues([
+                BookletClassService::PROPERTY_LAYOUT,
+                BookletClassService::PROPERTY_COVER_PAGE,
+                BookletClassService::PROPERTY_PAGE_HEADER,
+                BookletClassService::PROPERTY_PAGE_FOOTER
+            ]);
+        } else if (is_array($instance)) {
+            $properties = $instance;
+        } else {
+            throw new \common_exception_InvalidArgumentType(
+                'BookletConfigService',
+                'getConfig',
+                0,
+                'core_kernel_classes_Resource',
+                $instance
+            );
+        }
 
         $config = [
             self::CONFIG_LAYOUT => [],
@@ -161,7 +168,11 @@ class BookletConfigService extends ConfigurableService
         $config = [];
 
         foreach($properties as $property) {
-            $uri = $property->getUri();
+            if ($property instanceof core_kernel_classes_Resource) {
+                $uri = $property->getUri();
+            } else {
+                $uri = $property;
+            }
             if (isset($this->configMap[$uri])) {
                 $config[$this->configMap[$uri]] = true;
             }

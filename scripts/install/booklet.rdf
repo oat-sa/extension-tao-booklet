@@ -125,74 +125,49 @@
         <rdfs:label xml:lang="en-US"><![CDATA[Page header]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Display a header line on each page]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"/>
-        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderOptions"/>
+        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
         <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#CheckBox"/>
         <tao:TAOGUIOrder><![CDATA[70]]></tao:TAOGUIOrder>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderOptions">
-        <rdfs:label xml:lang="en-US"><![CDATA[Header options]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Header options]]></rdfs:comment>
-        <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#SystemObject"/>
-    </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderLogo">
-        <rdfs:label xml:lang="en-US"><![CDATA[Logo]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the logo in the header of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderOptions"/>
-    </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderTitle">
-        <rdfs:label xml:lang="en-US"><![CDATA[Title]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the title in the header of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderOptions"/>
-    </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderSection">
-        <rdfs:label xml:lang="en-US"><![CDATA[Section]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the section in the header of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderOptions"/>
-    </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderPageNumber">
-        <rdfs:label xml:lang="en-US"><![CDATA[Page number]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the page number in the header of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#HeaderOptions"/>
-    </rdf:Description>
-
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageFooter">
         <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
         <rdfs:label xml:lang="en-US"><![CDATA[Page footer]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Display a footer line on each page]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"/>
-        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#FooterOptions"/>
+        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
         <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#CheckBox"/>
         <tao:TAOGUIOrder><![CDATA[80]]></tao:TAOGUIOrder>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#FooterOptions">
-        <rdfs:label xml:lang="en-US"><![CDATA[Footer options]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Footer options]]></rdfs:comment>
+
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions">
+        <rdfs:label xml:lang="en-US"><![CDATA[Page options]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Page options]]></rdfs:comment>
         <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#SystemObject"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#FooterMention">
-        <rdfs:label xml:lang="en-US"><![CDATA[Mention]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the mention in the footer of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#FooterOptions"/>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageLogo">
+        <rdfs:label xml:lang="en-US"><![CDATA[Logo]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display the logo]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#FooterLink">
-        <rdfs:label xml:lang="en-US"><![CDATA[Link]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display a link in the footer of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#FooterOptions"/>
-    </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#FooterTitle">
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle">
         <rdfs:label xml:lang="en-US"><![CDATA[Title]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the title in the footer of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#FooterOptions"/>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display the title of the test]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#FooterSection">
-        <rdfs:label xml:lang="en-US"><![CDATA[Section]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the section in the footer of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#FooterOptions"/>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageMention">
+        <rdfs:label xml:lang="en-US"><![CDATA[Mention]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display the mention]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#FooterPageNumber">
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageLink">
+        <rdfs:label xml:lang="en-US"><![CDATA[Link]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display a link]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber">
         <rdfs:label xml:lang="en-US"><![CDATA[Page number]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the page number in the footer of each page]]></rdfs:comment>
-        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#FooterOptions"/>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display the page number]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 
 </rdf:RDF>

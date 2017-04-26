@@ -49,15 +49,14 @@ class SetupBookletConfigService extends InstallAction
                 ],
 
                 BookletClassService::PROPERTY_PAGE_HEADER => [
-                    BookletClassService::INSTANCE_HEADER_LOGO,
-                    BookletClassService::INSTANCE_HEADER_TITLE,
-                    BookletClassService::INSTANCE_HEADER_SECTION,
+                    BookletClassService::INSTANCE_PAGE_LOGO,
+                    BookletClassService::INSTANCE_PAGE_TITLE,
                 ],
 
                 BookletClassService::PROPERTY_PAGE_FOOTER => [
-                    BookletClassService::INSTANCE_FOOTER_MENTION,
-                    BookletClassService::INSTANCE_FOOTER_LINK,
-                    BookletClassService::INSTANCE_FOOTER_PAGE_NUMBER,
+                    BookletClassService::INSTANCE_PAGE_MENTION,
+                    BookletClassService::INSTANCE_PAGE_LINK,
+                    BookletClassService::INSTANCE_PAGE_NUMBER,
                 ],
             ],
 
