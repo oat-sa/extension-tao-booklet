@@ -52,6 +52,7 @@ class SetupBookletConfigService extends InstallAction
                 BookletClassService::PROPERTY_PAGE_HEADER => [
                     BookletClassService::INSTANCE_PAGE_LOGO,
                     BookletClassService::INSTANCE_PAGE_TITLE,
+                    BookletClassService::INSTANCE_PAGE_DATE,
                 ],
 
                 BookletClassService::PROPERTY_PAGE_FOOTER => [
