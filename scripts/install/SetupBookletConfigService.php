@@ -24,6 +24,7 @@
 namespace oat\taoBooklet\scripts\install;
 
 use oat\oatbox\extension\InstallAction;
+use oat\tao\helpers\Template;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 
@@ -63,6 +64,8 @@ class SetupBookletConfigService extends InstallAction
             BookletConfigService::OPTION_MENTION => 'Built with TAO',
 
             BookletConfigService::OPTION_LINK => 'www.taotesting.com',
+
+            BookletConfigService::OPTION_LOGO => Template::img('logo_tao.png', 'tao'),
 
         ]);
 

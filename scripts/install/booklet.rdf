@@ -164,6 +164,11 @@
         <rdfs:comment xml:lang="en-US"><![CDATA[Display a link]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageDate">
+        <rdfs:label xml:lang="en-US"><![CDATA[Date]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display the print date]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
+    </rdf:Description>
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber">
         <rdfs:label xml:lang="en-US"><![CDATA[Page number]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Display the page number]]></rdfs:comment>

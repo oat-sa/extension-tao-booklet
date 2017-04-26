@@ -25,6 +25,7 @@ namespace oat\taoBooklet\model;
 
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\helpers\Layout;
 
 class BookletConfigService extends ConfigurableService
 {
@@ -33,6 +34,7 @@ class BookletConfigService extends ConfigurableService
     const OPTION_DEFAULT_VALUES = 'default_values';
     const OPTION_MENTION = 'mention';
     const OPTION_LINK = 'link';
+    const OPTION_LOGO = 'logo';
 
     const CONFIG_LAYOUT = 'layout';
     const CONFIG_COVER_PAGE = 'cover_page';
@@ -77,6 +79,7 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_PAGE_TITLE => self::CONFIG_TITLE,
         BookletClassService::INSTANCE_PAGE_MENTION => self::CONFIG_MENTION,
         BookletClassService::INSTANCE_PAGE_LINK => self::CONFIG_LINK,
+        BookletClassService::INSTANCE_PAGE_DATE => self::CONFIG_DATE,
         BookletClassService::INSTANCE_PAGE_NUMBER => self::CONFIG_PAGE_NUMBER,
     ];
 
@@ -139,6 +142,7 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_PAGE_FOOTER => [],
             self::CONFIG_MENTION => $this->getOption(self::OPTION_MENTION),
             self::CONFIG_LINK => $this->getOption(self::OPTION_LINK),
+            self::CONFIG_LOGO => $this->getOption(self::OPTION_LOGO),
         ];
 
 

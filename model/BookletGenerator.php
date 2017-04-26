@@ -36,9 +36,10 @@ class BookletGenerator
      *
      * @param core_kernel_classes_Resource $test
      * @param core_kernel_classes_Class $class
+     * @param array $config
      * @return common_report_Report
      */
-    public static function generate(core_kernel_classes_Resource $test, core_kernel_classes_Class $class)
+    public static function generate(core_kernel_classes_Resource $test, core_kernel_classes_Class $class, $config = [])
     {
         $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
@@ -50,7 +51,7 @@ class BookletGenerator
         }
 
         $tmpFolder = \tao_helpers_File::createTempDir();
-        $tmpFile = self::generatePdf( $test, $tmpFolder );
+        $tmpFile = self::generatePdf($test, $tmpFolder, $config);
 
         // generate tao instance
         $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test, $tmpFile);
@@ -69,18 +70,22 @@ class BookletGenerator
      *
      * @param core_kernel_classes_Resource $test
      * @param string $targetFolder path
-     * @param boolean $force force the generation from new data
+     * @param array $config
      *
      * @return string path to file
      */
-    public static function generatePdf( core_kernel_classes_Resource $test, $targetFolder )
+    public static function generatePdf(core_kernel_classes_Resource $test, $targetFolder, $config = [])
     {
         $tmpFile = $targetFolder . 'test.pdf';
-        $url     = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => tao_helpers_Uri::encode($test->getUri()), 'force' => true ) );
+        $url = tao_helpers_Uri::url('render', 'PrintTest', 'taoBooklet', array(
+            'uri' => tao_helpers_Uri::encode($test->getUri()),
+            'config' => base64_encode(json_encode($config)),
+            'force' => true
+        ));
 
-        $exporter = new PdfBookletExporter($test->getLabel());
-        $exporter->setContent( $url );
-        $exporter->saveAs( $tmpFile );
+        $exporter = new PdfBookletExporter($test->getLabel(), $config);
+        $exporter->setContent($url);
+        $exporter->saveAs($tmpFile);
 
         return $tmpFile;
     }

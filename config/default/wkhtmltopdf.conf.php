@@ -27,6 +27,7 @@ $guessPath = PdfBookletExporter::guessWhereWkhtmltopdfInstalled();
 return array(
     'binary'  => $guessPath ? $guessPath : 'wkhtmltopdf',
     'options' => array(
+        'header-html'      => Template::getTemplate('PrintTest' . DIRECTORY_SEPARATOR . 'header.html', 'taoBooklet'),
         'footer-html'      => Template::getTemplate('PrintTest' . DIRECTORY_SEPARATOR . 'footer.html', 'taoBooklet'),
         'margin-bottom'    => '10mm',
         'margin-top'       => '10mm',

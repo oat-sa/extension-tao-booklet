@@ -107,13 +107,18 @@ class Booklet extends tao_actions_SaSModule
     }
 
     public function preview(){
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
         $instance = $this->getCurrentInstance();
         $test     = $this->getClassService()->getTest( $instance );
+        $config   = $configService->getConfig($instance);
 
         if(is_null($test)){
             throw new \common_Exception('No test linked to the booklet');
         }
-        $url = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri() ) );
+        $url = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array(
+            'uri' => $test->getUri(),
+            'config' => base64_encode(json_encode($config)),
+        ) );
 
         $this->setData( 'renderUrl', $url);
         $this->setView( 'Booklet/preview.tpl');
@@ -129,8 +134,11 @@ class Booklet extends tao_actions_SaSModule
         $instance  = $this->getCurrentInstance();
         $test      = $this->getClassService()->getTest($instance);
 
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $config = $configService->getConfig($instance);
+
         $tmpFolder = tao_helpers_File::createTempDir();
-        $tmpFile   = BookletGenerator::generatePdf( $test, $tmpFolder );
+        $tmpFile   = BookletGenerator::generatePdf( $test, $tmpFolder, $config );
 
         $report    = $this->getClassService()->updateInstanceAttachment( $instance, $tmpFile );
 
@@ -246,12 +254,15 @@ class Booklet extends tao_actions_SaSModule
      */
     protected function generateFromForm($form, $test, $bookletClass)
     {
+        $values = $form->getValues();
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $config = $configService->getConfig($values);
+
         $clazz    = new core_kernel_classes_Class( $bookletClass );
-        $report = BookletGenerator::generate($test, $clazz);
+        $report = BookletGenerator::generate($test, $clazz, $config);
         $instance = $report->getData();
 
         // save properties from form
-        $values = $form->getValues();
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
         $binder->bind($values);
 

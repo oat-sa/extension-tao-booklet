@@ -20,6 +20,7 @@
  */
 namespace oat\taoBooklet\scripts\update;
 
+use oat\tao\helpers\Template;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
 
@@ -57,6 +58,14 @@ class Updater extends \common_ext_ExtensionUpdater {
             OntologyUpdater::syncModels();
 
             $this->runExtensionScript(SetupBookletConfigService::class);
+
+            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
+            $config = $extension->getConfig('wkhtmltopdf');
+            $config['options'] = array_merge($config['options'], [
+                'header-html' => Template::getTemplate('PrintTest' . DIRECTORY_SEPARATOR . 'header.html', 'taoBooklet'),
+            ]);
+
+            $extension->setConfig('wkhtmltopdf', $config);
 
             $this->setVersion('0.5.0');
         }

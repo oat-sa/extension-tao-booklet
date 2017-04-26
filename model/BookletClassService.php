@@ -53,6 +53,7 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle';
     const INSTANCE_PAGE_MENTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageMention';
     const INSTANCE_PAGE_LINK = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLink';
+    const INSTANCE_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageDate';
     const INSTANCE_PAGE_NUMBER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber';
 
     /**
