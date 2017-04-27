@@ -150,7 +150,11 @@ class BookletConfigService extends ConfigurableService
         ];
 
         if (isset($properties[BookletClassService::PROPERTY_DESCRIPTION])) {
-            $config[self::CONFIG_DESCRIPTION] = (string)current($properties[BookletClassService::PROPERTY_DESCRIPTION]);
+            $description = $properties[BookletClassService::PROPERTY_DESCRIPTION];
+            if (is_array($description)) {
+                $description = current($properties[BookletClassService::PROPERTY_DESCRIPTION]);
+            }
+            $config[self::CONFIG_DESCRIPTION] = (string)$description;
         }
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
             $config[self::CONFIG_LAYOUT] = $this->getConfigSet($properties[BookletClassService::PROPERTY_LAYOUT]);
