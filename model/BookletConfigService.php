@@ -120,6 +120,7 @@ class BookletConfigService extends ConfigurableService
     {
         if ($instance instanceof core_kernel_classes_Resource) {
             $properties = $instance->getPropertiesValues([
+                BookletClassService::PROPERTY_DESCRIPTION,
                 BookletClassService::PROPERTY_LAYOUT,
                 BookletClassService::PROPERTY_COVER_PAGE,
                 BookletClassService::PROPERTY_PAGE_HEADER,
@@ -145,9 +146,12 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_MENTION => $this->getOption(self::OPTION_MENTION),
             self::CONFIG_LINK => $this->getOption(self::OPTION_LINK),
             self::CONFIG_LOGO => $this->getOption(self::OPTION_LOGO),
+            self::CONFIG_DATE => \tao_helpers_Date::displayeDate(time()),
         ];
 
-
+        if (isset($properties[BookletClassService::PROPERTY_DESCRIPTION])) {
+            $config[self::CONFIG_DESCRIPTION] = (string)current($properties[BookletClassService::PROPERTY_DESCRIPTION]);
+        }
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
             $config[self::CONFIG_LAYOUT] = $this->getConfigSet($properties[BookletClassService::PROPERTY_LAYOUT]);
         }
