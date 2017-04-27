@@ -21,6 +21,7 @@
 function subst(type) {
     var vars = extractVars();
     var config = getConfig();
+    var layoutConfig = config.layout || {};
     var lineConfig = config[type] || {};
     var cells = {};
 
@@ -61,7 +62,7 @@ function subst(type) {
         return '<span>' + content + '</span>';
     }
 
-    if (vars.page === vars.frompage) {
+    if (layoutConfig.cover_page && vars.page === vars.frompage) {
         document.getElementById('line').style.display = "none";
     } else {
         if (lineConfig.logo && config.logo) {
