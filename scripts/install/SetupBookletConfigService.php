@@ -66,7 +66,7 @@ class SetupBookletConfigService extends InstallAction
 
             BookletConfigService::OPTION_LINK => 'www.taotesting.com',
 
-            BookletConfigService::OPTION_LOGO => Template::img('logo_tao.png', 'tao'),
+            BookletConfigService::OPTION_LOGO => Template::img('tao_logo_big.png', 'tao'),
 
         ]);
 
