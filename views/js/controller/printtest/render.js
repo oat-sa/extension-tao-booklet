@@ -121,7 +121,6 @@ define([
         start : function start(testData, options){
 
             var layoutOptions = options && options.layout || {};
-            console.log(options)
 
             //this is just in case something went wrong, but we weren't able to catch it.
             var timeout = setTimeout(function(){
