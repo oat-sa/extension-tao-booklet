@@ -120,7 +120,7 @@
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageOptions"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageQRCode">
-        <rdfs:label xml:lang="en-US"><![CDATA[QR Code]]></rdfs:label>
+        <rdfs:label xml:lang="en-US"><![CDATA[QR Code (booklet URL)]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Display the QR-code on the cover page]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageOptions"/>
     </rdf:Description>
