@@ -24,12 +24,12 @@ return array(
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '1.0.0',
+    'version'     => '1.1.0',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => array(
        'tao'          => '>=9.0.0',
        'taoQtiTest'   => '>=7.0.0',
-       'taoQtiPrint' => '>=0.2.0'
+       'taoQtiPrint' => '>=1.1.0'
     ),
     // for compatibility
     'dependencies' => array('tao','taoQtiTest'),
@@ -43,6 +43,7 @@ return array(
     'install' => array(
         'php' => array(
             dirname(__FILE__).'/scripts/install/setupStorage.php',
+            \oat\taoBooklet\scripts\install\SetupBookletConfigService::class
         ),
         'rdf' => array(
             dirname(__FILE__). '/scripts/install/booklet.rdf',

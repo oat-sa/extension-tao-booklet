@@ -16,52 +16,8 @@
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-define(['jquery', 'lodash', 'module', 'helpers', 'generis.tree.select', 'layout/section'], function ($, _, module, helpers, GenerisTreeSelectClass, section) {
+define(['jquery', 'lodash', 'module', 'util/url'], function ($, _, module, urlHelper) {
     'use strict';
-
-    /**
-     * Builds group tree inside target container
-     * @param {jQueryElement} $container
-     */
-    function buildGroupsTree($container) {
-
-        var treeOptions = $container.data();
-
-        var toggleTree = function(val) {
-            $container.toggle(val !== treeOptions.anonymous);
-        };
-
-        var $radio = $('[name="' + treeOptions.anonymousClass + '"]');
-
-        toggleTree($radio.filter(':checked').val());
-
-        $radio.on('change', function (e) {
-            toggleTree($(e.target).val());
-        });
-
-        new GenerisTreeSelectClass('#' + treeOptions.actionId + '-tree', helpers._url('getData', 'GenerisTree', 'tao'), {
-            actionId: treeOptions.actionId,
-            saveUrl: treeOptions.saveUrl,
-            saveData: {
-                resourceUri: treeOptions.resourceUri,
-                propertyUri: treeOptions.propertyUri
-            },
-            checkedNodes: treeOptions.checkedNodes,
-            serverParameters: {
-                openNodes: treeOptions.openNodes,
-                rootNode: treeOptions.rootNode
-            },
-            saveCallback: function () {
-                section
-                    .current()
-                    .loadContentBlock(
-                    helpers._url('editBooklet', 'Booklet', 'taoBooklet'),
-                    {uri: treeOptions.resourceUri}
-                );
-            },
-            paginate: 10
-        });
-    }
 
     return {
         start: function () {
@@ -73,14 +29,12 @@ define(['jquery', 'lodash', 'module', 'helpers', 'generis.tree.select', 'layout/
                 e.preventDefault();
                 var $form = $(e.target).closest('form');
 
-                $downloader.attr('src', helpers._url('download', 'Booklet', 'taoBooklet', {
+                $downloader.attr('src', urlHelper.route('download', 'Booklet', 'taoBooklet', {
                     uri: $form.find('input[name="uri"]').val(),
                     classUri: $form.find('input[name="classUri"]').val(),
                     id: $form.find('input[name="id"]').val()
                 }));
             });
-
-            buildGroupsTree($('.group-container'));
         }
     };
 });

@@ -22,6 +22,7 @@ namespace oat\taoBooklet\model\export;
 
 use common_ext_ExtensionsManager;
 use mikehaertl\wkhtmlto\Pdf;
+use oat\taoBooklet\model\BookletConfigService;
 
 /**
  * PdfBookletExporter provides functionality to export booklet to
@@ -43,9 +44,10 @@ class PdfBookletExporter extends BookletExporter
     /**
      * Creates an new exporter
      * @param string $title the document title
+     * @param array $bookletConfig some additional config
      * @throws BookletExporterException when the binary isn't installed
      */
-    public function __construct($title = '')
+    public function __construct($title = '', $bookletConfig = [])
     {
 
         //load the config
@@ -77,6 +79,18 @@ class PdfBookletExporter extends BookletExporter
         //load the options defined in the config
         if(is_array($config['options'])){
             $options = array_merge($options, $config['options']);
+        }
+
+        $options['replace']['config'] = base64_encode(json_encode($bookletConfig));
+
+        if (isset($bookletConfig[BookletConfigService::CONFIG_LAYOUT])) {
+            $layoutConfig = $bookletConfig[BookletConfigService::CONFIG_LAYOUT];
+            if (empty($layoutConfig[BookletConfigService::CONFIG_PAGE_HEADER])) {
+                unset($options['header-html']);
+            }
+            if (empty($layoutConfig[BookletConfigService::CONFIG_PAGE_FOOTER])) {
+                unset($options['footer-html']);
+            }
         }
 
         //instantiate the PDF wrapper

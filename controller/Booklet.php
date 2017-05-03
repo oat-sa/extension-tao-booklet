@@ -24,17 +24,17 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
-use oat\tao\helpers\Template;
 use oat\taoBooklet\form\EditForm;
+use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardForm;
 use oat\taoBooklet\form\WizardTestForm;
 use oat\taoBooklet\model\BookletClassService;
+use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletGenerator;
 use oat\taoBooklet\model\StorageService;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use tao_actions_SaSModule;
 use tao_helpers_File;
-use tao_helpers_form_GenerisTreeForm;
 use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
@@ -94,22 +94,12 @@ class Booklet extends tao_actions_SaSModule
         if ($myForm->isSubmited() && $myForm->isValid()) {
             $values = $myForm->getValues();
             // save properties
-            $binder   = new \tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
-            $instance = $binder->bind( $values );
+            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
+            $binder->bind( $values );
 
             $this->setData( 'message', __( 'Booklet saved' ) );
             $this->setData( 'reload', true );
         }
-
-        // define the groups related to the current booklet
-        $property = new core_kernel_classes_Property(BookletClassService::PROPERTY_GROUP);
-        $tree = tao_helpers_form_GenerisTreeForm::buildTree($instance, $property);
-        $tree->setTitle(__('Assigned to'));
-        $tree->setTemplate(Template::getTemplate('Booklet/assignGroup.tpl'));
-        $tree->setData('anonymousClass', BookletClassService::PROPERTY_ANONYMOUS);
-        $tree->setData('anonymous', INSTANCE_BOOLEAN_TRUE);
-
-        $this->setData('groupTree', $tree->render());
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
@@ -117,13 +107,18 @@ class Booklet extends tao_actions_SaSModule
     }
 
     public function preview(){
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
         $instance = $this->getCurrentInstance();
         $test     = $this->getClassService()->getTest( $instance );
+        $config   = $configService->getConfig($instance);
 
         if(is_null($test)){
             throw new \common_Exception('No test linked to the booklet');
         }
-        $url = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri() ) );
+        $url = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array(
+            'uri' => $test->getUri(),
+            'config' => base64_encode(json_encode($config)),
+        ) );
 
         $this->setData( 'renderUrl', $url);
         $this->setView( 'Booklet/preview.tpl');
@@ -139,8 +134,11 @@ class Booklet extends tao_actions_SaSModule
         $instance  = $this->getCurrentInstance();
         $test      = $this->getClassService()->getTest($instance);
 
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $config = $configService->getConfig($instance);
+
         $tmpFolder = tao_helpers_File::createTempDir();
-        $tmpFile   = BookletGenerator::generatePdf( $test, $tmpFolder );
+        $tmpFile   = BookletGenerator::generatePdf( $test, $tmpFolder, $config );
 
         $report    = $this->getClassService()->updateInstanceAttachment( $instance, $tmpFile );
 
@@ -194,30 +192,20 @@ class Booklet extends tao_actions_SaSModule
     {
         $this->defaultData();
         try {
-            $formContainer = new WizardForm( $this->getCurrentClass() );
+            $bookletClass = $this->getCurrentClass();
+            $formContainer = new WizardForm( $bookletClass );
             $myForm        = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
 
-                $clazz    = new core_kernel_classes_Class( $this->getCurrentClass() );
                 $test     = new core_kernel_classes_Resource( $myForm->getValue( tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST) ) );
-                $report   = BookletGenerator::generate( $test, $clazz );
-                $instance = $report->getData();
+                $report = $this->generateFromForm($myForm, $test, $bookletClass);
 
-                // save properties from form
-                $values   = $myForm->getValues();
-                $binder   = new tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
-                $instance = $binder->bind( $values );
-
-                $this->setData( 'message', __( 'Booklet created' ) );
                 $this->setData( 'reload', true );
 
                 $this->returnReport( $report );
-
             } else {
-                $this->setData( 'myForm', $myForm->render() );
-                $this->setData( 'formTitle', __( 'Create a new booklet' ) );
-                $this->setView( 'form.tpl', 'tao' );
+                $this->renderForm($myForm);
             }
 
         } catch ( NoTestsException $e ) {
@@ -237,36 +225,60 @@ class Booklet extends tao_actions_SaSModule
             $test = $this->getCurrentInstance();
             $bookletClass = $this->getRootClass();
             $formContainer = new WizardTestForm($bookletClass, $test);
-
             $myForm = $formContainer->getForm();
+
             if ($myForm->isValid() && $myForm->isSubmited()) {
 
-                $clazz = new core_kernel_classes_Class($bookletClass);
-                $report = BookletGenerator::generate($test, $clazz);
-                $instance = $report->getData();
+                $report = $this->generateFromForm($myForm, $test, $bookletClass);
 
-                // save properties from form
-                $values = $myForm->getValues();
-                $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-                $binder->bind($values);
-
-                $this->setData('message', __('Booklet created'));
                 $this->setData('reload', false);
                 $this->setData('selectNode', $test->getUri());
 
                 $this->returnReport($report, false);
-
             } else {
                 $myForm->getElement(tao_helpers_Uri::encode(RDFS_LABEL))->setValue($test->getLabel());
-                $myForm->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_ANONYMOUS))->setValue(INSTANCE_BOOLEAN_FALSE);
 
-                $this->setData('myForm', $myForm->render());
-                $this->setData('formTitle', __('Create a new booklet'));
-                $this->setView('form.tpl', 'tao');
+                $this->renderForm($myForm);
             }
 
         } catch (NoTestsException $e) {
             $this->setView('Booklet/wizard.tpl');
         }
+    }
+
+    /**
+     * @param GenerateForm $form
+     * @param core_kernel_classes_Resource $test
+     * @param core_kernel_classes_Class $bookletClass
+     * @return \common_report_Report
+     */
+    protected function generateFromForm($form, $test, $bookletClass)
+    {
+        $values = $form->getValues();
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $config = $configService->getConfig($values);
+
+        $clazz    = new core_kernel_classes_Class( $bookletClass );
+        $report = BookletGenerator::generate($test, $clazz, $config);
+        $instance = $report->getData();
+
+        // save properties from form
+        $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+        $binder->bind($values);
+
+        $this->setData('message', __('Booklet created'));
+        return $report;
+    }
+
+    /**
+     * @param GenerateForm $form
+     */
+    protected function renderForm($form)
+    {
+        $this->getServiceManager()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
+
+        $this->setData('myForm', $form->render());
+        $this->setData('formTitle', __('Create a new booklet'));
+        $this->setView('form.tpl', 'tao');
     }
 }

@@ -12,8 +12,4 @@ Template::inc('form_context.tpl', 'tao');
     </div>
 </div>
 
-<div class="data-container-wrapper flex-container-remainer">
-    <?= get_data('groupTree')?>
-</div>
-
 <?php Template::inc('footer.tpl', 'tao'); ?>

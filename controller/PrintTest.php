@@ -27,16 +27,14 @@
  */
 namespace oat\taoBooklet\controller;
 
-use \core_kernel_classes_Class;
-use \core_kernel_classes_Resource;
-use \tao_actions_CommonModule;
-use \taoTests_models_classes_TestsService;
-use \common_cache_FileCache;
-use \common_ext_ExtensionsManager;
-use \Exception;
-use oat\taoBooklet\model\BookletClassService;
+use common_cache_FileCache;
+use common_ext_ExtensionsManager;
+use core_kernel_classes_Resource;
+use Exception;
 use oat\taoQtiPrint\model\QtiTestPacker;
-use \tao_helpers_Uri;
+use tao_actions_CommonModule;
+use tao_helpers_Uri;
+use taoTests_models_classes_TestsService;
 
 class PrintTest extends tao_actions_CommonModule
 {
@@ -55,6 +53,10 @@ class PrintTest extends tao_actions_CommonModule
 
         $force          = $this->hasRequestParameter('force');
         $test           = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+
+        if ($this->hasRequestParameter('config')) {
+            $config = array_merge($config, json_decode(base64_decode($this->getRequestParameter('config')), true));
+        }
 
         $model          = $testService->getTestModel($test);
         if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
