@@ -26,8 +26,8 @@ use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
-use oat\taoBooklet\form\WizardForm;
-use oat\taoBooklet\form\WizardTestForm;
+use oat\taoBooklet\form\WizardBookletForm;
+use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletGenerator;
@@ -193,7 +193,7 @@ class Booklet extends tao_actions_SaSModule
         $this->defaultData();
         try {
             $bookletClass = $this->getCurrentClass();
-            $formContainer = new WizardForm( $bookletClass );
+            $formContainer = new WizardBookletForm( $bookletClass );
             $myForm        = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
@@ -224,7 +224,7 @@ class Booklet extends tao_actions_SaSModule
         try {
             $test = $this->getCurrentInstance();
             $bookletClass = $this->getRootClass();
-            $formContainer = new WizardTestForm($bookletClass, $test);
+            $formContainer = new WizardPrintForm($bookletClass, $test);
             $myForm = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {

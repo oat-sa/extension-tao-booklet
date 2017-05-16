@@ -18,9 +18,8 @@
  */
 namespace oat\taoBooklet\form;
 
-use oat\taoBooklet\model\BookletClassService;
+use tao_actions_form_Instance;
 use tao_helpers_form_FormFactory;
-use tao_helpers_Uri;
 
 /**
  * Create a form from a booklet
@@ -29,14 +28,14 @@ use tao_helpers_Uri;
  * @access public
  * @package taoBooklet
  */
-class GenerateForm extends \tao_actions_form_Instance
+class GenerateForm extends tao_actions_form_Instance
 {
 
     public function initElements()
     {
         parent::initElements();
 
-        $createElt = \tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
+        $createElt = tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
         $createElt->setValue( __( 'Generate' ) );
         $createElt->setIcon( "icon-play" );
         $createElt->addClass( "form-submitter btn-success small" );
