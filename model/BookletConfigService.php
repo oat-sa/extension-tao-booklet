@@ -25,7 +25,6 @@ namespace oat\taoBooklet\model;
 
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\helpers\Layout;
 
 class BookletConfigService extends ConfigurableService
 {
@@ -36,6 +35,7 @@ class BookletConfigService extends ConfigurableService
     const OPTION_LINK = 'link';
     const OPTION_LOGO = 'logo';
 
+    const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
     const CONFIG_COVER_PAGE = 'cover_page';
     const CONFIG_PAGE_HEADER = 'page_header';
@@ -111,7 +111,7 @@ class BookletConfigService extends ConfigurableService
     }
 
     /**
-     * Gets the config for a booklet instance using either the instanc itself or an array of properties
+     * Gets the config for a booklet instance using either the instance itself or an array of properties
      * @param core_kernel_classes_Resource|array $instance
      * @return array
      * @throws \common_exception_InvalidArgumentType
@@ -147,6 +147,7 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_LINK => $this->getOption(self::OPTION_LINK),
             self::CONFIG_LOGO => $this->getOption(self::OPTION_LOGO),
             self::CONFIG_DATE => \tao_helpers_Date::displayeDate(time()),
+            self::CONFIG_REGULAR => false,
         ];
 
         if (isset($properties[BookletClassService::PROPERTY_DESCRIPTION])) {

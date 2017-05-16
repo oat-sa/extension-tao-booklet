@@ -22,6 +22,7 @@ namespace oat\taoBooklet\scripts\update;
 
 use oat\tao\helpers\Template;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
 
 /**
@@ -52,7 +53,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->setVersion('0.4.0');
         }
-      
+
         $this->skip('0.4.0', '1.0.0');
 
         if ($this->isVersion('1.0.0')) {
@@ -70,6 +71,13 @@ class Updater extends \common_ext_ExtensionUpdater {
             $extension->setConfig('wkhtmltopdf', $config);
 
             $this->setVersion('1.1.0');
+        }
+
+        if ($this->isVersion('1.1.0')) {
+
+            $this->runExtensionScript(RegisterTestResultsPlugins::class);
+
+            $this->setVersion('1.2.0');
         }
     }
 }
