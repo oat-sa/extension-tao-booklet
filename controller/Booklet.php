@@ -23,7 +23,6 @@ namespace oat\taoBooklet\controller;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
-use core_kernel_versioning_File;
 use oat\generis\model\fileReference\ResourceFileSerializer;
 use oat\oatbox\filesystem\File;
 use oat\taoBooklet\form\EditForm;
