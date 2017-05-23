@@ -18,14 +18,32 @@
  *               
  * 
  */
+
+namespace oat\taoBooklet\scripts\install;
+
 use oat\taoBooklet\model\StorageService;
+use oat\oatbox\extension\InstallAction;
+use oat\oatbox\filesystem\FileSystemService;
 
-$bookletDataPath = FILES_PATH.'taoBooklet'.DIRECTORY_SEPARATOR;
+/**
+ * Class setupStorage
+ *
+ * @author Gyula Szucs, <gyula@taotesting.com>
+ */
+class setupStorage extends InstallAction
+{
+    /**
+     * @param array $params
+     * @return \common_report_Report
+     */
+    public function __invoke($params)
+    {
+        /** @var FileSystemService $fsService */
+        $fsService = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+        $fsService->createFileSystem(StorageService::FILE_SYSTEM_ID, 'taoBooklet');
 
-if (file_exists($bookletDataPath)) {
-    helpers_File::emptyDirectory($bookletDataPath);
+        $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsService);
+
+        return new \common_report_Report(\common_report_Report::TYPE_SUCCESS, 'Booklet storage registered.');
+    }
 }
-
-$bookletFs = tao_models_classes_FileSourceService::singleton()->addLocalSource('booklet storage', $bookletDataPath);
-
-StorageService::setFileSystem($bookletFs);

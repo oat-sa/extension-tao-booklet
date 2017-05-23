@@ -21,61 +21,63 @@ namespace oat\taoBooklet\model;
 
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
-use core_kernel_fileSystem_FileSystem;
-use common_ext_ExtensionsManager;
-use core_kernel_versioning_File;
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\generis\model\fileReference\ResourceFileSerializer;
+use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\ServiceManager;
 
 class StorageService
 {
-    const CONFIG_KEY = 'bookletStorage';
+    const FILE_SYSTEM_ID = 'bookletStorage';
 
     /**
      * @param string $filePath
-     *
-     * @return core_kernel_versioning_File
+     * @return File
      */
-    static public function storeFile( $filePath )
+    static public function storeFile($filePath)
     {
-        return self::getFileSystem()->spawnFile( $filePath );
+        $newFileName = \helpers_File::createFileName($filePath);
+
+        /** @var File $file */
+        $file = ServiceManager::getServiceManager()
+            ->get(FileSystemService::SERVICE_ID)
+            ->getDirectory(self::FILE_SYSTEM_ID)
+            ->getFile($newFileName);
+
+        $stream = fopen($filePath, 'r+');
+        $file->write($stream);
+
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
+
+        return $file;
     }
 
     /**
      * Removes file from FS attached to instance
      *
-     * @param $instance core_kernel_classes_Resource
+     * @param core_kernel_classes_Resource $instance
      */
-    static public function removeAttachedFile( core_kernel_classes_Resource $instance )
+    static public function removeAttachedFile(core_kernel_classes_Resource $instance)
     {
-        if ( ! is_null( $instance )) {
-            $contentUri = $instance->getOnePropertyValue(
-                new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
-            );
+        $contentUri = $instance->getOnePropertyValue(
+            new core_kernel_classes_Property(BookletClassService::PROPERTY_FILE_CONTENT)
+        );
 
-            if ($contentUri instanceof core_kernel_classes_Resource) {
-                $file = new core_kernel_versioning_File( $contentUri );
-                $file->delete();
-            }
+        if ($contentUri) {
+            $file = self::getFileReferenceSerializer()->unserializeFile($contentUri);
+            $file->delete();
         }
     }
 
     /**
-     *
-     * @return \core_kernel_fileSystem_FileSystem
+     * Get serializer to persist filesystem object
+     * @return FileReferenceSerializer
      */
-    static public function getFileSystem()
+    static protected function getFileReferenceSerializer()
     {
-        $uri = common_ext_ExtensionsManager::singleton()->getExtensionById( 'taoBooklet' )->getConfig(
-            self::CONFIG_KEY
-        );
-
-        return new core_kernel_fileSystem_FileSystem( $uri );
-    }
-
-    static public function setFileSystem( core_kernel_fileSystem_FileSystem $fs )
-    {
-        common_ext_ExtensionsManager::singleton()->getExtensionById( 'taoBooklet' )->setConfig(
-            self::CONFIG_KEY,
-            $fs->getUri()
-        );
+        return ServiceManager::getServiceManager()->get(ResourceFileSerializer::SERVICE_ID);
     }
 }

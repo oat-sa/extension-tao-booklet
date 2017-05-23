@@ -71,5 +71,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->setVersion('1.1.0');
         }
+
+        $this->skip('1.1.0', '1.2.0');
     }
 }

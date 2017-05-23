@@ -24,6 +24,8 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
+use oat\generis\model\fileReference\ResourceFileSerializer;
+use oat\oatbox\filesystem\File;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardForm;
@@ -158,16 +160,18 @@ class Booklet extends tao_actions_SaSModule
         $instance = $this->getCurrentInstance();
 
         $fileResource = $instance->getOnePropertyValue(
-            new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
+            new core_kernel_classes_Property(BookletClassService::PROPERTY_FILE_CONTENT)
         );
 
-        if ($fileResource instanceof core_kernel_classes_Resource) {
-            $file = new core_kernel_versioning_File( $fileResource );
+        if ($fileResource) {
+            /** @var File $file */
+            $file = $this->getServiceManager()
+                ->get(ResourceFileSerializer::SERVICE_ID)
+                ->unserializeFile($fileResource);
 
-            header( 'Content-Disposition: attachment; filename="' . basename( $file->getAbsolutePath() ) . '"' );
-            \tao_helpers_Http::returnFile( $file->getAbsolutePath() );
+            header('Content-Disposition: attachment; filename="'. $file->getBasename() .'"');
+            \tao_helpers_Http::returnFile($file->getPrefix());
         }
-
     }
 
     /**

@@ -21,6 +21,8 @@
 
 namespace oat\taoBooklet\model;
 
+use oat\generis\model\fileReference\ResourceFileSerializer;
+use oat\oatbox\filesystem\File;
 use tao_models_classes_ClassService;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
@@ -77,14 +79,18 @@ class BookletClassService extends tao_models_classes_ClassService
      * @return core_kernel_classes_Resource
      * @throws \Exception
      */
-    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile) {
+    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile)
+    {
+        /** @var File $file */
+        $file = StorageService::storeFile($tmpFile);
 
-        $fileResource = StorageService::storeFile($tmpFile);
+        $fileResourceUri = $this->getFileReferenceSerializer()
+            ->serialize($file);
 
-        if ($fileResource){
+        if ($fileResourceUri){
             $instance = $class->createInstanceWithProperties(array(
                 RDFS_LABEL => $label,
-                self::PROPERTY_FILE_CONTENT => $fileResource,
+                self::PROPERTY_FILE_CONTENT => $fileResourceUri,
                 self::PROPERTY_TEST => $test
             ));
         }else{
@@ -115,12 +121,27 @@ class BookletClassService extends tao_models_classes_ClassService
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
 
         StorageService::removeAttachedFile( $instance );
-        $fileResource = StorageService::storeFile($tmpFile);
+
+        /** @var File $file */
+        $file = StorageService::storeFile($tmpFile);
+
+        $fileResource = $this->getFileReferenceSerializer()
+            ->serialize($file);
+
         $property = new \core_kernel_classes_Property(self::PROPERTY_FILE_CONTENT);
         $instance->editPropertyValues($property, $fileResource);
 
         $report->setMessage(__('%s updated', $instance->getLabel()));
         $report->setData($instance);
         return $report;
+    }
+
+    /**
+     * Get serializer to persist filesystem object
+     * @return ResourceFileSerializer
+     */
+    protected function getFileReferenceSerializer()
+    {
+        return $this->getServiceManager()->get(ResourceFileSerializer::SERVICE_ID);
     }
 }
