@@ -23,13 +23,15 @@
 
 namespace oat\taoBooklet\model\tasks;
 
-use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
+use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
+use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletGenerator;
+use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 /**
  * Class CreateBooklet
@@ -45,16 +47,25 @@ class CreateBooklet extends AbstractTaskAction implements \JsonSerializable
      */
     public function __invoke($params)
     {
-        foreach (['class', 'test', 'config'] as $name) {
+        foreach (['class', 'test', 'values'] as $name) {
             if (!isset($params[$name])) {
                 throw new \common_exception_MissingParameter($name, self::class);
             }
         }
 
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $config = $configService->getConfig($params['values']);
         $test = new core_kernel_classes_Resource($params['test']);
         $clazz = new core_kernel_classes_Class($params['class']);
 
-        return BookletGenerator::generate($test, $clazz, $params['config']);
+        $report = BookletGenerator::generate($test, $clazz, $config);
+        $instance = $report->getData();
+
+        // save properties from form
+        $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+        $binder->bind($params['values']);
+
+        return $report;
     }
 
     /**
@@ -69,10 +80,10 @@ class CreateBooklet extends AbstractTaskAction implements \JsonSerializable
      * Create task in queue
      * @param core_kernel_classes_Resource $test
      * @param core_kernel_classes_Class $class
-     * @param array $config
+     * @param array $values
      * @return Task created task id
      */
-    public static function createTask(core_kernel_classes_Resource $test, core_kernel_classes_Class $class, $config = [])
+    public static function createTask(core_kernel_classes_Resource $test, core_kernel_classes_Class $class, $values = [])
     {
         $action = new static();
         $action->setServiceLocator(ServiceManager::getServiceManager());
@@ -80,7 +91,7 @@ class CreateBooklet extends AbstractTaskAction implements \JsonSerializable
         $task = $queue->createTask($action, [
             'test' => $test->getUri(),
             'class' => $class->getUri(),
-            'config' => $config
+            'values' => $values
         ]);
 
         return $task;

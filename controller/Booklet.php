@@ -25,6 +25,7 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
+use oat\oatbox\task\Task;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardForm;
@@ -133,10 +134,9 @@ class Booklet extends tao_actions_SaSModule
     {
         $instance  = $this->getCurrentInstance();
 
-        UpdateBooklet::createTask($instance);
+        $task = UpdateBooklet::createTask($instance);
 
-        $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
-        $report->setMessage(__('Booklet task created'));
+        $report = $this->getTaskReport($task);
 
         $this->returnReport( $report );
     }
@@ -248,14 +248,11 @@ class Booklet extends tao_actions_SaSModule
     protected function generateFromForm($form, $test, $bookletClass)
     {
         $values = $form->getValues();
-        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
-        $config = $configService->getConfig($values);
         $clazz  = new core_kernel_classes_Class( $bookletClass );
 
-        CreateBooklet::createTask($test, $clazz, $config);
+        $task = CreateBooklet::createTask($test, $clazz, $values);
 
-        $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
-        $report->setMessage(__('Booklet task created'));
+        $report = $this->getTaskReport($task);
 
         return $report;
     }
@@ -270,5 +267,19 @@ class Booklet extends tao_actions_SaSModule
         $this->setData('myForm', $form->render());
         $this->setData('formTitle', __('Create a new booklet'));
         $this->setView('form.tpl', 'tao');
+    }
+
+    /**
+     * @param $task
+     * @return common_report_Report
+     */
+    protected function getTaskReport($task)
+    {
+        if ($task->getStatus() === Task::STATUS_FINISHED) {
+            $report = $task->getReport();
+        } else {
+            $report = common_report_Report::createInfo(__('Booklet task created'));
+        }
+        return $report;
     }
 }
