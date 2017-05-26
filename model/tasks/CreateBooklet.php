@@ -23,10 +23,11 @@
 
 namespace oat\taoBooklet\model\tasks;
 
+use common_exception_MissingParameter;
+use common_session_SessionManager;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
-use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\model\BookletConfigService;
@@ -37,7 +38,7 @@ use tao_models_classes_dataBinding_GenerisFormDataBinder;
  * Class CreateBooklet
  * @package oat\taoBooklet\model\tasks
  */
-class CreateBooklet extends AbstractTaskAction implements \JsonSerializable
+class CreateBooklet extends AbstractBookletTask
 {
     /**
      *
@@ -47,11 +48,13 @@ class CreateBooklet extends AbstractTaskAction implements \JsonSerializable
      */
     public function __invoke($params)
     {
-        foreach (['class', 'test', 'values'] as $name) {
+        foreach (['class', 'test', 'values', 'user'] as $name) {
             if (!isset($params[$name])) {
-                throw new \common_exception_MissingParameter($name, self::class);
+                throw new common_exception_MissingParameter($name, self::class);
             }
         }
+
+        $this->startCliSession($params['user']);
 
         $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
         $config = $configService->getConfig($params['values']);
@@ -91,7 +94,8 @@ class CreateBooklet extends AbstractTaskAction implements \JsonSerializable
         $task = $queue->createTask($action, [
             'test' => $test->getUri(),
             'class' => $class->getUri(),
-            'values' => $values
+            'values' => $values,
+            'user' => common_session_SessionManager::getSession()->getUserUri(),
         ]);
 
         return $task;

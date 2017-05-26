@@ -23,9 +23,10 @@
 
 namespace oat\taoBooklet\model\tasks;
 
+use common_exception_MissingParameter;
+use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
-use oat\oatbox\task\AbstractTaskAction;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\model\BookletClassService;
@@ -37,7 +38,7 @@ use tao_helpers_File;
  * Class UpdateBooklet
  * @package oat\taoBooklet\model\tasks
  */
-class UpdateBooklet extends AbstractTaskAction implements \JsonSerializable
+class UpdateBooklet extends AbstractBookletTask
 {
     /**
      *
@@ -47,9 +48,13 @@ class UpdateBooklet extends AbstractTaskAction implements \JsonSerializable
      */
     public function __invoke($params)
     {
-        if (!isset($params['uri'])) {
-            throw new \common_exception_MissingParameter('uri', self::class);
+        foreach (['uri', 'user'] as $name) {
+            if (!isset($params[$name])) {
+                throw new common_exception_MissingParameter($name, self::class);
+            }
         }
+
+        $this->startCliSession($params['user']);
 
         $classService = BookletClassService::singleton();
         $instance = new core_kernel_classes_Resource($params['uri']);
@@ -86,7 +91,8 @@ class UpdateBooklet extends AbstractTaskAction implements \JsonSerializable
         $action->setServiceLocator(ServiceManager::getServiceManager());
         $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
         $task = $queue->createTask($action, [
-            'uri' => $resource->getUri()
+            'uri' => $resource->getUri(),
+            'user' => common_session_SessionManager::getSession()->getUserUri(),
         ]);
 
         return $task;
