@@ -25,6 +25,7 @@ use common_report_Report;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 use oat\taoBooklet\model\export\PdfBookletExporter;
+use oat\taoBooklet\model\tasks\UpdateBooklet;
 use tao_helpers_Uri;
 
 class BookletGenerator
@@ -50,13 +51,10 @@ class BookletGenerator
             return $report;
         }
 
-        $tmpFolder = \tao_helpers_File::createTempDir();
-        $tmpFile = self::generatePdf($test, $tmpFolder, $config);
-
         // generate tao instance
-        $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test, $tmpFile);
+        $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test);
 
-        \tao_helpers_File::delTree($tmpFolder);
+        UpdateBooklet::createTask($instance);
 
         // return report with instance
         $report->setMessage(__('%s created', $instance->getLabel()));
