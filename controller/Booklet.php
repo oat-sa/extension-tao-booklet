@@ -25,6 +25,7 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
+use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
@@ -32,12 +33,14 @@ use oat\taoBooklet\form\WizardForm;
 use oat\taoBooklet\form\WizardTestForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
+use oat\taoBooklet\model\BookletGenerator;
 use oat\taoBooklet\model\StorageService;
-use oat\taoBooklet\model\tasks\CreateBooklet;
 use oat\taoBooklet\model\tasks\UpdateBooklet;
 use oat\taoDeliveryRdf\model\NoTestsException;
+use oat\Taskqueue\Persistence\RdsQueue;
 use tao_actions_SaSModule;
 use tao_helpers_Uri;
+use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 /**
  * Controller to managed assembled deliveries
@@ -102,9 +105,13 @@ class Booklet extends tao_actions_SaSModule
             $this->setData( 'reload', true );
         }
 
+        $queue = $this->getServiceManager()->get(Queue::SERVICE_ID);
+        $asyncQueue = $queue instanceof RdsQueue;
+
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
         $this->setData( 'queueId', $instance->getUri() );
+        $this->setData( 'asyncQueue', $asyncQueue );
         $this->setView( 'Booklet/edit.tpl' );
     }
 
@@ -249,12 +256,18 @@ class Booklet extends tao_actions_SaSModule
     protected function generateFromForm($form, $test, $bookletClass)
     {
         $values = $form->getValues();
-        $clazz  = new core_kernel_classes_Class( $bookletClass );
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $config = $configService->getConfig($values);
 
-        $task = CreateBooklet::createTask($test, $clazz, $values);
+        $clazz    = new core_kernel_classes_Class( $bookletClass );
+        $report = BookletGenerator::generate($test, $clazz, $config);
+        $instance = $report->getData();
 
-        $report = $this->getTaskReport($task);
+        // save properties from form
+        $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+        $binder->bind($values);
 
+        $this->setData('message', __('Booklet created'));
         return $report;
     }
 

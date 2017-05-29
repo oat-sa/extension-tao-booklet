@@ -43,15 +43,17 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
      */
     protected function startCliSession($userUri)
     {
-        $user = new core_kernel_users_GenerisUser(new core_kernel_classes_Resource($userUri));
-        $session = new common_session_DefaultSession($user);
+        if (PHP_SAPI == 'cli') {
+            $user = new core_kernel_users_GenerisUser(new core_kernel_classes_Resource($userUri));
+            $session = new common_session_DefaultSession($user);
 
-        // force a session, cannot use the SessionManager as it does not allow session in CLI
-        // the session is required by the PrintTest controller called to render the PDF
-        session_name(GENERIS_SESSION_NAME);
-        session_start();
-        PHPSession::singleton()->setAttribute(common_session_SessionManager::PHPSESSION_SESSION_KEY, $session);
+            // force a session, cannot use the SessionManager as it does not allow session in CLI
+            // the session is required by the PrintTest controller called to render the PDF
+            session_name(GENERIS_SESSION_NAME);
+            session_start();
+            PHPSession::singleton()->setAttribute(common_session_SessionManager::PHPSESSION_SESSION_KEY, $session);
 
-        common_session_SessionManager::startSession($session);
+            common_session_SessionManager::startSession($session);
+        }
     }
 }

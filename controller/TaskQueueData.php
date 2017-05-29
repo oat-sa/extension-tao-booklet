@@ -23,17 +23,12 @@
 
 namespace oat\taoBooklet\controller;
 
-use common_report_Report;
 use common_session_SessionManager;
-use core_kernel_classes_Property;
-use core_kernel_classes_Resource;
-use core_kernel_versioning_File;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\tao\model\TaskQueueActionTrait;
-use oat\taoBooklet\model\BookletClassService;
+use oat\Taskqueue\Persistence\RdsQueue;
 use tao_actions_CommonModule;
-use tao_helpers_Http;
 
 /**
  * Rest API controller for task queue
@@ -55,9 +50,10 @@ class TaskQueueData extends tao_actions_CommonModule
 
         $taskQueue = $this->getServiceManager()->get(Queue::SERVICE_ID);
 
-        $dataPayLoad = $taskQueue->getPayload($user->getIdentifier());
-
-        $this->returnJson($dataPayLoad);
+        if ($taskQueue instanceof RdsQueue) {
+            $dataPayLoad = $taskQueue->getPayload($user->getIdentifier());
+            $this->returnJson($dataPayLoad);
+        }
     }
 
     /**

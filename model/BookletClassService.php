@@ -77,22 +77,23 @@ class BookletClassService extends tao_models_classes_ClassService
      * @return core_kernel_classes_Resource
      * @throws \Exception
      */
-    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile) {
+    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile = null) {
 
-        $fileResource = StorageService::storeFile($tmpFile);
+        if ($tmpFile) {
+            $fileResource = StorageService::storeFile($tmpFile);
 
-        if ($fileResource){
-            $instance = $class->createInstanceWithProperties(array(
-                RDFS_LABEL => $label,
-                self::PROPERTY_FILE_CONTENT => $fileResource,
-                self::PROPERTY_TEST => $test
-            ));
-        }else{
-            throw new \Exception('No file found to attach');
+            if (!$fileResource){
+                throw new \Exception('No file found to attach');
+            }
+        } else {
+            $fileResource = null;
         }
 
-
-        return $instance;
+        return $class->createInstanceWithProperties(array(
+            RDFS_LABEL => $label,
+            self::PROPERTY_FILE_CONTENT => $fileResource,
+            self::PROPERTY_TEST => $test
+        ));
     }
 
     /**
