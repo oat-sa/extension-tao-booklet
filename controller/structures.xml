@@ -46,7 +46,7 @@
                     <action id="booklet-delete" name="Delete" url="/taoBooklet/Booklet/delete" context="resource" group="tree" binding="removeNode">
                         <icon id="icon-bin"/>
                     </action>
-                    <action id="booklet-new" name="New booklet" url="taoBooklet/Booklet/wizard" context="class" group="tree">
+                    <action id="booklet-new" name="New booklet" url="taoBooklet/Booklet/wizard" context="resource" group="tree">
                         <icon id="icon-delivery"/>
                     </action>
                     <action id="booklet-move" name="Move" url="/taoBooklet/Booklet/moveInstance" context="instance" group="none" binding="moveNode">
