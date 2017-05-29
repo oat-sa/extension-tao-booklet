@@ -20,23 +20,24 @@
  */
 namespace oat\taoBooklet\controller;
 
+use common_report_Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_versioning_File;
+use oat\oatbox\task\Task;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardForm;
 use oat\taoBooklet\form\WizardTestForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
-use oat\taoBooklet\model\BookletGenerator;
 use oat\taoBooklet\model\StorageService;
+use oat\taoBooklet\model\tasks\CreateBooklet;
+use oat\taoBooklet\model\tasks\UpdateBooklet;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use tao_actions_SaSModule;
-use tao_helpers_File;
 use tao_helpers_Uri;
-use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 /**
  * Controller to managed assembled deliveries
@@ -103,6 +104,7 @@ class Booklet extends tao_actions_SaSModule
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
+        $this->setData( 'queueId', $instance->getUri() );
         $this->setView( 'Booklet/edit.tpl' );
     }
 
@@ -132,20 +134,12 @@ class Booklet extends tao_actions_SaSModule
     public function regenerate()
     {
         $instance  = $this->getCurrentInstance();
-        $test      = $this->getClassService()->getTest($instance);
 
-        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
-        $config = $configService->getConfig($instance);
+        $task = UpdateBooklet::createTask($instance);
 
-        $tmpFolder = tao_helpers_File::createTempDir();
-        $tmpFile   = BookletGenerator::generatePdf( $test, $tmpFolder, $config );
-
-        $report    = $this->getClassService()->updateInstanceAttachment( $instance, $tmpFile );
-
-        tao_helpers_File::delTree( $tmpFolder );
+        $report = $this->getTaskReport($task);
 
         $this->returnReport( $report );
-
     }
 
     /**
@@ -255,18 +249,12 @@ class Booklet extends tao_actions_SaSModule
     protected function generateFromForm($form, $test, $bookletClass)
     {
         $values = $form->getValues();
-        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
-        $config = $configService->getConfig($values);
+        $clazz  = new core_kernel_classes_Class( $bookletClass );
 
-        $clazz    = new core_kernel_classes_Class( $bookletClass );
-        $report = BookletGenerator::generate($test, $clazz, $config);
-        $instance = $report->getData();
+        $task = CreateBooklet::createTask($test, $clazz, $values);
 
-        // save properties from form
-        $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-        $binder->bind($values);
+        $report = $this->getTaskReport($task);
 
-        $this->setData('message', __('Booklet created'));
         return $report;
     }
 
@@ -280,5 +268,20 @@ class Booklet extends tao_actions_SaSModule
         $this->setData('myForm', $form->render());
         $this->setData('formTitle', __('Create a new booklet'));
         $this->setView('form.tpl', 'tao');
+    }
+
+    /**
+     * @param $task
+     * @return common_report_Report
+     */
+    protected function getTaskReport($task)
+    {
+        $status = $task->getStatus();
+        if ($status === Task::STATUS_FINISHED || $status === Task::STATUS_ARCHIVED) {
+            $report = $task->getReport();
+        } else {
+            $report = common_report_Report::createInfo(__('Booklet task created'));
+        }
+        return $report;
     }
 }
