@@ -12,6 +12,8 @@ Template::inc('form_context.tpl', 'tao');
     </div>
 </div>
 
-<?php Template::inc('Booklet/queue.tpl', 'taoBooklet'); ?>
+<?php if (get_data('asyncQueue')): ?>
+<?php   Template::inc('Booklet/queue.tpl', 'taoBooklet'); ?>
+<?php endif; ?>
 
 <?php Template::inc('footer.tpl', 'tao'); ?>
