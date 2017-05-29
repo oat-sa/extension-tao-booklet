@@ -104,6 +104,7 @@ class Booklet extends tao_actions_SaSModule
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
+        $this->setData( 'queueId', $instance->getUri() );
         $this->setView( 'Booklet/edit.tpl' );
     }
 
@@ -275,7 +276,8 @@ class Booklet extends tao_actions_SaSModule
      */
     protected function getTaskReport($task)
     {
-        if ($task->getStatus() === Task::STATUS_FINISHED) {
+        $status = $task->getStatus();
+        if ($status === Task::STATUS_FINISHED || $status === Task::STATUS_ARCHIVED) {
             $report = $task->getReport();
         } else {
             $report = common_report_Report::createInfo(__('Booklet task created'));

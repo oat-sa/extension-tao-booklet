@@ -90,10 +90,11 @@ class UpdateBooklet extends AbstractBookletTask
         $action = new static();
         $action->setServiceLocator(ServiceManager::getServiceManager());
         $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
-        $task = $queue->createTask($action, [
+        $queueParameters = [
             'uri' => $resource->getUri(),
             'user' => common_session_SessionManager::getSession()->getUserUri(),
-        ]);
+        ];
+        $task = $queue->createTask($action, $queueParameters, false, $resource->getLabel(), $resource->getUri());
 
         return $task;
     }

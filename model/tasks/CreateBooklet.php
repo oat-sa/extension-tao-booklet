@@ -91,12 +91,14 @@ class CreateBooklet extends AbstractBookletTask
         $action = new static();
         $action->setServiceLocator(ServiceManager::getServiceManager());
         $queue = ServiceManager::getServiceManager()->get(Queue::SERVICE_ID);
-        $task = $queue->createTask($action, [
+        $queueParameters = [
             'test' => $test->getUri(),
             'class' => $class->getUri(),
             'values' => $values,
             'user' => common_session_SessionManager::getSession()->getUserUri(),
-        ]);
+        ];
+
+        $task = $queue->createTask($action, $queueParameters, false, $test->getLabel(), $class->getUri());
 
         return $task;
     }
