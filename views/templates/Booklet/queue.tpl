@@ -15,8 +15,7 @@
                 context : "<?=get_data('queueId')?>",
                 dataUrl : urlHelper.route('getTasks', 'TaskQueueData', 'taoBooklet'),
                 statusUrl : urlHelper.route('getStatus', 'TaskQueueData', 'taoBooklet'),
-                removeUrl : urlHelper.route('archiveTask', 'TaskQueueData', 'taoBooklet'),
-                downloadUrl : urlHelper.route('download', 'TaskQueueData', 'taoBooklet')
+                removeUrl : urlHelper.route('archiveTask', 'TaskQueueData', 'taoBooklet')
             })
                 .init()
                 .render($queueArea);
