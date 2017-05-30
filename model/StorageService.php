@@ -43,9 +43,8 @@ class StorageService extends ConfigurableService
         $file = $this->getFileSystem()->getFile($this->createFileName($filePath));
 
         $stream = fopen($filePath, 'r+');
-        $file->put($stream);
-
         if (is_resource($stream)) {
+            $file->put($stream);
             fclose($stream);
         }
         
@@ -59,7 +58,7 @@ class StorageService extends ConfigurableService
     public function getFile($fileResource)
     {
         $fileResource = $this->getResource($fileResource);
-        if ($fileResource) {
+        if ($fileResource->exists()) {
             return $this->getFileReferenceSerializer()->unserializeFile($fileResource->getUri());
         }
         return null;
@@ -71,7 +70,7 @@ class StorageService extends ConfigurableService
     public function deleteFile($fileResource)
     {
         $fileResource = $this->getResource($fileResource);
-        if ($fileResource) {
+        if ($fileResource->exists()) {
             $this->getFile($fileResource)->delete();
             $fileResource->delete();
         }

@@ -74,8 +74,6 @@ class BookletClassService extends tao_models_classes_ClassService
      * @param core_kernel_classes_Class $class
      * @param string $label
      * @param string $test
-     * @param string $tmpFile
-     *
      * @return core_kernel_classes_Resource
      * @throws \Exception
      */
@@ -117,14 +115,10 @@ class BookletClassService extends tao_models_classes_ClassService
     {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
 
-        $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
+        $this->removeInstanceAttachment($instance);
 
         $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
-
-        $contentUri = $instance->getOnePropertyValue($property);
-        if ($contentUri) {
-            $storageService->deleteFile($contentUri);
-        }
+        $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
         $instance->editPropertyValues($property, $storageService->storeFile($tmpFile));
 
         $report->setMessage(__('%s updated', $instance->getLabel()));
