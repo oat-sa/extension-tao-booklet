@@ -21,7 +21,7 @@ If you encounter errors when generating the document, you should install the too
 ```
 sudo apt-get update
 sudo apt-get install libxrender1 fontconfig xvfb
-wget http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -P /tmp/
+wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -P /tmp/
 cd /usr/share/
 sudo tar xf /tmp/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 sudo ln -s /usr/share/wkhtmltox/bin/wkhtmltopdf /usr/bin/wkhtmltopdf

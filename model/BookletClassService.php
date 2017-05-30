@@ -79,26 +79,27 @@ class BookletClassService extends tao_models_classes_ClassService
      * @return core_kernel_classes_Resource
      * @throws \Exception
      */
-    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile)
+    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile = null)
     {
-        /** @var File $file */
-        $file = StorageService::storeFile($tmpFile);
+        if ($tmpFile) {
+            /** @var File $file */
+            $file = StorageService::storeFile($tmpFile);
 
-        $fileResourceUri = $this->getFileReferenceSerializer()
-            ->serialize($file);
+            $fileResourceUri = $this->getFileReferenceSerializer()
+                ->serialize($file);
 
-        if ($fileResourceUri){
-            $instance = $class->createInstanceWithProperties(array(
-                RDFS_LABEL => $label,
-                self::PROPERTY_FILE_CONTENT => $fileResourceUri,
-                self::PROPERTY_TEST => $test
-            ));
-        }else{
-            throw new \Exception('No file found to attach');
+            if (!$fileResourceUri){
+                throw new \Exception('No file found to attach');
+            }
+        } else {
+            $fileResourceUri = null;
         }
 
-
-        return $instance;
+        return $class->createInstanceWithProperties(array(
+            RDFS_LABEL => $label,
+            self::PROPERTY_FILE_CONTENT => $fileResourceUri,
+            self::PROPERTY_TEST => $test
+        ));
     }
 
     /**
