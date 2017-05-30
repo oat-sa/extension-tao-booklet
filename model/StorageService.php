@@ -19,65 +19,97 @@
 
 namespace oat\taoBooklet\model;
 
-use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\generis\model\fileReference\FileReferenceSerializer;
-use oat\generis\model\fileReference\ResourceFileSerializer;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FileSystemService;
-use oat\oatbox\service\ServiceManager;
+use oat\oatbox\service\ConfigurableService;
 
-class StorageService
+class StorageService extends ConfigurableService
 {
+    use OntologyAwareTrait;
+
+    const SERVICE_ID = 'taoBooklet/bookletStorage';
+
     const FILE_SYSTEM_ID = 'bookletStorage';
 
     /**
      * @param string $filePath
-     * @return File
+     * @return core_kernel_classes_Resource
      */
-    static public function storeFile($filePath)
+    public function storeFile($filePath)
     {
-        $newFileName = \helpers_File::createFileName($filePath);
-
-        /** @var File $file */
-        $file = ServiceManager::getServiceManager()
-            ->get(FileSystemService::SERVICE_ID)
-            ->getDirectory(self::FILE_SYSTEM_ID)
-            ->getFile($newFileName);
+        $file = $this->getFileSystem()->getFile($this->createFileName($filePath));
 
         $stream = fopen($filePath, 'r+');
-        $file->write($stream);
+        $file->put($stream);
 
         if (is_resource($stream)) {
             fclose($stream);
         }
-
-        return $file;
+        
+        return $this->getResource($this->getFileReferenceSerializer()->serialize($file));
     }
 
     /**
-     * Removes file from FS attached to instance
-     *
-     * @param core_kernel_classes_Resource $instance
+     * @param core_kernel_classes_Resource $fileResource
+     * @return File
      */
-    static public function removeAttachedFile(core_kernel_classes_Resource $instance)
+    public function getFile($fileResource)
     {
-        $contentUri = $instance->getOnePropertyValue(
-            new core_kernel_classes_Property(BookletClassService::PROPERTY_FILE_CONTENT)
-        );
+        $fileResource = $this->getResource($fileResource);
+        if ($fileResource) {
+            return $this->getFileReferenceSerializer()->unserializeFile($fileResource->getUri());
+        }
+        return null;
+    }
 
-        if ($contentUri) {
-            $file = self::getFileReferenceSerializer()->unserializeFile($contentUri);
-            $file->delete();
+    /**
+     * @param core_kernel_classes_Resource $fileResource
+     */
+    public function deleteFile($fileResource)
+    {
+        $fileResource = $this->getResource($fileResource);
+        if ($fileResource) {
+            $this->getFile($fileResource)->delete();
+            $fileResource->delete();
         }
     }
 
     /**
+     *
+     * @return \oat\oatbox\filesystem\Directory
+     */
+    protected function getFileSystem()
+    {
+        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getDirectory(self::FILE_SYSTEM_ID);
+    }
+
+    /**
      * Get serializer to persist filesystem object
+     *
      * @return FileReferenceSerializer
      */
-    static protected function getFileReferenceSerializer()
+    protected function getFileReferenceSerializer()
     {
-        return ServiceManager::getServiceManager()->get(ResourceFileSerializer::SERVICE_ID);
+        return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
+    }
+
+    /**
+     * Create a unique file name on basis of the original one.
+     * @param string $originalName
+     * @return string
+     */
+    protected function createFileName($originalName)
+    {
+        $returnValue = uniqid(hash('crc32', $originalName));
+
+        $ext = @pathinfo($originalName, PATHINFO_EXTENSION);
+        if (!empty($ext)){
+            $returnValue .= '.' . $ext;
+        }
+
+        return (string) $returnValue;
     }
 }

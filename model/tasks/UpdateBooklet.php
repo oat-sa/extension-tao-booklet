@@ -26,6 +26,7 @@ namespace oat\taoBooklet\model\tasks;
 use common_exception_MissingParameter;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
@@ -40,6 +41,8 @@ use tao_helpers_File;
  */
 class UpdateBooklet extends AbstractBookletTask
 {
+    use OntologyAwareTrait;
+
     /**
      *
      * @param array $params
@@ -57,7 +60,7 @@ class UpdateBooklet extends AbstractBookletTask
         $this->startCliSession($params['user']);
 
         $classService = BookletClassService::singleton();
-        $instance = new core_kernel_classes_Resource($params['uri']);
+        $instance = $this->getResource($params['uri']);
         $test = $classService->getTest($instance);
 
         $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);

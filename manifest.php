@@ -42,7 +42,7 @@ return array(
     ),
     'install' => array(
         'php' => array(
-            \oat\taoBooklet\scripts\install\setupStorage::class,
+            \oat\taoBooklet\scripts\install\SetupStorage::class,
             \oat\taoBooklet\scripts\install\SetupBookletConfigService::class
         ),
         'rdf' => array(

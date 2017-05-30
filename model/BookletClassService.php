@@ -21,15 +21,15 @@
 
 namespace oat\taoBooklet\model;
 
-use oat\generis\model\fileReference\ResourceFileSerializer;
-use oat\oatbox\filesystem\File;
+use oat\generis\model\OntologyAwareTrait;
 use tao_models_classes_ClassService;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
-use core_kernel_classes_Property;
 
 class BookletClassService extends tao_models_classes_ClassService
 {
+    use OntologyAwareTrait;
+
     const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
     const PROPERTY_TEST = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
     const PROPERTY_DESCRIPTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#Description';
@@ -66,7 +66,7 @@ class BookletClassService extends tao_models_classes_ClassService
      */
     public function getRootClass()
     {
-        return new core_kernel_classes_Class(self::CLASS_URI);
+        return $this->getClass(self::CLASS_URI);
     }
 
     /**
@@ -79,25 +79,10 @@ class BookletClassService extends tao_models_classes_ClassService
      * @return core_kernel_classes_Resource
      * @throws \Exception
      */
-    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test, $tmpFile = null)
+    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test)
     {
-        if ($tmpFile) {
-            /** @var File $file */
-            $file = StorageService::storeFile($tmpFile);
-
-            $fileResourceUri = $this->getFileReferenceSerializer()
-                ->serialize($file);
-
-            if (!$fileResourceUri){
-                throw new \Exception('No file found to attach');
-            }
-        } else {
-            $fileResourceUri = null;
-        }
-
         return $class->createInstanceWithProperties(array(
             RDFS_LABEL => $label,
-            self::PROPERTY_FILE_CONTENT => $fileResourceUri,
             self::PROPERTY_TEST => $test
         ));
     }
@@ -109,7 +94,17 @@ class BookletClassService extends tao_models_classes_ClassService
      */
     public function getTest(core_kernel_classes_Resource $booklet)
     {
-       return $booklet->getOnePropertyValue(new core_kernel_classes_Property(self::PROPERTY_TEST));
+        return $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_TEST));
+    }
+
+    /**
+     * Get the attachment linked to a booklet
+     * @param core_kernel_classes_Resource $booklet
+     * @return core_kernel_classes_Resource
+     */
+    public function getAttachment(core_kernel_classes_Resource $booklet)
+    {
+        return $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_FILE_CONTENT));
     }
 
     /**
@@ -118,19 +113,19 @@ class BookletClassService extends tao_models_classes_ClassService
      *
      * @return \common_report_Report
      */
-    public function updateInstanceAttachment($instance, $tmpFile){
+    public function updateInstanceAttachment($instance, $tmpFile)
+    {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
 
-        StorageService::removeAttachedFile( $instance );
+        $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
 
-        /** @var File $file */
-        $file = StorageService::storeFile($tmpFile);
+        $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
 
-        $fileResource = $this->getFileReferenceSerializer()
-            ->serialize($file);
-
-        $property = new \core_kernel_classes_Property(self::PROPERTY_FILE_CONTENT);
-        $instance->editPropertyValues($property, $fileResource);
+        $contentUri = $instance->getOnePropertyValue($property);
+        if ($contentUri) {
+            $storageService->deleteFile($contentUri);
+        }
+        $instance->editPropertyValues($property, $storageService->storeFile($tmpFile));
 
         $report->setMessage(__('%s updated', $instance->getLabel()));
         $report->setData($instance);
@@ -138,11 +133,18 @@ class BookletClassService extends tao_models_classes_ClassService
     }
 
     /**
-     * Get serializer to persist filesystem object
-     * @return ResourceFileSerializer
+     * Removes file from FS attached to instance
+     *
+     * @param core_kernel_classes_Resource $instance
      */
-    protected function getFileReferenceSerializer()
+    public function removeInstanceAttachment(core_kernel_classes_Resource $instance)
     {
-        return $this->getServiceManager()->get(ResourceFileSerializer::SERVICE_ID);
+        $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
+        $contentUri = $instance->getOnePropertyValue($property);
+
+        if ($contentUri) {
+            $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
+            $storageService->deleteFile($contentUri);
+        }
     }
 }

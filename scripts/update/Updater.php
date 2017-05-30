@@ -20,9 +20,12 @@
  */
 namespace oat\taoBooklet\scripts\update;
 
+use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\helpers\Template;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoBooklet\model\StorageService;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
+use oat\taoBooklet\scripts\install\SetupStorage;
 
 /**
  *
@@ -72,6 +75,16 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.1.0');
         }
 
-        $this->skip('1.1.0', '1.3.0');
+        $this->skip('1.1.0', '1.2.1');
+
+        if ($this->isVersion('1.2.1')) {
+
+            $storageService = new StorageService();
+            $this->getServiceManager()->propagate($storageService);
+            $this->getServiceManager()->register(StorageService::SERVICE_ID, $storageService);
+
+            $this->runExtensionScript(SetupStorage::class);
+            $this->setVersion('1.3.0');
+        }
     }
 }
