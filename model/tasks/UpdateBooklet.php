@@ -32,8 +32,9 @@ use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
-use oat\taoBooklet\model\BookletGenerator;
+use oat\taoBooklet\model\export\PdfBookletExporter;
 use tao_helpers_File;
+use tao_helpers_Uri;
 
 /**
  * Class UpdateBooklet
@@ -67,7 +68,18 @@ class UpdateBooklet extends AbstractBookletTask
         $config = $configService->getConfig($instance);
 
         $tmpFolder = tao_helpers_File::createTempDir();
-        $tmpFile = BookletGenerator::generatePdf($test, $tmpFolder, $config);
+
+        $tmpFile = $tmpFolder . 'test.pdf';
+        $url = tao_helpers_Uri::url('render', 'PrintTest', 'taoBooklet', array(
+            'uri' => tao_helpers_Uri::encode($test->getUri()),
+            'config' => base64_encode(json_encode($config)),
+            'force' => true
+        ));
+
+        $exporter = new PdfBookletExporter($test->getLabel(), $config);
+        $exporter->setContent($url);
+        $exporter->saveAs($tmpFile);
+
         $report = $classService->updateInstanceAttachment($instance, $tmpFile);
 
         tao_helpers_File::delTree($tmpFolder);

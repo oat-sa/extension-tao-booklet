@@ -257,19 +257,26 @@ class Booklet extends tao_actions_SaSModule
      */
     protected function generateFromForm($form, $test, $bookletClass)
     {
-        $values = $form->getValues();
-        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
-        $config = $configService->getConfig($values);
+        $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
-        $clazz  = $this->getClass($bookletClass);
-        $report = BookletGenerator::generate($test, $clazz, $config);
-        $instance = $report->getData();
+        $model = \taoTests_models_classes_TestsService::singleton()->getTestModel($test);
+        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
+            $report->setType(common_report_Report::TYPE_ERROR);
+            $report->setMessage(__('%s is not a QTI test', $test->getLabel()));
+            return $report;
+        }
 
-        // save properties from form
+        // generate tao instance
+        $class  = $this->getClass($bookletClass);
+        $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test);
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-        $binder->bind($values);
+        $binder->bind($form->getValues());
 
-        $this->setData('message', __('Booklet created'));
+        UpdateBooklet::createTask($instance);
+
+        // return report with instance
+        $report->setMessage(__('Booklet %s created', $instance->getLabel()));
+        $report->setData($instance);
         return $report;
     }
 
