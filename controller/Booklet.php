@@ -22,9 +22,9 @@ namespace oat\taoBooklet\controller;
 
 use common_report_Report;
 use core_kernel_classes_Class;
-use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
-use core_kernel_versioning_File;
+use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\filesystem\File;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\form\EditForm;
@@ -50,6 +50,8 @@ use tao_models_classes_dataBinding_GenerisFormDataBinder;
  */
 class Booklet extends tao_actions_SaSModule
 {
+    use OntologyAwareTrait;
+    
     public function __construct()
     {
         $this->service = BookletClassService::singleton();
@@ -89,10 +91,7 @@ class Booklet extends tao_actions_SaSModule
 
         $myForm = $myFormContainer->getForm();
 
-        $fileResource = $instance->getOnePropertyValue(
-            new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
-        );
-
+        $fileResource = $this->getClassService()->getAttachment($instance);
         $myFormContainer->setAllowDownload( $fileResource instanceof core_kernel_classes_Resource );
 
         if ($myForm->isSubmited() && $myForm->isValid()) {
@@ -158,17 +157,20 @@ class Booklet extends tao_actions_SaSModule
     {
         $instance = $this->getCurrentInstance();
 
-        $fileResource = $instance->getOnePropertyValue(
-            new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
-        );
+        try {
+            $fileResource = $this->getClassService()->getAttachment($instance);
+            if ($fileResource) {
+                /** @var File $file */
+                $file = $this->getServiceManager()->get(StorageService::SERVICE_ID)->getFile($fileResource);
 
-        if ($fileResource instanceof core_kernel_classes_Resource) {
-            $file = new core_kernel_versioning_File( $fileResource );
-
-            header( 'Content-Disposition: attachment; filename="' . basename( $file->getAbsolutePath() ) . '"' );
-            \tao_helpers_Http::returnFile( $file->getAbsolutePath() );
+                header('Content-Disposition: attachment; filename="' . $instance->getLabel() . '_' . $file->getBasename() . '"');
+                \tao_helpers_Http::returnStream($file->readPsrStream(), 'application/pdf');
+            } else {
+                throw new \common_exception_NotFound('Unknown resource ' . $fileResource);
+            }
+        } catch (\common_exception_NotFound $e) {
+            header("HTTP/1.0 404 Not Found");
         }
-
     }
 
     /**
@@ -178,9 +180,9 @@ class Booklet extends tao_actions_SaSModule
      */
     public function delete()
     {
-        if ($this->hasRequestParameter( 'uri' )) {
+        if ($this->hasRequestParameter('uri')) {
             $instance = $this->getCurrentInstance();
-            StorageService::removeAttachedFile( $instance );
+            $this->getClassService()->removeInstanceAttachment($instance);
         }
         parent::delete();
     }
@@ -193,13 +195,13 @@ class Booklet extends tao_actions_SaSModule
     {
         $this->defaultData();
         try {
-            $bookletClass = $this->getCurrentClass();
+            $bookletClass  = $this->getCurrentClass();
             $formContainer = new WizardForm( $bookletClass );
             $myForm        = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
 
-                $test     = new core_kernel_classes_Resource( $myForm->getValue( tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST) ) );
+                $test   = $this->getResource($myForm->getValue(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST)));
                 $report = $this->generateFromForm($myForm, $test, $bookletClass);
 
                 $this->setData( 'reload', true );
@@ -255,19 +257,26 @@ class Booklet extends tao_actions_SaSModule
      */
     protected function generateFromForm($form, $test, $bookletClass)
     {
-        $values = $form->getValues();
-        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
-        $config = $configService->getConfig($values);
+        $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
-        $clazz    = new core_kernel_classes_Class( $bookletClass );
-        $report = BookletGenerator::generate($test, $clazz, $config);
-        $instance = $report->getData();
+        $model = \taoTests_models_classes_TestsService::singleton()->getTestModel($test);
+        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
+            $report->setType(common_report_Report::TYPE_ERROR);
+            $report->setMessage(__('%s is not a QTI test', $test->getLabel()));
+            return $report;
+        }
 
-        // save properties from form
+        // generate tao instance
+        $class  = $this->getClass($bookletClass);
+        $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test);
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-        $binder->bind($values);
+        $binder->bind($form->getValues());
 
-        $this->setData('message', __('Booklet created'));
+        UpdateBooklet::createTask($instance);
+
+        // return report with instance
+        $report->setMessage(__('Booklet %s created', $instance->getLabel()));
+        $report->setData($instance);
         return $report;
     }
 

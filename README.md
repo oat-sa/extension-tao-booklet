@@ -24,5 +24,6 @@ sudo apt-get install libxrender1 fontconfig xvfb
 wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -P /tmp/
 cd /usr/share/
 sudo tar xf /tmp/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+sudo rm /usr/bin/wkhtmltopdf
 sudo ln -s /usr/share/wkhtmltox/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 ```
