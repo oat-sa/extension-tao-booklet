@@ -24,7 +24,7 @@ return array(
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '1.3.0',
+    'version'     => '1.4.0',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => array(
         'tao'           => '>=10.2.0',
@@ -36,6 +36,7 @@ return array(
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager', array('ext'=>'taoBooklet')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', array('ext'=>'taoBooklet', 'mod' => 'PrintTest', 'act' => 'render')),
     ),
     'models' => array(
        'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet'
