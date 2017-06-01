@@ -115,7 +115,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.4.1');
         }
 
-        if ($this->isVersion('1.4.1')) {
+        $this->skip('1.4.1', '1.4.2');
+
+        if ($this->isVersion('1.4.2')) {
 
             $this->runExtensionScript(RegisterTestResultsPlugins::class);
 
