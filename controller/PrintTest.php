@@ -29,7 +29,10 @@
 namespace oat\taoBooklet\controller;
 
 use common_ext_ExtensionsManager;
+use oat\taoBooklet\model\BookletClassService;
+use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletDataService;
+use oat\taoQtiPrint\model\QtiTestPacker;
 use tao_actions_CommonModule;
 
 /**
@@ -55,6 +58,41 @@ class PrintTest extends tao_actions_CommonModule
             ];
         }
 
+        $this->renderTest($bookletData);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function preview()
+    {
+        session_write_close();
+
+        $instance = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+        $test = BookletClassService::singleton()->getTest($instance);
+        $testService = \taoTests_models_classes_TestsService::singleton();
+        $model = $testService->getTestModel($test);
+        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
+            throw new \Exception('Not a QTI test');
+        }
+
+        $packer = new QtiTestPacker();
+        $this->getServiceManager()->propagate($packer);
+
+        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $bookletData = [
+            'testData' => $packer->packTest($test),
+            'config' => $configService->getConfig($instance),
+        ];
+
+        $this->renderTest($bookletData);
+    }
+
+    /**
+     * @param array $bookletData
+     */
+    protected function renderTest($bookletData)
+    {
         $config = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet')->getConfig('rendering');
         if (isset($bookletData['config'])) {
             $config = array_merge($config, $bookletData['config']);
