@@ -25,62 +25,43 @@
  * @author Mikhail Kamarouski, <Komarouski@1pt.com>
  * @package taoBooklet
  */
+
 namespace oat\taoBooklet\controller;
 
-use common_cache_FileCache;
 use common_ext_ExtensionsManager;
-use core_kernel_classes_Resource;
-use Exception;
-use oat\taoQtiPrint\model\QtiTestPacker;
+use oat\taoBooklet\model\BookletDataService;
 use tao_actions_CommonModule;
-use tao_helpers_Uri;
-use taoTests_models_classes_TestsService;
 
+/**
+ * Class PrintTest
+ * @package oat\taoBooklet\controller
+ */
 class PrintTest extends tao_actions_CommonModule
 {
-    const CACHE_PREFIX = 'printed-test-pack_';
-
+    /**
+     * Generate html(print-ready) version of tests
+     */
     public function render()
     {
         session_write_close();
 
-        //load the rendering config
-        $ext = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
-        $config = $ext->getConfig('rendering');
+        $storageKey = $this->getRequestParameter('token');
+        $storageService = $this->getServiceManager()->get(BookletDataService::SERVICE_ID);
+        $bookletData = $storageService->getData($storageKey);
 
-        $testService    = taoTests_models_classes_TestsService::singleton();
-        $cache          = common_cache_FileCache::singleton();
-
-        $force          = $this->hasRequestParameter('force');
-        $test           = new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
-
-        if ($this->hasRequestParameter('config')) {
-            $config = array_merge($config, json_decode(base64_decode($this->getRequestParameter('config')), true));
+        if (!$bookletData) {
+            $bookletData = [
+                'testData' => null
+            ];
         }
 
-        $model          = $testService->getTestModel($test);
-        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
-            throw new Exception('Not a QTI test');
-        }
-
-        //we use the cache as the pack generation is heavy
-        $entry = self::CACHE_PREFIX . $test->getUri();
-        if($force == true || !$cache->has($entry)){
-
-            //generate the pack
-            $packer   = new QtiTestPacker();
-            $this->getServiceManager()->propagate($packer);
-            $testData = json_encode($packer->packTest($test));
-
-            //put the pack in cache
-            $cache->put($testData, $entry);
-
-        } else {
-            $testData = $cache->get($entry);
+        $config = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet')->getConfig('rendering');
+        if (isset($bookletData['config'])) {
+            $config = array_merge($config, $bookletData['config']);
         }
 
         $this->setData('client_config_url', $this->getClientConfigUrl());
-        $this->setData('testData', $testData);
+        $this->setData('testData', json_encode($bookletData['testData']));
         $this->setData('options', json_encode($config));
         $this->setView('PrintTest/render.tpl');
     }

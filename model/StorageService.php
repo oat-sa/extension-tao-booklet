@@ -19,63 +19,96 @@
 
 namespace oat\taoBooklet\model;
 
-use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
-use core_kernel_fileSystem_FileSystem;
-use common_ext_ExtensionsManager;
-use core_kernel_versioning_File;
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\service\ConfigurableService;
 
-class StorageService
+class StorageService extends ConfigurableService
 {
-    const CONFIG_KEY = 'bookletStorage';
+    use OntologyAwareTrait;
+
+    const SERVICE_ID = 'taoBooklet/bookletStorage';
+
+    const FILE_SYSTEM_ID = 'bookletStorage';
 
     /**
      * @param string $filePath
-     *
-     * @return core_kernel_versioning_File
+     * @return core_kernel_classes_Resource
      */
-    static public function storeFile( $filePath )
+    public function storeFile($filePath)
     {
-        return self::getFileSystem()->spawnFile( $filePath );
+        $file = $this->getFileSystem()->getFile($this->createFileName($filePath));
+
+        $stream = fopen($filePath, 'r+');
+        if (is_resource($stream)) {
+            $file->put($stream);
+            fclose($stream);
+        }
+        
+        return $this->getResource($this->getFileReferenceSerializer()->serialize($file));
     }
 
     /**
-     * Removes file from FS attached to instance
-     *
-     * @param $instance core_kernel_classes_Resource
+     * @param core_kernel_classes_Resource $fileResource
+     * @return File
      */
-    static public function removeAttachedFile( core_kernel_classes_Resource $instance )
+    public function getFile($fileResource)
     {
-        if ( ! is_null( $instance )) {
-            $contentUri = $instance->getOnePropertyValue(
-                new core_kernel_classes_Property( BookletClassService::PROPERTY_FILE_CONTENT )
-            );
+        $fileResource = $this->getResource($fileResource);
+        if ($fileResource->exists()) {
+            return $this->getFileReferenceSerializer()->unserializeFile($fileResource->getUri());
+        }
+        return null;
+    }
 
-            if ($contentUri instanceof core_kernel_classes_Resource) {
-                $file = new core_kernel_versioning_File( $contentUri );
-                $file->delete();
-            }
+    /**
+     * @param core_kernel_classes_Resource $fileResource
+     */
+    public function deleteFile($fileResource)
+    {
+        $fileResource = $this->getResource($fileResource);
+        if ($fileResource->exists()) {
+            $this->getFile($fileResource)->delete();
+            $fileResource->delete();
         }
     }
 
     /**
      *
-     * @return \core_kernel_fileSystem_FileSystem
+     * @return \oat\oatbox\filesystem\Directory
      */
-    static public function getFileSystem()
+    protected function getFileSystem()
     {
-        $uri = common_ext_ExtensionsManager::singleton()->getExtensionById( 'taoBooklet' )->getConfig(
-            self::CONFIG_KEY
-        );
-
-        return new core_kernel_fileSystem_FileSystem( $uri );
+        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getDirectory(self::FILE_SYSTEM_ID);
     }
 
-    static public function setFileSystem( core_kernel_fileSystem_FileSystem $fs )
+    /**
+     * Get serializer to persist filesystem object
+     *
+     * @return FileReferenceSerializer
+     */
+    protected function getFileReferenceSerializer()
     {
-        common_ext_ExtensionsManager::singleton()->getExtensionById( 'taoBooklet' )->setConfig(
-            self::CONFIG_KEY,
-            $fs->getUri()
-        );
+        return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
+    }
+
+    /**
+     * Create a unique file name on basis of the original one.
+     * @param string $originalName
+     * @return string
+     */
+    protected function createFileName($originalName)
+    {
+        $returnValue = uniqid(hash('crc32', $originalName));
+
+        $ext = @pathinfo($originalName, PATHINFO_EXTENSION);
+        if (!empty($ext)){
+            $returnValue .= '.' . $ext;
+        }
+
+        return (string) $returnValue;
     }
 }

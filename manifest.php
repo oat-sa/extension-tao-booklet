@@ -24,26 +24,27 @@ return array(
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '1.2.0',
+    'version'     => '1.5.0',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => array(
-        'tao'          => '>=9.0.0',
+        'tao'          => '>=10.2.0',
         'taoQtiTest'   => '>=7.0.0',
-        'taoQtiPrint' => '>=1.1.0',
-        'taoOutcomeUi'   => '>=4.3.0',
+        'taoQtiPrint'  => '>=1.1.0',
+        'taoOutcomeUi' => '>=4.3.0',
     ),
     // for compatibility
     'dependencies' => array('tao','taoQtiTest'),
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager', array('ext'=>'taoBooklet')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', array('ext'=>'taoBooklet', 'mod' => 'PrintTest', 'act' => 'render')),
     ),
     'models' => array(
        'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet'
     ),
     'install' => array(
         'php' => array(
-            dirname(__FILE__).'/scripts/install/setupStorage.php',
+            \oat\taoBooklet\scripts\install\SetupStorage::class,
             \oat\taoBooklet\scripts\install\SetupBookletConfigService::class,
             \oat\taoBooklet\scripts\install\RegisterTestResultsPlugins::class,
         ),

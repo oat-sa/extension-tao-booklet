@@ -21,9 +21,15 @@
 namespace oat\taoBooklet\scripts\update;
 
 use oat\tao\helpers\Template;
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\tao\model\accessControl\func\AclProxy;
+use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoBooklet\model\BookletDataService;
+use oat\taoBooklet\model\StorageService;
 use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
+use oat\taoBooklet\scripts\install\SetupStorage;
 
 /**
  *
@@ -73,11 +79,47 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.1.0');
         }
 
-        if ($this->isVersion('1.1.0')) {
+        $this->skip('1.1.0', '1.2.1');
+
+        if ($this->isVersion('1.2.1')) {
+
+            $storageService = new StorageService();
+            $this->getServiceManager()->propagate($storageService);
+            $this->getServiceManager()->register(StorageService::SERVICE_ID, $storageService);
+
+            $this->runExtensionScript(SetupStorage::class);
+            $this->setVersion('1.3.0');
+        }
+
+        if ($this->isVersion('1.3.0')) {
+
+            $bookletDataService = new BookletDataService();
+            $this->getServiceManager()->propagate($bookletDataService);
+            $this->getServiceManager()->register(BookletDataService::SERVICE_ID, $bookletDataService);
+
+            AclProxy::applyRule(new AccessRule(
+                AccessRule::GRANT,
+                TaoRoles::ANONYMOUS,
+                ['ext'=>'taoBooklet', 'mod' => 'PrintTest', 'act' => 'render']
+            ));
+
+            $this->setVersion('1.4.0');
+        }
+
+        if ($this->isVersion('1.4.0')) {
+
+            $bookletDataService = new BookletDataService();
+            $this->getServiceManager()->propagate($bookletDataService);
+            $this->getServiceManager()->register(BookletDataService::SERVICE_ID, $bookletDataService);
+
+            $this->setVersion('1.4.1');
+        }
+
+        if ($this->isVersion('1.4.1')) {
 
             $this->runExtensionScript(RegisterTestResultsPlugins::class);
 
-            $this->setVersion('1.2.0');
+            $this->setVersion('1.5.0');
         }
     }
 }
