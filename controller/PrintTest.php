@@ -31,7 +31,6 @@ namespace oat\taoBooklet\controller;
 use common_ext_ExtensionsManager;
 use oat\taoBooklet\model\BookletDataService;
 use tao_actions_CommonModule;
-use tao_helpers_Uri;
 
 /**
  * Class PrintTest
@@ -46,10 +45,9 @@ class PrintTest extends tao_actions_CommonModule
     {
         session_write_close();
 
-        $bookletUri = tao_helpers_Uri::decode($this->getRequestParameter('uri'));
-
-        $cache = $this->getServiceManager()->get(BookletDataService::SERVICE_ID);
-        $bookletData = $cache->getData($bookletUri);
+        $storageKey = $this->getRequestParameter('token');
+        $storageService = $this->getServiceManager()->get(BookletDataService::SERVICE_ID);
+        $bookletData = $storageService->getData($storageKey);
 
         if (!$bookletData) {
             $bookletData = [

@@ -65,25 +65,22 @@ class UpdateBooklet extends AbstractBookletTask
         $this->startCliSession($params['user']);
 
         $bookletUri = $params['uri'];
-        $cacheUri = uniqid($bookletUri);
         $classService = BookletClassService::singleton();
         $instance = $this->getResource($bookletUri);
         $test = $classService->getTest($instance);
         $config = $this->getBookletConfig($instance);
 
-        $cache = $this->getServiceLocator()->get(BookletDataService::SERVICE_ID);
-        $cache->setData($cacheUri, [
+        $storageKey = uniqid(hash('crc32', $bookletUri));
+        $storageService = $this->getServiceLocator()->get(BookletDataService::SERVICE_ID);
+        $storageService->setData($storageKey, [
             'test' => $test->getUri(),
             'testData' => $this->compileTest($test),
             'config' => $config,
         ]);
 
         $tmpFolder = tao_helpers_File::createTempDir();
-
         $tmpFile = $tmpFolder . 'test.pdf';
-        $url = tao_helpers_Uri::url('render', 'PrintTest', 'taoBooklet', array(
-            'uri' => tao_helpers_Uri::encode($cacheUri)
-        ));
+        $url = tao_helpers_Uri::url('render', 'PrintTest', 'taoBooklet', ['token' => $storageKey]);
 
         $exporter = new PdfBookletExporter($test->getLabel(), $config);
         $exporter->setContent($url);
@@ -92,7 +89,7 @@ class UpdateBooklet extends AbstractBookletTask
         $report = $classService->updateInstanceAttachment($instance, $tmpFile);
 
         tao_helpers_File::delTree($tmpFolder);
-        $cache->cleanData($cacheUri);
+        $storageService->cleanData($storageKey);
 
         return $report;
     }

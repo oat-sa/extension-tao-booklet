@@ -23,6 +23,8 @@
 
 namespace oat\taoBooklet\model;
 
+use oat\oatbox\filesystem\Directory;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 
 /**
@@ -32,31 +34,32 @@ use oat\oatbox\service\ConfigurableService;
 class BookletDataService extends ConfigurableService
 {
     const SERVICE_ID = 'taoBooklet/BookletDataService';
-    const CACHE_PREFIX = 'booklet_data_';
+    const FILE_SYSTEM_ID = 'sharedTmp';
+    const STORAGE_PREFIX = 'booklet_data_';
 
     /**
-     * @var \common_cache_Cache
+     * @var Directory
      */
-    protected $cache;
+    protected $fileSystem;
 
     /**
-     * @return \common_cache_Cache
+     * @return Directory
      */
-    protected function getCache()
+    protected function getFileSystem()
     {
-        if (!isset($this->cache)) {
-            $this->cache = $this->getServiceManager()->get('generis/cache');
+        if (!isset($this->fileSystem)) {
+            $this->fileSystem = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)->getDirectory(self::FILE_SYSTEM_ID);
         }
-        return $this->cache;
+        return $this->fileSystem;
     }
 
     /**
      * @param string $key
      * @return string
      */
-    protected function getCacheKey($key)
+    protected function getStorageKey($key)
     {
-        return self::CACHE_PREFIX . $key;
+        return self::STORAGE_PREFIX . $key;
     }
 
     /**
@@ -65,11 +68,9 @@ class BookletDataService extends ConfigurableService
      */
     public function getData($key)
     {
-        $cache = $this->getCache();
-        $entry = $this->getCacheKey($key);
-
-        if ($cache->has($entry)) {
-            return json_decode($cache->get($entry), true);
+        $file = $this->getFileSystem()->getFile($this->getStorageKey($key));
+        if ($file->exists()) {
+            return json_decode($file->read(), true);
         }
         return null;
     }
@@ -81,7 +82,7 @@ class BookletDataService extends ConfigurableService
      */
     public function setData($key, $data)
     {
-        $this->getCache()->put(json_encode($data), $this->getCacheKey($key));
+        $this->getFileSystem()->getFile($this->getStorageKey($key))->put(json_encode($data));
         return $this;
     }
 
@@ -91,11 +92,9 @@ class BookletDataService extends ConfigurableService
      */
     public function cleanData($key)
     {
-        $cache = $this->getCache();
-        $entry = $this->getCacheKey($key);
-
-        if ($cache->has($entry)) {
-            $cache->remove($entry);
+        $file = $this->getFileSystem()->getFile($this->getStorageKey($key));
+        if ($file->exists()) {
+            $file->delete();
         }
         return $this;
     }
