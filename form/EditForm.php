@@ -44,8 +44,10 @@ class EditForm extends \tao_actions_form_Instance
     public function setAllowDownload( $allowDownload )
     {
         $downloadBtn = $this->getForm()->getAction('Download');
+        $downloadBtnHtml = $this->getForm()->getAction('Download-Html');
         if ( ! $allowDownload ) {
             $downloadBtn->setAttribute( 'disabled', 'disabled' );
+            $downloadBtnHtml->setAttribute( 'disabled', 'disabled' );
         }
     }
 
@@ -67,8 +69,17 @@ class EditForm extends \tao_actions_form_Instance
         $downloadBtn->setIcon( 'icon-download' );
         $downloadBtn->addClass( 'btn-download btn-success small' );
 
+
+        $test     = BookletClassService::singleton()->getTest( $this->getInstance() );
+        $downloadBtnHtml = tao_helpers_form_FormFactory::getElement('Download-Html', 'Free');
+        if(!is_null($test)){
+            $url = tao_helpers_Uri::url( 'render', 'PrintTest', 'taoBooklet', array( 'uri' => $test->getUri() ) );
+            $value =  '<a href="'. $url . '" target="_blank" class="btn-download-html btn-success small"><span class="icon-download"></span> ' . __( 'Generate' ) . ' HTML' . '</a>';
+            $downloadBtnHtml->setValue($value);
+        }
+
         $this->getForm()->removeElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
-        $this->getForm()->setActions( array_merge( $this->form->getActions(), array( $downloadBtn ) ), 'bottom' );
+        $this->getForm()->setActions( array_merge( $this->form->getActions(), array( $downloadBtn, $downloadBtnHtml ) ), 'bottom' );
         $this->getForm()->addElement( $formatElt );
 
     }
