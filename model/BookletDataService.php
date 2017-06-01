@@ -24,6 +24,7 @@
 namespace oat\taoBooklet\model;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\service\StateStorage;
 
 /**
  * Class BookletDataService
@@ -32,31 +33,32 @@ use oat\oatbox\service\ConfigurableService;
 class BookletDataService extends ConfigurableService
 {
     const SERVICE_ID = 'taoBooklet/BookletDataService';
-    const CACHE_PREFIX = 'booklet_data_';
+    const STORAGE_PREFIX = 'booklet_data_';
+    const STORAGE_USER = 'BookletUser';
 
     /**
-     * @var \common_cache_Cache
+     * @var StateStorage
      */
-    protected $cache;
+    protected $storage;
 
     /**
-     * @return \common_cache_Cache
+     * @return StateStorage
      */
-    protected function getCache()
+    protected function getStorage()
     {
-        if (!isset($this->cache)) {
-            $this->cache = $this->getServiceManager()->get('generis/cache');
+        if (!isset($this->storage)) {
+            $this->storage = $this->getServiceManager()->get('tao/stateStorage');
         }
-        return $this->cache;
+        return $this->storage;
     }
 
     /**
      * @param string $key
      * @return string
      */
-    protected function getCacheKey($key)
+    protected function getStorageKey($key)
     {
-        return self::CACHE_PREFIX . $key;
+        return self::STORAGE_PREFIX . $key;
     }
 
     /**
@@ -65,11 +67,11 @@ class BookletDataService extends ConfigurableService
      */
     public function getData($key)
     {
-        $cache = $this->getCache();
-        $entry = $this->getCacheKey($key);
+        $storage = $this->getStorage();
+        $entry = $this->getStorageKey($key);
 
-        if ($cache->has($entry)) {
-            return json_decode($cache->get($entry), true);
+        if ($storage->has(self::STORAGE_USER, $entry)) {
+            return json_decode($storage->get(self::STORAGE_USER, $entry), true);
         }
         return null;
     }
@@ -81,7 +83,7 @@ class BookletDataService extends ConfigurableService
      */
     public function setData($key, $data)
     {
-        $this->getCache()->put(json_encode($data), $this->getCacheKey($key));
+        $this->getStorage()->set(self::STORAGE_USER, $this->getStorageKey($key), json_encode($data));
         return $this;
     }
 
@@ -91,11 +93,11 @@ class BookletDataService extends ConfigurableService
      */
     public function cleanData($key)
     {
-        $cache = $this->getCache();
-        $entry = $this->getCacheKey($key);
+        $storage = $this->getStorage();
+        $entry = $this->getStorageKey($key);
 
-        if ($cache->has($entry)) {
-            $cache->remove($entry);
+        if ($storage->has(self::STORAGE_USER, $entry)) {
+            $storage->del(self::STORAGE_USER, $entry);
         }
         return $this;
     }
