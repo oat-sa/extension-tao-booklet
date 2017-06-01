@@ -33,7 +33,7 @@ use oat\oatbox\service\ConfigurableService;
  */
 class BookletDataService extends ConfigurableService
 {
-    const SERVICE_ID = 'taoBooklet/BookletDataService';
+    const SERVICE_ID = 'taoBooklet/bookletDataService';
     const FILE_SYSTEM_ID = 'sharedTmp';
     const STORAGE_PREFIX = 'booklet_data_';
 
