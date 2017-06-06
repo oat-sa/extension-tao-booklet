@@ -27,6 +27,7 @@ use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBooklet\model\BookletDataService;
 use oat\taoBooklet\model\StorageService;
+use oat\taoBooklet\model\tasks\BookletTaskService;
 use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
 use oat\taoBooklet\scripts\install\SetupStorage;
@@ -117,9 +118,13 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         $this->skip('1.4.1', '1.4.3');
 
-        if ($this->isVersion('1.4.2')) {
+        if ($this->isVersion('1.4.3')) {
 
             $this->runExtensionScript(RegisterTestResultsPlugins::class);
+
+            $bookletTaskService = new BookletTaskService();
+            $this->getServiceManager()->propagate($bookletTaskService);
+            $this->getServiceManager()->register(BookletTaskService::SERVICE_ID, $bookletTaskService);
 
             $this->setVersion('1.5.0');
         }
