@@ -115,7 +115,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.4.1');
         }
 
-        $this->skip('1.4.1', '1.4.2');
+        $this->skip('1.4.1', '1.4.3');
 
         if ($this->isVersion('1.4.2')) {
 
