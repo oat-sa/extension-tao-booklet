@@ -47,26 +47,35 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
     use OntologyAwareTrait;
 
     /**
-     * Gets the config for a booklet instance using either the instance itself or an array of properties
-     * @param core_kernel_classes_Resource $instance
-     * @param array $params
-     * @return mixed
+     * The list of task parameters
+     * @var array
      */
-    abstract protected function getBookletConfig($instance, $params);
+    protected $taskParams;
 
     /**
-     * @param core_kernel_classes_Resource $instance
+     * The related instance
+     * @var core_kernel_classes_Resource
+     */
+    protected $instance;
+
+    /**
+     * Gets the config for a booklet instance using either the instance itself or an array of properties
+     * @return mixed
+     */
+    abstract protected function getBookletConfig();
+
+    /**
+     * Gets the test definition data in order to print it
      * @return JsonSerializable
      * @throws \Exception
      */
-    abstract protected function getTestData($instance);
+    abstract protected function getTestData();
 
     /**
      * @param string $filePath
-     * @param core_kernel_classes_Resource $instance
      * @return \common_report_Report
      */
-    abstract protected function storePdf($filePath, $instance);
+    abstract protected function storePdf($filePath);
 
     /**
      *
@@ -77,23 +86,21 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
     public function __invoke($params)
     {
         $this->validateParams($params);
-        $this->startCliSession($params['user']);
+        $this->startCliSession($this->getParam('user'));
 
-        $instance = $this->getResource($params['uri']);
-        $config = $this->getBookletConfig($instance, $params);
+        $this->instance = $this->getResource($this->getParam('uri'));
 
-        return $this->generatePdf($instance, $config);
+        return $this->generatePdf();
     }
 
     /**
-     * @param core_kernel_classes_Resource $instance
-     * @param array $config
      * @return \common_report_Report
      */
-    protected function generatePdf($instance, $config)
+    protected function generatePdf()
     {
-        $storageKey = $this->cacheBookletData($instance->getUri(), [
-            'testData' => $this->getTestData($instance),
+        $config = $this->getBookletConfig();
+        $storageKey = $this->cacheBookletData($this->getParam('uri'), [
+            'testData' => $this->getTestData(),
             'config' => $config,
         ]);
 
@@ -104,7 +111,7 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
         $exporter->setContent($this->getRendererUrl($storageKey));
         $exporter->saveAs($tmpFile);
 
-        $report = $this->storePdf($tmpFile, $instance);
+        $report = $this->storePdf($tmpFile);
 
         tao_helpers_File::delTree($tmpFolder);
         $this->cleanBookletData($storageKey);
@@ -119,11 +126,44 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
      */
     protected function validateParams($params)
     {
-        foreach (['uri', 'user'] as $name) {
+        foreach ($this->getMandatoryParams() as $name) {
             if (!isset($params[$name])) {
                 throw new common_exception_MissingParameter($name, self::class);
             }
         }
+
+        $this->taskParams = $params;
+    }
+
+    /**
+     * Gets a parameter of the task
+     * @param string $name
+     * @return mixed|null
+     */
+    protected function getParam($name)
+    {
+        if (isset($this->taskParams[$name])) {
+            return $this->taskParams[$name];
+        }
+        return null;
+    }
+
+    /**
+     * Gets the list of mandatory parameters
+     * @return array
+     */
+    protected function getMandatoryParams()
+    {
+        return ['uri', 'user'];
+    }
+
+    /**
+     * Gets the related instance
+     * @return core_kernel_classes_Resource
+     */
+    protected function getInstance()
+    {
+        return $this->instance;
     }
 
     /**

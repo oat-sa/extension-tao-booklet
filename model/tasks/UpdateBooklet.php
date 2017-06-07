@@ -23,7 +23,6 @@
 
 namespace oat\taoBooklet\model\tasks;
 
-use core_kernel_classes_Resource;
 use JsonSerializable;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
@@ -37,6 +36,9 @@ use taoTests_models_classes_TestsService;
  */
 class UpdateBooklet extends AbstractBookletTask
 {
+    /**
+     * @var BookletClassService
+     */
     protected $bookletClassService;
 
     /**
@@ -49,25 +51,22 @@ class UpdateBooklet extends AbstractBookletTask
 
     /**
      * Gets the config for a booklet instance using either the instance itself or an array of properties
-     * @param core_kernel_classes_Resource $instance
-     * @param array $params
      * @return mixed
      */
-    protected function getBookletConfig($instance, $params)
+    protected function getBookletConfig()
     {
         $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
-        return $configService->getConfig($instance);
+        return $configService->getConfig($this->getInstance());
     }
 
     /**
-     * @param core_kernel_classes_Resource $instance
      * @return JsonSerializable
      * @throws \Exception
      */
-    protected function getTestData($instance)
+    protected function getTestData()
     {
         $testService = taoTests_models_classes_TestsService::singleton();
-        $test = $this->bookletClassService->getTest($instance);
+        $test = $this->bookletClassService->getTest($this->getInstance());
 
         $model = $testService->getTestModel($test);
         if ($model->getUri() != taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
@@ -81,12 +80,11 @@ class UpdateBooklet extends AbstractBookletTask
 
     /**
      * @param string $filePath
-     * @param core_kernel_classes_Resource $instance
      * @return \common_report_Report
      */
-    protected function storePdf($filePath, $instance)
+    protected function storePdf($filePath)
     {
-        return $this->bookletClassService->updateInstanceAttachment($instance, $filePath);
+        return $this->bookletClassService->updateInstanceAttachment($this->getInstance(), $filePath);
     }
 
     /**

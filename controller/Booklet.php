@@ -23,21 +23,18 @@ namespace oat\taoBooklet\controller;
 use common_report_Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\task\Queue;
-use oat\oatbox\task\Task;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardBookletForm;
 use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
-use oat\taoBooklet\model\StorageService;
 use oat\taoBooklet\model\BookletTaskService;
+use oat\taoBooklet\model\StorageService;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\Taskqueue\Persistence\RdsQueue;
-use tao_actions_SaSModule;
 use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
@@ -47,24 +44,8 @@ use tao_models_classes_dataBinding_GenerisFormDataBinder;
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @package taoDelivery
  */
-class Booklet extends tao_actions_SaSModule
+class Booklet extends AbstractBookletController
 {
-    use OntologyAwareTrait;
-
-    public function __construct()
-    {
-        $this->service = BookletClassService::singleton();
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see tao_actions_SaSModule::getClassService()
-     */
-    protected function getClassService()
-    {
-        return BookletClassService::singleton();
-    }
-
     /**
      * Main action
      *
@@ -190,7 +171,6 @@ class Booklet extends tao_actions_SaSModule
      */
     public function wizard()
     {
-        $this->defaultData();
         try {
             $bookletClass  = $this->getCurrentClass();
             $formContainer = new WizardBookletForm( $bookletClass );
@@ -219,8 +199,6 @@ class Booklet extends tao_actions_SaSModule
      */
     public function testBooklet()
     {
-        $this->defaultData();
-
         try {
             $test = $this->getCurrentInstance();
             $bookletClass = $this->getRootClass();
@@ -287,20 +265,5 @@ class Booklet extends tao_actions_SaSModule
         $this->setData('myForm', $form->render());
         $this->setData('formTitle', __('Create a new booklet'));
         $this->setView('form.tpl', 'tao');
-    }
-
-    /**
-     * @param $task
-     * @return common_report_Report
-     */
-    protected function getTaskReport($task)
-    {
-        $status = $task->getStatus();
-        if ($status === Task::STATUS_FINISHED || $status === Task::STATUS_ARCHIVED) {
-            $report = $task->getReport();
-        } else {
-            $report = common_report_Report::createInfo(__('Booklet task created'));
-        }
-        return $report;
     }
 }
