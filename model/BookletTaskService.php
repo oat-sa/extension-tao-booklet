@@ -21,13 +21,14 @@
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
 
-namespace oat\taoBooklet\model\tasks;
+namespace oat\taoBooklet\model;
 
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
+use oat\taoBooklet\model\tasks\UpdateBooklet;
 
 class BookletTaskService extends ConfigurableService
 {
@@ -38,7 +39,7 @@ class BookletTaskService extends ConfigurableService
      * @param core_kernel_classes_Resource $resource
      * @return Task created task id
      */
-    public function createTask(core_kernel_classes_Resource $resource)
+    public function createBookletTask(core_kernel_classes_Resource $resource)
     {
         $action = new UpdateBooklet();
         $this->getServiceManager()->propagate($action);

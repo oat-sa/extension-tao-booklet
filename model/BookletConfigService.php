@@ -120,6 +120,7 @@ class BookletConfigService extends ConfigurableService
     {
         if ($instance instanceof core_kernel_classes_Resource) {
             $properties = $instance->getPropertiesValues([
+                RDFS_LABEL,
                 BookletClassService::PROPERTY_DESCRIPTION,
                 BookletClassService::PROPERTY_LAYOUT,
                 BookletClassService::PROPERTY_COVER_PAGE,
@@ -148,15 +149,10 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_LOGO => $this->getOption(self::OPTION_LOGO),
             self::CONFIG_DATE => \tao_helpers_Date::displayeDate(time()),
             self::CONFIG_REGULAR => false,
+            self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
+            self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
         ];
 
-        if (isset($properties[BookletClassService::PROPERTY_DESCRIPTION])) {
-            $description = $properties[BookletClassService::PROPERTY_DESCRIPTION];
-            if (is_array($description)) {
-                $description = current($properties[BookletClassService::PROPERTY_DESCRIPTION]);
-            }
-            $config[self::CONFIG_DESCRIPTION] = (string)$description;
-        }
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
             $config[self::CONFIG_LAYOUT] = $this->getConfigSet($properties[BookletClassService::PROPERTY_LAYOUT]);
         }
@@ -171,6 +167,24 @@ class BookletConfigService extends ConfigurableService
         }
 
         return $config;
+    }
+
+    /**
+     * Gets the value from a list of properties
+     * @param array $properties
+     * @param string $key
+     * @return null|string
+     */
+    protected function getPropertyValue($properties, $key)
+    {
+        if (isset($properties[$key])) {
+            $value = $properties[$key];
+            if (is_array($value)) {
+                $value = current($properties[$key]);
+            }
+            return (string)$value;
+        }
+        return null;
     }
 
     /**

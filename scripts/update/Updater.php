@@ -27,7 +27,7 @@ use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBooklet\model\BookletDataService;
 use oat\taoBooklet\model\StorageService;
-use oat\taoBooklet\model\tasks\BookletTaskService;
+use oat\taoBooklet\model\BookletTaskService;
 use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
 use oat\taoBooklet\scripts\install\SetupStorage;

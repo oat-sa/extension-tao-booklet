@@ -17,4 +17,4 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
  *
  */
-return new \oat\taoBooklet\model\tasks\BookletTaskService();
+return new \oat\taoBooklet\model\BookletTaskService();

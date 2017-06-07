@@ -34,7 +34,7 @@ use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\StorageService;
-use oat\taoBooklet\model\tasks\BookletTaskService;
+use oat\taoBooklet\model\BookletTaskService;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use oat\Taskqueue\Persistence\RdsQueue;
 use tao_actions_SaSModule;
@@ -138,7 +138,7 @@ class Booklet extends tao_actions_SaSModule
     {
         $instance  = $this->getCurrentInstance();
 
-        $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createTask($instance);
+        $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createBookletTask($instance);
 
         $report = $this->getTaskReport($task);
 
@@ -269,7 +269,7 @@ class Booklet extends tao_actions_SaSModule
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
         $binder->bind($form->getValues());
 
-        $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createTask($instance);
+        $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createBookletTask($instance);
 
         // return report with instance
         $report->setMessage(__('Booklet %s created', $instance->getLabel()));
