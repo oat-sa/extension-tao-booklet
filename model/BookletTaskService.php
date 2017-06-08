@@ -28,6 +28,7 @@ use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
+use oat\taoBooklet\model\tasks\PrintResults;
 use oat\taoBooklet\model\tasks\UpdateBooklet;
 
 class BookletTaskService extends ConfigurableService
@@ -49,6 +50,34 @@ class BookletTaskService extends ConfigurableService
             'user' => common_session_SessionManager::getSession()->getUserUri(),
         ];
         $task = $queue->createTask($action, $queueParameters, false, $resource->getLabel(), $resource->getUri());
+
+        return $task;
+    }
+
+    /**
+     * Create task in queue
+     * @param core_kernel_classes_Resource $resource
+     * @param string $resultId
+     * @param array $printConfig
+     * @return Task created task id
+     */
+    public function createPrintResultsTask(core_kernel_classes_Resource $resource, $resultId, $printConfig)
+    {
+        $action = new PrintResults();
+        $this->getServiceManager()->propagate($action);
+        $queue = $this->getServiceLocator()->get(Queue::SERVICE_ID);
+        $queueParameters = [
+            'id' => $resultId,
+            'uri' => $resource->getUri(),
+            'user' => common_session_SessionManager::getSession()->getUserUri(),
+            'config' => $printConfig,
+        ];
+
+        $label = $resource->getLabel();
+        if (isset($printConfig[RDFS_LABEL])) {
+            $label = $printConfig[RDFS_LABEL];
+        }
+        $task = $queue->createTask($action, $queueParameters, false, $label, $resource->getUri());
 
         return $task;
     }

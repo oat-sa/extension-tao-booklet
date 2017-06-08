@@ -66,7 +66,7 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
 
     /**
      * Gets the test definition data in order to print it
-     * @return JsonSerializable
+     * @return JsonSerializable|array
      * @throws \Exception
      */
     abstract protected function getTestData();
