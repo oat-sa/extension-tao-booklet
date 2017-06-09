@@ -24,7 +24,6 @@ use common_report_Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use oat\oatbox\filesystem\File;
-use oat\oatbox\task\Queue;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardBookletForm;
@@ -34,7 +33,6 @@ use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletTaskService;
 use oat\taoBooklet\model\StorageService;
 use oat\taoDeliveryRdf\model\NoTestsException;
-use oat\Taskqueue\Persistence\RdsQueue;
 use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
@@ -84,8 +82,7 @@ class Booklet extends AbstractBookletController
             $this->setData( 'reload', true );
         }
 
-        $queue = $this->getServiceManager()->get(Queue::SERVICE_ID);
-        $asyncQueue = $queue instanceof RdsQueue;
+        $asyncQueue = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->isAsyncQueue();
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
@@ -140,9 +137,12 @@ class Booklet extends AbstractBookletController
             if ($fileResource) {
                 /** @var File $file */
                 $file = $this->getServiceManager()->get(StorageService::SERVICE_ID)->getFile($fileResource);
-
-                header('Content-Disposition: attachment; filename="' . $instance->getLabel() . '_' . $file->getBasename() . '"');
-                \tao_helpers_Http::returnStream($file->readPsrStream(), 'application/pdf');
+                if ($file->exists()) {
+                    header('Content-Disposition: attachment; filename="' . $instance->getLabel() . '_' . $file->getBasename() . '"');
+                    \tao_helpers_Http::returnStream($file->readPsrStream(), 'application/pdf');
+                } else {
+                    throw new \common_exception_NotFound('File does not exists: ' . $file->getPrefix());
+                }
             } else {
                 throw new \common_exception_NotFound('Unknown resource ' . $fileResource);
             }

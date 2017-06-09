@@ -30,10 +30,37 @@ use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\model\tasks\PrintResults;
 use oat\taoBooklet\model\tasks\UpdateBooklet;
+use oat\Taskqueue\Persistence\RdsQueue;
 
 class BookletTaskService extends ConfigurableService
 {
     const SERVICE_ID = 'taoBooklet/bookletTaskService';
+
+    /**
+     * @var Queue
+     */
+    protected $queueService;
+
+    /**
+     * @return Queue
+     */
+    protected function getQueueService()
+    {
+        if (!$this->queueService) {
+            $this->queueService = $this->getServiceLocator()->get(Queue::SERVICE_ID);
+        }
+        return $this->queueService;
+    }
+
+    /**
+     * Checks if the queue manager is asynchronous
+     * @return bool
+     */
+    public function isAsyncQueue()
+    {
+        $queue = $this->getQueueService();
+        return $queue instanceof RdsQueue;
+    }
 
     /**
      * Create task in queue
@@ -44,12 +71,11 @@ class BookletTaskService extends ConfigurableService
     {
         $action = new UpdateBooklet();
         $this->getServiceManager()->propagate($action);
-        $queue = $this->getServiceLocator()->get(Queue::SERVICE_ID);
         $queueParameters = [
             'uri' => $resource->getUri(),
             'user' => common_session_SessionManager::getSession()->getUserUri(),
         ];
-        $task = $queue->createTask($action, $queueParameters, false, $resource->getLabel(), $resource->getUri());
+        $task = $this->getQueueService()->createTask($action, $queueParameters, false, $resource->getLabel(), $resource->getUri());
 
         return $task;
     }
@@ -65,7 +91,6 @@ class BookletTaskService extends ConfigurableService
     {
         $action = new PrintResults();
         $this->getServiceManager()->propagate($action);
-        $queue = $this->getServiceLocator()->get(Queue::SERVICE_ID);
         $queueParameters = [
             'id' => $resultId,
             'uri' => $resource->getUri(),
@@ -77,7 +102,10 @@ class BookletTaskService extends ConfigurableService
         if (isset($printConfig[RDFS_LABEL])) {
             $label = $printConfig[RDFS_LABEL];
         }
-        $task = $queue->createTask($action, $queueParameters, false, $label, $resource->getUri());
+        if (isset($printConfig[BookletClassService::PROPERTY_DESCRIPTION])) {
+            $label .= ' - ' . $printConfig[BookletClassService::PROPERTY_DESCRIPTION];
+        }
+        $task = $this->getQueueService()->createTask($action, $queueParameters, false, $label, $resource->getUri());
 
         return $task;
     }
