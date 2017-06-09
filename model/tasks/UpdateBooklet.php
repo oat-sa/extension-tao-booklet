@@ -55,7 +55,7 @@ class UpdateBooklet extends AbstractBookletTask
      */
     protected function getBookletConfig()
     {
-        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+        $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
         return $configService->getConfig($this->getInstance());
     }
 

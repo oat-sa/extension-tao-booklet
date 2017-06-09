@@ -40,14 +40,25 @@ class RegisterTestResultsPlugins extends InstallAction
                 'description' => 'Print the test results',
                 'category' => 'action',
                 'active' => true,
-                'tags' => [ 'print' ]
+                'tags' => [ 'print', 'action' ]
+            ]
+        ],
+        'tool' => [
+            [
+                'id' => 'taskQueue',
+                'name' => 'Results tasks queue',
+                'module' => 'taoBooklet/plugins/taskQueue/taskQueue',
+                'description' => 'List the print tasks',
+                'category' => 'tool',
+                'active' => true,
+                'tags' => [ 'print', 'tool' ]
             ]
         ]
     ];
 
     public function __invoke($params)
     {
-        $pluginService = $this->getServiceManager()->get(ResultsPluginService::SERVICE_ID);
+        $pluginService = $this->getServiceLocator()->get(ResultsPluginService::SERVICE_ID);
         $count = $pluginService->registerPluginsByCategories(self::$plugins);
         return new Report(Report::TYPE_SUCCESS, $count .  ' plugins registered.');
     }

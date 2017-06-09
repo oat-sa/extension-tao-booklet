@@ -24,9 +24,11 @@
 namespace oat\taoBooklet\controller;
 
 use common_session_SessionManager;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\tao\model\TaskQueueActionTrait;
+use oat\taoBooklet\model\StorageService;
 use oat\Taskqueue\Persistence\RdsQueue;
 use tao_actions_CommonModule;
 
@@ -40,6 +42,7 @@ use tao_actions_CommonModule;
 class TaskQueueData extends tao_actions_CommonModule
 {
     use TaskQueueActionTrait;
+    use OntologyAwareTrait;
 
     /**
      * Lists all tasks related to booklet create/regenerate
@@ -120,5 +123,45 @@ class TaskQueueData extends tao_actions_CommonModule
             $this->returnError(__('impossible to update task status'));
             return;
         }
+    }
+
+    /**
+     * Gets the file attached to the task
+     */
+    public function downloadTask(){
+        if($this->hasRequestParameter('taskId')){
+            /**
+             * @var $task \oat\Taskqueue\JsonTask
+             */
+            $task   = $this->getTask($this->getRequestParameter('taskId'));
+            $report = \common_report_Report::jsonUnserialize($task->getReport());
+            if(!is_null($report)){
+                $filename = null;
+                /** @var \common_report_Report $success */
+                foreach ($report->getSuccesses() as $success){
+                    if(!is_null($filename = $success->getData())){
+                        if (is_array($filename)) {
+                            $filename = $filename['uriResource'];
+                        }
+                        break;
+                    }
+                }
+
+                if ($filename) {
+                    /** @var StorageService $storageService */
+                    $storageService = $this->getServiceManager()->get(StorageService::SERVICE_ID);
+                    $fileResource = $this->getResource($filename);
+                    $file = $storageService->getFile($fileResource);
+                    if ($file->exists()) {
+                        header('Content-Disposition: attachment; filename="' . $task->getLabel() . '_' . $file->getBasename() . '"');
+                        \tao_helpers_Http::returnStream($file->readPsrStream(), 'application/pdf');
+                        return;
+                    }
+                }
+            }
+        }
+        $this->returnJson([
+            'success' => false,
+        ]);
     }
 }

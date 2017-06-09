@@ -69,6 +69,22 @@ class PrintResults extends AbstractBookletTask
     }
 
     /**
+     *
+     * @param array $params
+     * @return \common_report_Report
+     * @throws \common_exception_MissingParameter
+     */
+    public function __invoke($params)
+    {
+        // make sure the context is loaded
+        $extensionManager = $this->getServiceLocator()->get('generis/extensionManager');
+        $extensionManager->getExtensionById('taoDeliveryRdf');
+
+        return parent::__invoke($params);
+    }
+
+
+    /**
      * Gets the list of mandatory parameters
      * @return array
      */
@@ -138,7 +154,7 @@ class PrintResults extends AbstractBookletTask
             'variables' => $this->getResultVariables($resultId),
         ];
 
-        $config = $this->getServiceManager()->get(QtiRunnerConfig::SERVICE_ID);
+        $config = $this->getServiceLocator()->get(QtiRunnerConfig::SERVICE_ID);
         $reviewConfig = $config->getConfigValue('review');
         $displaySubsectionTitle = isset($reviewConfig['displaySubsectionTitle']) ? (bool)$reviewConfig['displaySubsectionTitle'] : true;
 
