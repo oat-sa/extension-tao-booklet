@@ -76,14 +76,30 @@ class Results extends AbstractBookletController
         $this->getResultStorage($delivery);
         $testTaker = $this->getTestTakerData($resultId);
 
+        /* @var BookletTaskService $bookletTaskService */
+        $bookletTaskService = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID);
+        $asyncQueue = $bookletTaskService->isAsyncQueue();
+
         if ($form->isValid() && $form->isSubmited()) {
             $values = $form->getValues();
 
-            $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createPrintResultsTask($delivery, $resultId, $values);
-
+            $task = $bookletTaskService->createPrintResultsTask($delivery, $resultId, $values);
             $report = $this->getTaskReport($task);
 
+            if (!$asyncQueue) {
+                $filename = $this->getReportAttachment($report);
+                if ($filename) {
+                    $file = $this->getFile($filename);
+                    if ($file->exists()) {
+                        $this->prepareDownload($task->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
+                        \tao_helpers_Http::returnStream($file->readPsrStream());
+                        return;
+                    }
+                }
+            }
+
             $this->returnReport($report);
+
         } else {
             $form->getElement(tao_helpers_Uri::encode(RDFS_LABEL))->setValue($delivery->getLabel());
             $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
@@ -91,9 +107,11 @@ class Results extends AbstractBookletController
 
             $this->getServiceManager()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
 
+            $this->setData('asyncQueue', $asyncQueue);
+            $this->setData('queueId', $delivery->getUri());
             $this->setData('myForm', $form->render());
             $this->setData('formTitle', __('Print the results'));
-            $this->setView('form.tpl', 'tao');
+            $this->setView('Results/print.tpl');
         }
     }
 

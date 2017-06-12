@@ -29,6 +29,11 @@ define(function () {
                 'wizard'      : 'controller/Booklet/wizard',
                 'preview'     : 'controller/Booklet/preview'
             }
+        },
+        'Results': {
+            'actions': {
+                'printWizard' : 'controller/Results/printWizard'
+            }
         }
     };
 });

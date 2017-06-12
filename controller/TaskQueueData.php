@@ -24,13 +24,9 @@
 namespace oat\taoBooklet\controller;
 
 use common_session_SessionManager;
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
-use oat\tao\model\TaskQueueActionTrait;
-use oat\taoBooklet\model\StorageService;
 use oat\Taskqueue\Persistence\RdsQueue;
-use tao_actions_CommonModule;
 
 /**
  * Rest API controller for task queue
@@ -39,10 +35,8 @@ use tao_actions_CommonModule;
  * @package oat\tao\controller\api
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  */
-class TaskQueueData extends tao_actions_CommonModule
+class TaskQueueData extends AbstractBookletController
 {
-    use TaskQueueActionTrait;
-    use OntologyAwareTrait;
 
     /**
      * Lists all tasks related to booklet create/regenerate
@@ -128,33 +122,21 @@ class TaskQueueData extends tao_actions_CommonModule
     /**
      * Gets the file attached to the task
      */
-    public function downloadTask(){
-        if($this->hasRequestParameter('taskId')){
+    public function downloadTask()
+    {
+        if ($this->hasRequestParameter('taskId')) {
             /**
              * @var $task \oat\Taskqueue\JsonTask
              */
-            $task   = $this->getTask($this->getRequestParameter('taskId'));
+            $task = $this->getTask($this->getRequestParameter('taskId'));
             $report = \common_report_Report::jsonUnserialize($task->getReport());
-            if(!is_null($report)){
-                $filename = null;
-                /** @var \common_report_Report $success */
-                foreach ($report->getSuccesses() as $success){
-                    if(!is_null($filename = $success->getData())){
-                        if (is_array($filename)) {
-                            $filename = $filename['uriResource'];
-                        }
-                        break;
-                    }
-                }
-
+            if (!is_null($report)) {
+                $filename = $this->getReportAttachment($report);
                 if ($filename) {
-                    /** @var StorageService $storageService */
-                    $storageService = $this->getServiceManager()->get(StorageService::SERVICE_ID);
-                    $fileResource = $this->getResource($filename);
-                    $file = $storageService->getFile($fileResource);
+                    $file = $this->getFile($filename);
                     if ($file->exists()) {
-                        header('Content-Disposition: attachment; filename="' . $task->getLabel() . '_' . $file->getBasename() . '"');
-                        \tao_helpers_Http::returnStream($file->readPsrStream(), 'application/pdf');
+                        $this->prepareDownload($task->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
+                        \tao_helpers_Http::returnStream($file->readPsrStream());
                         return;
                     }
                 }
