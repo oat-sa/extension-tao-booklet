@@ -151,7 +151,7 @@ class PrintResults extends AbstractBookletTask
                 'testParts' => [],
             ],
             'items' => [],
-            'variables' => $this->getResultVariables($resultId),
+            'states' => $this->getResultVariables(),
         ];
 
         $config = $this->getServiceLocator()->get(QtiRunnerConfig::SERVICE_ID);
@@ -244,19 +244,20 @@ class PrintResults extends AbstractBookletTask
         $responses = ResponseVariableFormatter::formatStructuredVariablesToItemState($displayedVariables);
         $excludedVariables = array_flip(['numAttempts', 'duration']);
 
+        $resultVariables = [];
         foreach ($displayedVariables as &$item) {
             if (!isset($item['uri'])) {
                 continue;
             }
             $itemUri = $item['uri'];
             if (isset($responses[$itemUri])) {
-                $item['state'] = json_encode(array_diff_key($responses[$itemUri], $excludedVariables));
+                $resultVariables[$itemUri] = array_diff_key($responses[$itemUri], $excludedVariables);
             } else {
-                $item['state'] = null;
+                $resultVariables[$itemUri] = null;
             }
         }
 
-        return $displayedVariables;
+        return $resultVariables;
     }
 
     /**
