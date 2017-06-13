@@ -197,7 +197,7 @@ class PrintResults extends AbstractBookletTask
 
             $testData['data']['testParts'][$partId]['sections'][$sectionId]['items'][] = [
                 'id' => $itemId,
-                'uri' => $itemUri,
+                'href' => $itemUri,
             ];
 
             $testData['items'][$itemUri] = $this->getItemData($itemRef->getHref());
@@ -304,11 +304,11 @@ class PrintResults extends AbstractBookletTask
      * @param RouteItem $routeItem
      * @param TestSession $session
      * @param array $compilationDirs
-     * @return string
+     * @return array
      */
     protected function getRubricBlock($routeItem, $session, $compilationDirs)
     {
-        $rubrics = '';
+        $rubrics = [];
 
         if ($routeItem) {
 
@@ -329,16 +329,17 @@ class PrintResults extends AbstractBookletTask
                 $viewsName = TAOQTITEST_VIEWS_NAME;
                 $$viewsName = array(View::CANDIDATE);
 
-                ob_start();
-                foreach ($routeItem->getRubricBlockRefs() as $rubric) {
+                $tmpDir = \tao_helpers_File::createTempDir();
+                foreach ($rubricRefs as $rubric) {
                     $data = $compilationDirs['private']->read($rubric->getHref());
-                    $tmpFile = \tao_helpers_File::createTempDir() . basename($rubric->getHref());
+                    $tmpFile = $tmpDir . basename($rubric->getHref());
                     file_put_contents($tmpFile, $data);
+                    ob_start();
                     include($tmpFile);
+                    $rubrics[] = ob_get_clean();
                     unlink($tmpFile);
                 }
-                $rubrics = ob_get_contents();
-                ob_end_clean();
+                rmdir($tmpDir);
             }
         }
         return $rubrics;
