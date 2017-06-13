@@ -30,7 +30,7 @@ return array(
         'tao'          => '>=10.2.0',
         'taoQtiTest'   => '>=7.0.0',
         'taoQtiPrint'  => '>=1.1.1',
-        'taoOutcomeUi' => '>=4.3.0',
+        'taoOutcomeUi' => '>=4.5.0',
     ),
     // for compatibility
     'dependencies' => array('tao','taoQtiTest'),
@@ -47,6 +47,7 @@ return array(
             \oat\taoBooklet\scripts\install\SetupStorage::class,
             \oat\taoBooklet\scripts\install\SetupBookletConfigService::class,
             \oat\taoBooklet\scripts\install\RegisterTestResultsPlugins::class,
+            \oat\taoBooklet\scripts\install\SetupEventListeners::class,
         ),
         'rdf' => array(
             dirname(__FILE__). '/scripts/install/booklet.rdf',
