@@ -138,8 +138,8 @@ class Booklet extends AbstractBookletController
                 /** @var File $file */
                 $file = $this->getServiceManager()->get(StorageService::SERVICE_ID)->getFile($fileResource);
                 if ($file->exists()) {
-                    header('Content-Disposition: attachment; filename="' . $instance->getLabel() . '_' . $file->getBasename() . '"');
-                    \tao_helpers_Http::returnStream($file->readPsrStream(), 'application/pdf');
+                    $this->prepareDownload($instance->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
+                    \tao_helpers_Http::returnStream($file->readPsrStream());
                 } else {
                     throw new \common_exception_NotFound('File does not exists: ' . $file->getPrefix());
                 }
