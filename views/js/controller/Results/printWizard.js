@@ -29,25 +29,29 @@ define([
 
     return {
         start: function () {
+            var $header = $('header.section-header');
             var $formContainer = $('.print-form');
-            var $tasksContainer = $('.print-tasks');
             var $reportContainer = $('.print-report');
             var $form = $('form', $formContainer);
             var $submitter = $('.form-submitter', $form);
             var $sent = $(":input[name='" + $form.attr('name') + "_sent']", $form);
-            var asyncQueue = $formContainer.hasClass('async-queue');
+            var asyncQueue = $header.data('async-queue');
+            var $containers = $('.main-container');
+
+            function switchContainer(purpose) {
+                hider.hide($containers);
+                hider.show($containers.filter('[data-purpose="' + purpose + '"]'));
+            }
 
             function refreshTree() {
                 $('.tree').trigger('refresh.taotree', [{
-                    uri : $reportContainer.data('select-node')
+                    uri : $header.data('select-node')
                 }]);
             }
 
             function displayReport(response) {
-                hider.hide($formContainer);
-                hider.hide($tasksContainer);
-                hider.show($reportContainer);
-                $reportContainer.append(response.report);
+                switchContainer('report');
+                $reportContainer.append(response);
 
                 // Fold action (show detailed report)
                 hider.toggle($('#fold', $reportContainer), response.nested);
@@ -58,6 +62,8 @@ define([
                 // Continue button
                 $('#import-continue', $reportContainer).on('click', refreshTree);
             }
+
+            switchContainer('form');
 
             //overwrite the submit behaviour
             $submitter.off('click').on('click', function (e) {
@@ -86,7 +92,7 @@ define([
                             url: $form.attr('action'),
                             data: params,
                             type: 'POST',
-                            dataType: "html"
+                            dataType: "text"
                         }).done(displayReport);
                     } else {
                         // download file after form submit
@@ -101,7 +107,7 @@ define([
             });
 
             if (asyncQueue) {
-                taskQueueTableFactory($tasksContainer.data('queue'), $('.task-list', $tasksContainer), {
+                taskQueueTableFactory($header.data('queue'), $containers.filter('.print-tasks'), {
                     downloadUrl: urlHelper.route('downloadTask', 'TaskQueueData', 'taoBooklet')
                 });
             }
