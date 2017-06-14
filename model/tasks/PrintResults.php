@@ -27,6 +27,8 @@ use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\StorageService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoItems\model\pack\encoders\Base64fileEncoder;
+use oat\taoItems\model\pack\ExceptionMissingAsset;
 use oat\taoOutcomeUi\helper\ResponseVariableFormatter;
 use oat\taoOutcomeUi\model\ResultsService;
 use oat\taoQtiItem\model\QtiJsonItemCompiler;
@@ -127,6 +129,11 @@ class PrintResults extends AbstractBookletTask
         $resultId = $this->getParam('id');
         $deliveryExecution = $this->getDeliveryExecution();
 
+        $userIdentifier = $deliveryExecution->getUserIdentifier();
+        $deliveryUser = new \core_kernel_users_GenerisUser(new \core_kernel_classes_Resource($userIdentifier));
+        $lang = $deliveryUser->getPropertyValues(PROPERTY_USER_DEFLG);
+        $userDataLang = empty($lang) ? DEFAULT_LANG : (string)current($lang);
+
         $testSessionService = $this->getServiceLocator()->get(TestSessionService::SERVICE_ID);
         /* @var \qtism\runtime\tests\AssessmentTestSession $testSession */
         $testSession = $testSessionService->getTestSession($deliveryExecution);
@@ -200,7 +207,7 @@ class PrintResults extends AbstractBookletTask
                 'href' => $itemUri,
             ];
 
-            $testData['items'][$itemUri] = $this->getItemData($itemRef->getHref());
+            $testData['items'][$itemUri] = $this->getItemData($itemRef->getHref(), $userDataLang);
         }
 
         return $testData;
@@ -263,26 +270,26 @@ class PrintResults extends AbstractBookletTask
     /**
      * Gets the definition of an item
      * @param string $itemRef
+     * @param string $userDataLang
      * @return array
      * @throws \common_Exception
      * @throws \common_exception_InconsistentData
      * @throws \tao_models_classes_FileNotFoundException
      */
-    protected function getItemData($itemRef)
+    protected function getItemData($itemRef, $userDataLang)
     {
-        $path = QtiJsonItemCompiler::ITEM_FILE_NAME;
         $directoryIds = explode('|', $itemRef);
         if (count($directoryIds) < 3) {
             throw new \common_exception_InconsistentData('The itemRef is not formatted correctly');
         }
 
         $itemUri = $directoryIds[0];
-        $userDataLang = \common_session_SessionManager::getSession()->getDataLanguage();
-        $directory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($directoryIds[2]);
+        $publicDirectory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($directoryIds[1]);
+        $privateDirectory = \tao_models_classes_service_FileStorage::singleton()->getDirectoryById($directoryIds[2]);
 
-        if ($directory->has($userDataLang)) {
+        if ($privateDirectory->has($userDataLang)) {
             $lang = $userDataLang;
-        } elseif ($directory->has(DEFAULT_LANG)) {
+        } elseif ($privateDirectory->has(DEFAULT_LANG)) {
             \common_Logger::i(
                 $userDataLang . ' is not part of compilation directory for item : ' . $itemUri . ' use ' . DEFAULT_LANG
             );
@@ -292,13 +299,48 @@ class PrintResults extends AbstractBookletTask
                 'item : ' . $itemUri . 'is neither compiled in ' . $userDataLang . ' nor in ' . DEFAULT_LANG
             );
         }
+
+        $fileName = QtiJsonItemCompiler::ITEM_FILE_NAME;
         try {
-            return json_decode($directory->read($lang . DIRECTORY_SEPARATOR . $path), true);
+            return $this->resolveAssets(
+                json_decode($privateDirectory->read($lang . DIRECTORY_SEPARATOR . $fileName), true),
+                $publicDirectory,
+                $lang
+            );
         } catch (\FileNotFoundException $e) {
             throw new \tao_models_classes_FileNotFoundException(
-                $path . ' for item reference ' . $itemRef
+                $fileName . ' for item reference ' . $itemRef
             );
         }
+    }
+
+    /**
+     * @param array $itemData
+     * @param \tao_models_classes_service_StorageDirectory $publicDirectory
+     * @param string $lang
+     * @return array
+     */
+    protected function resolveAssets($itemData, $publicDirectory, $lang)
+    {
+        $itemData['baseUrl'] = $publicDirectory->getPublicAccessUrl() . $lang . '/';
+        $encoder = new Base64fileEncoder($publicDirectory);
+
+        $allowedTypes = ['img'];
+
+        if (isset($itemData['assets'])) {
+            foreach ($itemData['assets'] as $type => &$assets) {
+                if (in_array($type, $allowedTypes)) {
+                    foreach ($assets as $uri => $asset) {
+                        try {
+                            $assets[$uri] = $encoder->encode($lang . '/' . $asset);
+                        } catch (ExceptionMissingAsset $e) {
+                        }
+                    }
+                }
+            }
+        }
+
+        return $itemData;
     }
 
     /**
