@@ -148,7 +148,7 @@ define([
             }
 
             //we attach the container to the DOM
-            $('body').append($mainContainer.hide());
+            $('body').append($mainContainer);
 
             //instantiate the TestRunner
             testRunner(testData, options)
@@ -169,7 +169,7 @@ define([
                     //we are done
                     ready();
                 })
-                .render($mainContainer);
+                .render($mainContainer.hide());
         }
     };
 });
