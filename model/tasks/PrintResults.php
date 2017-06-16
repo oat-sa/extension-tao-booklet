@@ -259,6 +259,9 @@ class PrintResults extends AbstractBookletTask
             $itemUri = $item['uri'];
             if (isset($responses[$itemUri])) {
                 $resultVariables[$itemUri] = array_diff_key($responses[$itemUri], $excludedVariables);
+                if (!count($resultVariables[$itemUri])) {
+                    $resultVariables[$itemUri] = null;
+                }
             } else {
                 $resultVariables[$itemUri] = null;
             }
@@ -325,7 +328,7 @@ class PrintResults extends AbstractBookletTask
         $itemData['baseUrl'] = $publicDirectory->getPublicAccessUrl() . $lang . '/';
         $encoder = new Base64fileEncoder($publicDirectory);
 
-        $allowedTypes = ['img'];
+        $allowedTypes = ['img', 'css'];
 
         if (isset($itemData['assets'])) {
             foreach ($itemData['assets'] as $type => &$assets) {
