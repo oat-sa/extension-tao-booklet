@@ -1,2 +1,1 @@
-<main{{#if cls}} class="{{cls}}"{{/if}}>
-</main>
+<main class="tao-scope {{cls}}"></main>
