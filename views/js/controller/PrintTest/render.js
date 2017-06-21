@@ -143,7 +143,6 @@ define([
              * to tell the 3rd part tool that the page is ready.
              */
             function ready() {
-                $mainContainer.show();
                 window.status = 'runner-ready';
             }
 
@@ -169,7 +168,7 @@ define([
                     //we are done
                     ready();
                 })
-                .render($mainContainer.hide());
+                .render($mainContainer);
         }
     };
 });
