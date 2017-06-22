@@ -23,22 +23,16 @@ namespace oat\taoBooklet\controller;
 use common_report_Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
-use oat\oatbox\task\Queue;
-use oat\oatbox\task\Task;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
-use oat\taoBooklet\form\WizardForm;
-use oat\taoBooklet\form\WizardTestForm;
+use oat\taoBooklet\form\WizardBookletForm;
+use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
-use oat\taoBooklet\model\BookletGenerator;
+use oat\taoBooklet\model\BookletTaskService;
 use oat\taoBooklet\model\StorageService;
-use oat\taoBooklet\model\tasks\UpdateBooklet;
 use oat\taoDeliveryRdf\model\NoTestsException;
-use oat\Taskqueue\Persistence\RdsQueue;
-use tao_actions_SaSModule;
 use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
@@ -48,24 +42,8 @@ use tao_models_classes_dataBinding_GenerisFormDataBinder;
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @package taoDelivery
  */
-class Booklet extends tao_actions_SaSModule
+class Booklet extends AbstractBookletController
 {
-    use OntologyAwareTrait;
-
-    public function __construct()
-    {
-        $this->service = BookletClassService::singleton();
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see tao_actions_SaSModule::getClassService()
-     */
-    protected function getClassService()
-    {
-        return BookletClassService::singleton();
-    }
-
     /**
      * Main action
      *
@@ -104,8 +82,7 @@ class Booklet extends tao_actions_SaSModule
             $this->setData( 'reload', true );
         }
 
-        $queue = $this->getServiceManager()->get(Queue::SERVICE_ID);
-        $asyncQueue = $queue instanceof RdsQueue;
+        $asyncQueue = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->isAsyncQueue();
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
@@ -139,7 +116,7 @@ class Booklet extends tao_actions_SaSModule
     {
         $instance  = $this->getCurrentInstance();
 
-        $task = UpdateBooklet::createTask($instance);
+        $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createBookletTask($instance);
 
         $report = $this->getTaskReport($task);
 
@@ -160,9 +137,12 @@ class Booklet extends tao_actions_SaSModule
             if ($fileResource) {
                 /** @var File $file */
                 $file = $this->getServiceManager()->get(StorageService::SERVICE_ID)->getFile($fileResource);
-
-                header('Content-Disposition: attachment; filename="' . $instance->getLabel() . '_' . $file->getBasename() . '"');
-                \tao_helpers_Http::returnStream($file->readPsrStream(), 'application/pdf');
+                if ($file->exists()) {
+                    $this->prepareDownload($instance->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
+                    \tao_helpers_Http::returnStream($file->readPsrStream());
+                } else {
+                    throw new \common_exception_NotFound('File does not exists: ' . $file->getPrefix());
+                }
             } else {
                 throw new \common_exception_NotFound('Unknown resource ' . $fileResource);
             }
@@ -191,10 +171,9 @@ class Booklet extends tao_actions_SaSModule
      */
     public function wizard()
     {
-        $this->defaultData();
         try {
             $bookletClass  = $this->getCurrentClass();
-            $formContainer = new WizardForm( $bookletClass );
+            $formContainer = new WizardBookletForm( $bookletClass );
             $myForm        = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
@@ -220,12 +199,10 @@ class Booklet extends tao_actions_SaSModule
      */
     public function testBooklet()
     {
-        $this->defaultData();
-
         try {
             $test = $this->getCurrentInstance();
             $bookletClass = $this->getRootClass();
-            $formContainer = new WizardTestForm($bookletClass, $test);
+            $formContainer = new WizardPrintForm($bookletClass, $test);
             $myForm = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
@@ -270,7 +247,7 @@ class Booklet extends tao_actions_SaSModule
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
         $binder->bind($form->getValues());
 
-        UpdateBooklet::createTask($instance);
+        $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createBookletTask($instance);
 
         // return report with instance
         $report->setMessage(__('Booklet %s created', $instance->getLabel()));
@@ -288,20 +265,5 @@ class Booklet extends tao_actions_SaSModule
         $this->setData('myForm', $form->render());
         $this->setData('formTitle', __('Create a new booklet'));
         $this->setView('form.tpl', 'tao');
-    }
-
-    /**
-     * @param $task
-     * @return common_report_Report
-     */
-    protected function getTaskReport($task)
-    {
-        $status = $task->getStatus();
-        if ($status === Task::STATUS_FINISHED || $status === Task::STATUS_ARCHIVED) {
-            $report = $task->getReport();
-        } else {
-            $report = common_report_Report::createInfo(__('Booklet task created'));
-        }
-        return $report;
     }
 }

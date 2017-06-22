@@ -20,15 +20,18 @@
  */
 namespace oat\taoBooklet\scripts\update;
 
-use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\helpers\Template;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBooklet\model\BookletDataService;
+use oat\taoBooklet\model\BookletListenerService;
 use oat\taoBooklet\model\StorageService;
+use oat\taoBooklet\model\BookletTaskService;
+use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
+use oat\taoBooklet\scripts\install\SetupEventListeners;
 use oat\taoBooklet\scripts\install\SetupStorage;
 
 /**
@@ -116,5 +119,21 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('1.4.1', '1.4.3');
+
+        if ($this->isVersion('1.4.3')) {
+
+            $bookletListenerService = new BookletListenerService();
+            $this->getServiceManager()->propagate($bookletListenerService);
+            $this->getServiceManager()->register(BookletListenerService::SERVICE_ID, $bookletListenerService);
+
+            $this->runExtensionScript(RegisterTestResultsPlugins::class);
+            $this->runExtensionScript(SetupEventListeners::class);
+
+            $bookletTaskService = new BookletTaskService();
+            $this->getServiceManager()->propagate($bookletTaskService);
+            $this->getServiceManager()->register(BookletTaskService::SERVICE_ID, $bookletTaskService);
+
+            $this->setVersion('1.5.0');
+        }
     }
 }

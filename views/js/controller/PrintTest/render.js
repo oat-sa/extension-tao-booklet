@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015-2017 (original work) Open Assessment Technologies SA;
  */
 
 /**
@@ -24,63 +24,56 @@
  */
 define([
     'jquery',
+    'lodash',
     'core/logger',
-    'taoQtiPrint/runner/testRunner'
-], function($, loggerFactory, testRunner){
+    'taoQtiPrint/runner/testRunner',
+    'tpl!taoBooklet/tpl/print'
+], function ($, _, loggerFactory, testRunner, printTpl) {
     'use strict';
 
-    var logger = loggerFactory('printtest/render');
-
-    /**
-     * As the page can be called by an external tool and
-     * as we build the page in JS asynchronously, we need this hack
-     * to tell the 3rd part tool that the page is ready.
-     */
-    var ready = function ready(){
-        window.status = 'runner-ready';
-    };
+    var logger = loggerFactory('printTest/render');
 
     /**
      * Old school way to debug document, especially when generated in PDF.
      * It appends the message to the body.
      * @param {String} msg - the content to display
+     * @param {String} type - the type of message
      */
-    var showMessage = function showMessage(msg, type){
+    function showMessage(msg, type) {
         type = type || 'info';
-        $('body').append('<div class="feedback-' + type + '">'  + msg + '</div>');
-    };
+        $('body').append('<div class="feedback-' + type + '">' + msg + '</div>');
+    }
 
     /**
      * Hack the current layout to match arbitrary rules
      */
-    var printLayoutHacking = function printLayoutHacking($container){
+    function printLayoutHacking($container) {
 
         var threshold = 6000;   //this height seems to work - value is empirical and linked to the A4 page layout with 300 DPI
         var pages = 2;          //start on page 2
         var previous;           //keep a ref to the previous section
 
         //add a blank page
-        var blankPage = function blankPage( $section ){
+        var blankPage = function blankPage($section) {
             $section.before('<div class="breaker"></div>');
             pages++;
         };
 
         //add pages based on the given height
-        var computePageFromHeight = function computePageFromHeight(height){
-            if(height > threshold){
+        var computePageFromHeight = function computePageFromHeight(height) {
+            if (height > threshold) {
                 pages += Math.ceil(height / threshold) - 1;
             }
         };
 
         //browse direct section add apply the odd/even rules for section and items
-        $container.children('section').each(function(){
+        $container.children('section').each(function () {
             var $section = $(this);
             var height;
-            var msg = '';
 
-            if($section.hasClass('section')){
+            if ($section.hasClass('section')) {
 
-                if(pages % 2 === 0){
+                if (pages % 2 === 0) {
                     blankPage($section);
                 }
 
@@ -89,15 +82,15 @@ define([
                 previous = 'section';
                 pages++;
             }
-            if($section.hasClass('item')){
-                if(previous !== 'item'){
+            if ($section.hasClass('item')) {
+                if (previous !== 'item') {
 
-                    if(pages % 2 !== 0){
+                    if (pages % 2 !== 0) {
                         blankPage($section);
                     }
 
                     height = $section.outerHeight();
-                    $section.nextUntil('.section', '.item').each(function(){
+                    $section.nextUntil('.section', '.item').each(function () {
                         height += $(this).outerHeight();
                     });
                     computePageFromHeight(height);
@@ -107,37 +100,54 @@ define([
                 previous = 'item';
             }
         });
-    };
+    }
 
     /**
      * The renderer controller
+     * @exports taoBooklet/controller/printTest/render
      */
-    var renderController = {
+    return {
 
         /**
          * Controller entry point
          * @param {Object} testData - the packed test data required by the testRunner
+         * @param {Object} options
          */
-        start : function start(testData, options){
+        start: function start(testData, options) {
 
             var layoutOptions = options && options.layout || {};
+            var layoutClasses = {
+                'one_page_item': 'one-item-per-page',
+                'one_page_section': 'one-section-per-page'
+            };
 
             //this is just in case something went wrong, but we weren't able to catch it.
-            var timeout = setTimeout(function(){
+            var timeout = setTimeout(function () {
                 showMessage("Something went wrong...", 'error');
                 ready();
-            }, 45*1000);
-
+            }, 45 * 1000);
 
             //the content will be inserted in a detached element (to save time)
-            var $mainContainer = $('<main>');
+            var $mainContainer = $(printTpl({
+                cls: _.reduce(layoutOptions, function (list, value, name) {
+                    if (value && layoutClasses[name]) {
+                        list.push(layoutClasses[name]);
+                    }
+                    return list;
+                }, []).join(' ')
+            }));
 
-            if (layoutOptions['one_page_item']) {
-                $('body').addClass('one-item-per-page');
+            /**
+             * As the page can be called by an external tool and
+             * as we build the page in JS asynchronously, we need this hack
+             * to tell the 3rd part tool that the page is ready.
+             */
+            function ready() {
+                window.status = 'runner-ready';
             }
-            if (layoutOptions['one_page_section']) {
-                $('body').addClass('one-section-per-page');
-            }
+
+            //we attach the container to the DOM
+            $('body').append($mainContainer);
 
             //instantiate the TestRunner
             testRunner(testData, options)
@@ -147,9 +157,6 @@ define([
                     ready();
                 })
                 .on('ready', function () {
-
-                    //we attach the container to the DOM
-                    $('body').append($mainContainer);
 
                     //hack layout calculation
                     if (layoutOptions['add_blank_pages']) {
@@ -164,9 +171,4 @@ define([
                 .render($mainContainer);
         }
     };
-
-    /**
-     * @exports taoBooklet/controller/printtest/render
-     */
-    return renderController;
 });
