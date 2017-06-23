@@ -16,30 +16,30 @@
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
  */
-namespace oat\taoBooklet\form;
+namespace oat\taoBooklet\model;
 
-use tao_actions_form_Instance;
-use tao_helpers_form_FormFactory;
+use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\plugins\PluginModule;
+use oat\taoOutcomeUi\model\event\ResultsListPluginEvent;
 
 /**
- * Create a form from a booklet
- * Each property will be a field, regarding it's widget.
- *
- * @access public
- * @package taoBooklet
+ * Class BookletListenerService
+ * @package oat\taoBooklet\model
  */
-class GenerateForm extends tao_actions_form_Instance
+class BookletListenerService extends ConfigurableService
 {
+    const SERVICE_ID = 'taoBooklet/bookletListenerService';
 
-    public function initElements()
+    /**
+     * @param ResultsListPluginEvent $event
+     */
+    public function resultsListPlugins(ResultsListPluginEvent $event)
     {
-        parent::initElements();
-
-        $createElt = tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
-        $createElt->setValue( __( 'Generate' ) );
-        $createElt->setIcon( "icon-play" );
-        $createElt->addClass( "form-submitter btn-success small" );
-
-        $this->form->setActions( array( $createElt ), 'bottom' );
+        /* @var PluginModule $plugin */
+        foreach ($event->getPlugins() as $plugin) {
+            if ($plugin->getId() == 'taskQueue') {
+                $plugin->setActive($this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->isAsyncQueue());
+            }
+        }
     }
 }

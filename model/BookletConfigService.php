@@ -25,7 +25,6 @@ namespace oat\taoBooklet\model;
 
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\helpers\Layout;
 
 class BookletConfigService extends ConfigurableService
 {
@@ -36,6 +35,7 @@ class BookletConfigService extends ConfigurableService
     const OPTION_LINK = 'link';
     const OPTION_LOGO = 'logo';
 
+    const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
     const CONFIG_COVER_PAGE = 'cover_page';
     const CONFIG_PAGE_HEADER = 'page_header';
@@ -111,7 +111,7 @@ class BookletConfigService extends ConfigurableService
     }
 
     /**
-     * Gets the config for a booklet instance using either the instanc itself or an array of properties
+     * Gets the config for a booklet instance using either the instance itself or an array of properties
      * @param core_kernel_classes_Resource|array $instance
      * @return array
      * @throws \common_exception_InvalidArgumentType
@@ -120,6 +120,7 @@ class BookletConfigService extends ConfigurableService
     {
         if ($instance instanceof core_kernel_classes_Resource) {
             $properties = $instance->getPropertiesValues([
+                RDFS_LABEL,
                 BookletClassService::PROPERTY_DESCRIPTION,
                 BookletClassService::PROPERTY_LAYOUT,
                 BookletClassService::PROPERTY_COVER_PAGE,
@@ -147,15 +148,11 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_LINK => $this->getOption(self::OPTION_LINK),
             self::CONFIG_LOGO => $this->getOption(self::OPTION_LOGO),
             self::CONFIG_DATE => \tao_helpers_Date::displayeDate(time()),
+            self::CONFIG_REGULAR => false,
+            self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
+            self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
         ];
 
-        if (isset($properties[BookletClassService::PROPERTY_DESCRIPTION])) {
-            $description = $properties[BookletClassService::PROPERTY_DESCRIPTION];
-            if (is_array($description)) {
-                $description = current($properties[BookletClassService::PROPERTY_DESCRIPTION]);
-            }
-            $config[self::CONFIG_DESCRIPTION] = (string)$description;
-        }
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
             $config[self::CONFIG_LAYOUT] = $this->getConfigSet($properties[BookletClassService::PROPERTY_LAYOUT]);
         }
@@ -170,6 +167,24 @@ class BookletConfigService extends ConfigurableService
         }
 
         return $config;
+    }
+
+    /**
+     * Gets the value from a list of properties
+     * @param array $properties
+     * @param string $key
+     * @return null|string
+     */
+    protected function getPropertyValue($properties, $key)
+    {
+        if (isset($properties[$key])) {
+            $value = $properties[$key];
+            if (is_array($value)) {
+                $value = current($properties[$key]);
+            }
+            return (string)$value;
+        }
+        return null;
     }
 
     /**

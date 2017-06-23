@@ -4,20 +4,10 @@
 
 <script>
     require([
-            'jquery',
-            'util/url',
-            'ui/taskQueue/table'
-        ],
-        function($, urlHelper, taskQueueTableFactory){
-            var $queueArea = $('#task-list');
-            taskQueueTableFactory({
-                rows : 10,
-                context : "<?=get_data('queueId')?>",
-                dataUrl : urlHelper.route('getTasks', 'TaskQueueData', 'taoBooklet'),
-                statusUrl : urlHelper.route('getStatus', 'TaskQueueData', 'taoBooklet'),
-                removeUrl : urlHelper.route('archiveTask', 'TaskQueueData', 'taoBooklet')
-            })
-                .init()
-                .render($queueArea);
-        });
+        'jquery',
+        'taoBooklet/component/taskQueue'
+    ],
+    function($, taskQueueTableFactory){
+        taskQueueTableFactory("<?=get_data('queueId')?>", $('#task-list'));
+    });
 </script>

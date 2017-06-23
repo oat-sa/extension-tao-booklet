@@ -10,7 +10,7 @@ use oat\tao\helpers\Template;
             var testData        =  <?= get_data('testData') ?>;
             var options         =  <?= get_data('options') ?>;
             require([clientConfigUrl], function(){
-                require(['taoBooklet/controller/printtest/render'], function(controller){
+                require(['taoBooklet/controller/PrintTest/render'], function(controller){
                     controller.start(testData, options);
                 });
             });

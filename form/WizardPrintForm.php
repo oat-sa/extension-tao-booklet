@@ -22,13 +22,13 @@ use oat\taoBooklet\model\BookletClassService;
 use tao_helpers_Uri;
 
 /**
- * Create a form from a booklet
+ * Create a form for a booklet for printing.
  * Each property will be a field, regarding it's widget.
  *
  * @access public
  * @package taoBooklet
  */
-class WizardTestForm extends GenerateForm
+class WizardPrintForm extends GenerateForm
 {
 
     public function initElements()

@@ -31,10 +31,11 @@ namespace oat\taoBooklet\form;
 namespace oat\taoBooklet\form;
 
 use oat\taoBooklet\model\BookletClassService;
+use tao_actions_form_Instance;
 use tao_helpers_form_FormFactory;
 use tao_helpers_Uri;
 
-class EditForm extends \tao_actions_form_Instance
+class EditForm extends tao_actions_form_Instance
 {
 
     /**
@@ -62,7 +63,7 @@ class EditForm extends \tao_actions_form_Instance
         $formatElt->setDescription( __( 'Selected test' ) );
         $formatElt->setValue( isset($options[$originalTestElement->getRawValue()])?$options[$originalTestElement->getRawValue()]:__('Test has been removed') );
 
-        $downloadBtn = \tao_helpers_form_FormFactory::getElement( 'Download', 'Button' );
+        $downloadBtn = tao_helpers_form_FormFactory::getElement( 'Download', 'Button' );
         $downloadBtn->setValue( __( 'Download' ) . ' PDF' );
         $downloadBtn->setIcon( 'icon-download' );
         $downloadBtn->addClass( 'btn-download btn-success small' );

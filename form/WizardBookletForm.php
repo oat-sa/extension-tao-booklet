@@ -33,7 +33,7 @@ use tao_helpers_Uri;
  * @author Bertrand Chevrier, <bertrand.chevrier@tudor.lu>
  * @package taoBooklet
  */
-class WizardForm extends GenerateForm
+class WizardBookletForm extends GenerateForm
 {
 
     /*
