@@ -21,7 +21,7 @@ define([
     'lodash',
     'ui/hider',
     'util/url',
-    'tao/report',
+    'report',
     'taoBooklet/component/taskQueue',
     'jquery.fileDownload'
 ], function ($, _, hider, urlHelper, report, taskQueueTableFactory) {
