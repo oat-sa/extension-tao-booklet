@@ -57,22 +57,28 @@ class PdfBookletExporter extends BookletExporter
         //the default options
         $options = array(
 
+            //set javascript behavior
+            'enable-javascript',
+            'debug-javascript',
+            'no-stop-slow-scripts',
+            'javascript-delay' => 12000,
+
             //as the page is built in JS, the engine is waiting for
             //window.status to equal 'runner-ready' to capture the content
             'window-status' => 'runner-ready',
-            'javascript-delay' => 12000,
 
             //enable browser media print
             'print-media-type',
 
-            'no-stop-slow-scripts',
+            //set errors handling
             'load-error-handling' => 'ignore',
+            'load-media-error-handling' => 'ignore',
 
-            'dpi'   => 300,
-
+            //print resolution
+            'dpi' => 300,
 
             //document title
-            'title'         => $title,
+            'title' => $title,
 
         );
 
@@ -80,8 +86,6 @@ class PdfBookletExporter extends BookletExporter
         if(is_array($config['options'])){
             $options = array_merge($options, $config['options']);
         }
-
-        $options['replace']['config'] = base64_encode(json_encode($bookletConfig));
 
         if (isset($bookletConfig[BookletConfigService::CONFIG_LAYOUT])) {
             $layoutConfig = $bookletConfig[BookletConfigService::CONFIG_LAYOUT];
@@ -91,6 +95,10 @@ class PdfBookletExporter extends BookletExporter
             if (empty($layoutConfig[BookletConfigService::CONFIG_PAGE_FOOTER])) {
                 unset($options['footer-html']);
             }
+        }
+
+        if (isset($options['header-html']) || isset($options['footer-html'])) {
+            $options['replace']['config'] = base64_encode(json_encode($bookletConfig));
         }
 
         //instantiate the PDF wrapper
