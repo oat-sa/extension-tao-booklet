@@ -57,15 +57,18 @@ class PdfBookletExporter extends BookletExporter
         //the default options
         $options = array(
 
+            //as the page is built in JS, the engine is waiting for
+            //window.status to equal 'runner-ready' to capture the content
+            //*** Disabled as the current version of wkhtmltopdf is suffering an issue     ***
+            //*** that sometimes prevents the process to be aware of window-status change. ***
+            //'window-status' => 'DONE',
+
+
             //set javascript behavior
             'enable-javascript',
             'debug-javascript',
             'no-stop-slow-scripts',
-            'javascript-delay' => 12000,
-
-            //as the page is built in JS, the engine is waiting for
-            //window.status to equal 'runner-ready' to capture the content
-            'window-status' => 'runner-ready',
+            'javascript-delay' => 15000, // will wait for 15s before considering the content fully rendered
 
             //enable browser media print
             'print-media-type',
