@@ -143,7 +143,7 @@ define([
              * to tell the 3rd part tool that the page is ready.
              */
             function ready() {
-                window.status = 'runner-ready';
+                window.status = 'DONE';
             }
 
             //we attach the container to the DOM
