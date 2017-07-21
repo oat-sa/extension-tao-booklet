@@ -43,6 +43,7 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_ONE_PAGE_ITEM = 'one_page_item';
     const CONFIG_ONE_PAGE_SECTION = 'one_page_section';
     const CONFIG_BLANK_PAGES = 'add_blank_pages';
+    const CONFIG_BUBBLE_SHEET = 'use_bubble_sheet';
     const CONFIG_TITLE = 'title';
     const CONFIG_DESCRIPTION = 'description';
     const CONFIG_DATE = 'date';
@@ -70,6 +71,7 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_LAYOUT_ONE_PAGE_ITEM => self::CONFIG_ONE_PAGE_ITEM,
         BookletClassService::INSTANCE_LAYOUT_ONE_PAGE_SECTION => self::CONFIG_ONE_PAGE_SECTION,
         BookletClassService::INSTANCE_LAYOUT_BLANK_PAGES => self::CONFIG_BLANK_PAGES,
+        BookletClassService::INSTANCE_LAYOUT_BUBBLE_SHEET => self::CONFIG_BUBBLE_SHEET,
 
         BookletClassService::INSTANCE_COVER_PAGE_TITLE => self::CONFIG_TITLE,
         BookletClassService::INSTANCE_COVER_PAGE_DESCRIPTION => self::CONFIG_DESCRIPTION,
