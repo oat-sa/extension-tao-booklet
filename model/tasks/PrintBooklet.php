@@ -31,10 +31,10 @@ use taoQtiTest_models_classes_QtiTestService;
 use taoTests_models_classes_TestsService;
 
 /**
- * Class UpdateBooklet
+ * Class PrintBooklet
  * @package oat\taoBooklet\model\tasks
  */
-class UpdateBooklet extends AbstractBookletTask
+class PrintBooklet extends AbstractBookletTask
 {
     /**
      * @var BookletClassService

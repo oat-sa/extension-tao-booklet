@@ -29,7 +29,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\model\tasks\PrintResults;
-use oat\taoBooklet\model\tasks\UpdateBooklet;
+use oat\taoBooklet\model\tasks\PrintBooklet;
 use oat\Taskqueue\Persistence\RdsQueue;
 
 class BookletTaskService extends ConfigurableService
@@ -67,9 +67,9 @@ class BookletTaskService extends ConfigurableService
      * @param core_kernel_classes_Resource $resource
      * @return Task created task id
      */
-    public function createBookletTask(core_kernel_classes_Resource $resource)
+    public function createPrintBookletTask(core_kernel_classes_Resource $resource)
     {
-        $action = new UpdateBooklet();
+        $action = new PrintBooklet();
         $this->getServiceManager()->propagate($action);
         $queueParameters = [
             'uri' => $resource->getUri(),

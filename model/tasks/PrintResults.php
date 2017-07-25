@@ -41,7 +41,7 @@ use qtism\runtime\tests\RouteItem;
 use tao_helpers_Date;
 
 /**
- * Class UpdateBooklet
+ * Class PrintResults
  * @package oat\taoBooklet\model\tasks
  */
 class PrintResults extends AbstractBookletTask
