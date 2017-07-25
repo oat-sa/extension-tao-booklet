@@ -34,11 +34,9 @@ use oat\taoOutcomeUi\helper\ResponseVariableFormatter;
 use oat\taoOutcomeUi\model\ResultsService;
 use oat\taoQtiItem\model\QtiJsonItemCompiler;
 use oat\taoQtiTest\models\runner\config\QtiRunnerConfig;
-use oat\taoQtiTest\models\runner\session\TestSession;
+use oat\taoQtiTest\models\runner\rubric\QtiRunnerRubric;
 use oat\taoQtiTest\models\TestSessionService;
 use oat\taoResultServer\models\classes\ResultServerService;
-use qtism\data\View;
-use qtism\runtime\tests\RouteItem;
 use tao_helpers_Date;
 
 /**
@@ -162,6 +160,7 @@ class PrintResults extends AbstractBookletTask
             'states' => $this->getResultVariables(),
         ];
 
+        $rubricBlockHelper = $this->getServiceLocator()->get(QtiRunnerRubric::SERVICE_ID);
         $config = $this->getServiceLocator()->get(QtiRunnerConfig::SERVICE_ID);
         $reviewConfig = $config->getConfigValue('review');
         $displaySubsectionTitle = isset($reviewConfig['displaySubsectionTitle']) ? (bool)$reviewConfig['displaySubsectionTitle'] : true;
@@ -198,7 +197,7 @@ class PrintResults extends AbstractBookletTask
                 $testData['data']['testParts'][$partId]['sections'][$sectionId] = [
                     'id' => $sectionId,
                     'title' => $section->getTitle(),
-                    'rubricBlock' => $this->getRubricBlock($routeItem, $testSession, $compilationDirs),
+                    'rubricBlock' => $rubricBlockHelper->getRubricBlock($routeItem, $testSession, $compilationDirs),
                     'items' => [],
                 ];
             }
@@ -345,51 +344,6 @@ class PrintResults extends AbstractBookletTask
         }
 
         return $itemData;
-    }
-
-    /**
-     * @param RouteItem $routeItem
-     * @param TestSession $session
-     * @param array $compilationDirs
-     * @return array
-     */
-    protected function getRubricBlock($routeItem, $session, $compilationDirs)
-    {
-        $rubrics = [];
-
-        if ($routeItem) {
-
-            $rubricRefs = $routeItem->getRubricBlockRefs();
-
-            if (count($rubricRefs) > 0) {
-
-                // -- variables used in the included rubric block templates.
-                // base path (base URI to be used for resource inclusion).
-                $basePathVarName = TAOQTITEST_BASE_PATH_NAME;
-                $$basePathVarName = $compilationDirs['public']->getPublicAccessUrl();
-
-                // state name (the variable to access to get the state of the assessmentTestSession).
-                $stateName = TAOQTITEST_RENDERING_STATE_NAME;
-                $$stateName = $session;
-
-                // views name (the variable to be accessed for the visibility of rubric blocks).
-                $viewsName = TAOQTITEST_VIEWS_NAME;
-                $$viewsName = array(View::CANDIDATE);
-
-                $tmpDir = \tao_helpers_File::createTempDir();
-                foreach ($rubricRefs as $rubric) {
-                    $data = $compilationDirs['private']->read($rubric->getHref());
-                    $tmpFile = $tmpDir . basename($rubric->getHref());
-                    file_put_contents($tmpFile, $data);
-                    ob_start();
-                    include($tmpFile);
-                    $rubrics[] = ob_get_clean();
-                    unlink($tmpFile);
-                }
-                rmdir($tmpDir);
-            }
-        }
-        return $rubrics;
     }
 
     /**
