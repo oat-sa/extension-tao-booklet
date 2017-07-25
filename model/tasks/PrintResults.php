@@ -27,6 +27,7 @@ use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\StorageService;
 use oat\taoDelivery\model\execution\DeliveryExecution;
+use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\taoItems\model\pack\encoders\Base64fileEncoder;
 use oat\taoItems\model\pack\ExceptionMissingAsset;
 use oat\taoOutcomeUi\helper\ResponseVariableFormatter;
@@ -235,7 +236,7 @@ class PrintResults extends AbstractBookletTask
     protected function getDeliveryExecution()
     {
         if (!$this->deliveryExecution) {
-            $this->deliveryExecution = \taoDelivery_models_classes_execution_ServiceProxy::singleton()->getDeliveryExecution($this->getParam('id'));
+            $this->deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($this->getParam('id'));
         }
         return $this->deliveryExecution;
     }
