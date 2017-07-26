@@ -30,6 +30,7 @@ use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\taoBooklet\model\tasks\PrintResults;
 use oat\taoBooklet\model\tasks\PrintBooklet;
+use oat\taoDelivery\model\execution\ServiceProxy;
 use oat\Taskqueue\Persistence\RdsQueue;
 
 class BookletTaskService extends ConfigurableService
@@ -83,29 +84,31 @@ class BookletTaskService extends ConfigurableService
     /**
      * Create task in queue
      * @param core_kernel_classes_Resource $resource
-     * @param string $resultId
      * @param array $printConfig
      * @return Task created task id
      */
-    public function createPrintResultsTask(core_kernel_classes_Resource $resource, $resultId, $printConfig)
+    public function createPrintResultsTask(core_kernel_classes_Resource $resource, $printConfig)
     {
         $action = new PrintResults();
         $this->getServiceManager()->propagate($action);
+        
+        $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($resource);
+        $delivery = $deliveryExecution->getDelivery();
+        
         $queueParameters = [
-            'id' => $resultId,
             'uri' => $resource->getUri(),
             'user' => common_session_SessionManager::getSession()->getUserUri(),
             'config' => $printConfig,
         ];
 
-        $label = $resource->getLabel();
+        $label = $delivery->getLabel();
         if (isset($printConfig[RDFS_LABEL])) {
             $label = $printConfig[RDFS_LABEL];
         }
         if (isset($printConfig[BookletClassService::PROPERTY_DESCRIPTION])) {
             $label .= ' - ' . $printConfig[BookletClassService::PROPERTY_DESCRIPTION];
         }
-        $task = $this->getQueueService()->createTask($action, $queueParameters, false, $label, $resource->getUri());
+        $task = $this->getQueueService()->createTask($action, $queueParameters, false, $label, $delivery->getUri());
 
         return $task;
     }
