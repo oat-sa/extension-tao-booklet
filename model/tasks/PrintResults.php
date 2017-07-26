@@ -96,11 +96,19 @@ class PrintResults extends AbstractBookletTask
     {
         $deliveryExecutionPacker = $this->getServiceLocator()->get(DeliveryExecutionPacker::SERVICE_ID);
 
-        $uri = $this->getParam('uri'); 
-        $testData = $deliveryExecutionPacker->getTestData($uri);
-        $testData['states'] = $deliveryExecutionPacker->getResultVariables($uri);
+        $uris = $this->getParam('uri');
+        if (!is_array($uris)) {
+            $uris = [$uris];
+        }
+        $tests = [];
+        
+        foreach ($uris as $uri) {
+            $testData = $deliveryExecutionPacker->getTestData($uri);
+            $testData['states'] = $deliveryExecutionPacker->getResultVariables($uri);
+            $tests[] = $testData;
+        }
 
-        return $testData;
+        return $tests;
     }
 
     /**
