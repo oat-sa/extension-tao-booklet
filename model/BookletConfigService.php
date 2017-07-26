@@ -52,6 +52,7 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_MENTION = 'mention';
     const CONFIG_LINK = 'link';
     const CONFIG_PAGE_NUMBER = 'page_number';
+    const CONFIG_UNIQUE_ID = 'unique_id';
 
     /**
      * Maps the properties to config names
@@ -78,6 +79,7 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_COVER_PAGE_DATE => self::CONFIG_DATE,
         BookletClassService::INSTANCE_COVER_PAGE_LOGO => self::CONFIG_LOGO,
         BookletClassService::INSTANCE_COVER_PAGE_QRCODE => self::CONFIG_QRCODE,
+        BookletClassService::INSTANCE_COVER_PAGE_UNIQUE_ID => self::CONFIG_UNIQUE_ID,
 
         BookletClassService::INSTANCE_PAGE_LOGO => self::CONFIG_LOGO,
         BookletClassService::INSTANCE_PAGE_TITLE => self::CONFIG_TITLE,
@@ -85,6 +87,7 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_PAGE_LINK => self::CONFIG_LINK,
         BookletClassService::INSTANCE_PAGE_DATE => self::CONFIG_DATE,
         BookletClassService::INSTANCE_PAGE_NUMBER => self::CONFIG_PAGE_NUMBER,
+        BookletClassService::INSTANCE_PAGE_UNIQUE_ID => self::CONFIG_UNIQUE_ID,
     ];
 
     /**
@@ -153,6 +156,7 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_REGULAR => false,
             self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
             self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
+            self::CONFIG_UNIQUE_ID => strtoupper(dechex(crc32(uniqid())))
         ];
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {

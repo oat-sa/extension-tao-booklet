@@ -52,6 +52,7 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_COVER_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDate';
     const INSTANCE_COVER_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageLogo';
     const INSTANCE_COVER_PAGE_QRCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageQRCode';
+    const INSTANCE_COVER_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageUniqueId';
 
     const INSTANCE_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLogo';
     const INSTANCE_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle';
@@ -59,6 +60,7 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_PAGE_LINK = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLink';
     const INSTANCE_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageDate';
     const INSTANCE_PAGE_NUMBER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber';
+    const INSTANCE_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId';
 
     /**
      * (non-PHPdoc)

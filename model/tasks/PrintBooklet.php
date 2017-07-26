@@ -60,7 +60,7 @@ class PrintBooklet extends AbstractBookletTask
     }
 
     /**
-     * @return array
+     * @return JsonSerializable
      * @throws \Exception
      */
     protected function getTestData()
@@ -75,9 +75,7 @@ class PrintBooklet extends AbstractBookletTask
 
         $packer = new QtiTestPacker();
         $this->getServiceManager()->propagate($packer);
-        return [
-            $packer->packTest($test)
-        ];
+        return $packer->packTest($test);
     }
 
     /**
