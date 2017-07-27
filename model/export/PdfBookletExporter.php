@@ -133,6 +133,45 @@ class PdfBookletExporter extends BookletExporter
     }
 
     /**
+     * Ensures the content match the expected format 
+     * @param string $content either a URL, a HTML string or a PDF/HTML filename
+     * @return string either a URL, a HTML string or a PDF/HTML filename
+     * @throws BookletExporterException
+     */
+    protected function filterContent($content)
+    {
+        if (filter_var($content, FILTER_VALIDATE_URL)) { 
+            //if we call an external service with the same session, we need to close it before
+            session_write_close();
+
+            // url
+            $result = $content;
+        } elseif (file_exists($content) && is_file($content)) {
+            // file path
+            $result = file_get_contents($content);
+        } else {
+            // HTML string
+            $result = $content;
+        }
+        
+        if (is_string($result)) {
+            return $result;
+        }
+        
+        throw new BookletExporterException('Wrong content type');
+    }
+
+    /**
+     * Ensures the content is an array of data
+     */
+    protected function forceArrayContent()
+    {
+        if (!is_array($this->_content)) {
+            $this->_content = $this->_content ? [$this->_content] : [];
+        }
+    }
+
+    /**
      * Set booklet content
      *
      * @param string $content either a URL, a HTML string or a PDF/HTML filename
@@ -141,25 +180,26 @@ class PdfBookletExporter extends BookletExporter
      */
     public function setContent($content)
     {
-        if (filter_var($content, FILTER_VALIDATE_URL)) { //url
-
-            //if we call an external service with the same session, we need to close it before
-            session_write_close();
-
-            $result = $content;
-        } elseif (file_exists($content) && is_file($content)) {  //file path
-            $result = file_get_contents($content);
-        } else { //HTML string
-            $result = $content;
-        }
-        if (is_string($result)) {
-            $this->_content = $result;
-            return $this;
-        }
-        throw new BookletExporterException('Wrong content type');
+        $this->_content = $this->filterContent($content);
+        return $this;
     }
-
-
+    
+    /**
+     * Add booklet content
+     *
+     * @param string $content either a URL, a HTML string or a PDF/HTML filename
+     * @return PdfBookletExporter instance for method chaining
+     * @throws BookletExporterException if wrong $content parameter passed
+     */
+    public function addContent($content)
+    {
+        $content = $this->filterContent($content);
+        
+        $this->forceArrayContent();
+        
+        $this->_content[] = $content;
+        return $this;
+    }
 
     /**
      * Save booklet into file
@@ -170,7 +210,11 @@ class PdfBookletExporter extends BookletExporter
      */
     public function saveAs($path)
     {
-        $this->pdf->addPage($this->_content);
+        $this->forceArrayContent();
+        foreach($this->_content as $content) {
+            $this->pdf->addPage($content);
+        }
+
         $result = $this->pdf->saveAs($path);
         if(!$result){
             throw new BookletExporterException('Unable to generate the PDF : '  . $this->pdf->getError());
