@@ -156,7 +156,7 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_REGULAR => false,
             self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
             self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
-            self::CONFIG_UNIQUE_ID => strtoupper(dechex(crc32(uniqid())))
+            self::CONFIG_UNIQUE_ID => strtoupper(dechex(crc32(uniqid(microtime(), true))))
         ];
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {

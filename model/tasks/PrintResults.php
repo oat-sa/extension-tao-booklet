@@ -17,13 +17,15 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
  *
  */
+
 /**
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
 
 namespace oat\taoBooklet\model\tasks;
 
-use oat\taoBooklet\model\BookletClassService;
+use core_kernel_classes_Resource;
+use JsonSerializable;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\StorageService;
 use oat\taoDelivery\model\execution\ServiceProxy;
@@ -36,19 +38,6 @@ use tao_helpers_Date;
  */
 class PrintResults extends AbstractBookletTask
 {
-    /**
-     * @var BookletClassService
-     */
-    protected $bookletClassService;
-
-    /**
-     * AbstractBookletTask constructor.
-     */
-    public function __construct()
-    {
-        $this->bookletClassService = BookletClassService::singleton();
-    }
-
     /**
      *
      * @param array $params
@@ -64,23 +53,23 @@ class PrintResults extends AbstractBookletTask
         return parent::__invoke($params);
     }
 
-
     /**
      * Gets the list of mandatory parameters
      * @return array
      */
     protected function getMandatoryParams()
     {
-        return ['uri', 'user', 'config'];
+        return array_merge(parent::getMandatoryParams(), ['config']);
     }
 
     /**
      * Gets the config for a booklet instance using either the instance itself or an array of properties
+     * @param core_kernel_classes_Resource $instance
      * @return mixed
      */
-    protected function getBookletConfig()
+    protected function getBookletConfig($instance)
     {
-        $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($this->getParam('uri'));
+        $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($instance);
         $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
         $config = $configService->getConfig($this->getParam('config'));
         $config[BookletConfigService::CONFIG_REGULAR] = true;
@@ -89,40 +78,34 @@ class PrintResults extends AbstractBookletTask
     }
 
     /**
-     * @return array
+     * Gets the test definition data in order to print it
+     * @param core_kernel_classes_Resource $instance
+     * @return JsonSerializable|array
      * @throws \Exception
      */
-    protected function getTestData()
+    protected function getTestData($instance)
     {
         $deliveryExecutionPacker = $this->getServiceLocator()->get(DeliveryExecutionPacker::SERVICE_ID);
 
-        $uris = $this->getParam('uri');
-        if (!is_array($uris)) {
-            $uris = [$uris];
-        }
-        $tests = [];
-        
-        foreach ($uris as $uri) {
-            $testData = $deliveryExecutionPacker->getTestData($uri);
-            $testData['states'] = $deliveryExecutionPacker->getResultVariables($uri);
-            $tests[] = $testData;
-        }
-
-        return $tests;
+        $testData = $deliveryExecutionPacker->getTestData($instance);
+        $testData['states'] = $deliveryExecutionPacker->getResultVariables($instance->getUri());
+        return $testData;
     }
 
     /**
+     * Stores the generated PDF file
+     * @param core_kernel_classes_Resource $instance
      * @param string $filePath
      * @return \common_report_Report
      */
-    protected function storePdf($filePath)
+    protected function storePdf($instance, $filePath)
     {
         $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
 
         $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
         $fileResource = $storageService->storeFile($filePath);
 
-        $report->setMessage(__('%s rendered', $this->getInstance()->getLabel()));
+        $report->setMessage(__('%s rendered', $instance->getLabel()));
         $report->setData($fileResource);
         return $report;
     }

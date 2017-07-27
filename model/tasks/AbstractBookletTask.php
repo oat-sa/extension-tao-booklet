@@ -53,29 +53,27 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
     protected $taskParams;
 
     /**
-     * The related instance
-     * @var core_kernel_classes_Resource
-     */
-    protected $instance;
-
-    /**
      * Gets the config for a booklet instance using either the instance itself or an array of properties
+     * @param core_kernel_classes_Resource $instance
      * @return mixed
      */
-    abstract protected function getBookletConfig();
+    abstract protected function getBookletConfig($instance);
 
     /**
      * Gets the test definition data in order to print it
+     * @param core_kernel_classes_Resource $instance
      * @return JsonSerializable|array
      * @throws \Exception
      */
-    abstract protected function getTestData();
+    abstract protected function getTestData($instance);
 
     /**
+     * Stores the generated PDF file
+     * @param core_kernel_classes_Resource $instance
      * @param string $filePath
      * @return \common_report_Report
      */
-    abstract protected function storePdf($filePath);
+    abstract protected function storePdf($instance, $filePath);
 
     /**
      *
@@ -88,8 +86,6 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
         $this->validateParams($params);
         $this->startCliSession($this->getParam('user'));
 
-        $this->instance = $this->getResource($this->getParam('uri'));
-
         return $this->generatePdf();
     }
 
@@ -98,20 +94,23 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
      */
     protected function generatePdf()
     {
-        $config = $this->getBookletConfig();
-        $storageKey = $this->cacheBookletData($this->getParam('uri'), [
-            'testData' => $this->getTestData(),
+        $uri = $this->getParam('uri');
+        $instance = $this->getResource($uri);
+        
+        $config = $this->getBookletConfig($instance);
+        $storageKey = $this->cacheBookletData($uri, [
+            'testData' => $this->getTestData($instance),
             'config' => $config,
         ]);
 
         $tmpFolder = tao_helpers_File::createTempDir();
-        $tmpFile = $tmpFolder . 'test.pdf';
+        $tmpFile = $tmpFolder . 'booklet.pdf';
 
         $exporter = new PdfBookletExporter($config[BookletConfigService::CONFIG_TITLE], $config);
         $exporter->setContent($this->getRendererUrl($storageKey));
         $exporter->saveAs($tmpFile);
 
-        $report = $this->storePdf($tmpFile);
+        $report = $this->storePdf($instance, $tmpFile);
 
         tao_helpers_File::delTree($tmpFolder);
         $this->cleanBookletData($storageKey);
@@ -155,15 +154,6 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
     protected function getMandatoryParams()
     {
         return ['uri', 'user'];
-    }
-
-    /**
-     * Gets the related instance
-     * @return core_kernel_classes_Resource
-     */
-    protected function getInstance()
-    {
-        return $this->instance;
     }
 
     /**
