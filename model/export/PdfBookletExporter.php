@@ -162,12 +162,14 @@ class PdfBookletExporter extends BookletExporter
     }
 
     /**
-     * Ensures the content is an array of data
+     * Puts the actual content into the pages
      */
-    protected function forceArrayContent()
+    protected function contentToPages()
     {
-        if (!is_array($this->_content)) {
-            $this->_content = $this->_content ? [$this->_content] : [];
+        if (is_array($this->_content)) {
+            foreach($this->_content as $content) {
+                $this->pdf->addPage($content);
+            }
         }
     }
 
@@ -180,7 +182,7 @@ class PdfBookletExporter extends BookletExporter
      */
     public function setContent($content)
     {
-        $this->_content = $this->filterContent($content);
+        $this->_content = [$this->filterContent($content)];
         return $this;
     }
     
@@ -193,11 +195,7 @@ class PdfBookletExporter extends BookletExporter
      */
     public function addContent($content)
     {
-        $content = $this->filterContent($content);
-        
-        $this->forceArrayContent();
-        
-        $this->_content[] = $content;
+        $this->_content[] = $this->filterContent($content);
         return $this;
     }
 
@@ -210,10 +208,7 @@ class PdfBookletExporter extends BookletExporter
      */
     public function saveAs($path)
     {
-        $this->forceArrayContent();
-        foreach($this->_content as $content) {
-            $this->pdf->addPage($content);
-        }
+        $this->contentToPages();
 
         $result = $this->pdf->saveAs($path);
         if(!$result){
@@ -232,7 +227,7 @@ class PdfBookletExporter extends BookletExporter
      */
     public function export($filename = null)
     {
-        $this->pdf->addPage($this->_content);
+        $this->contentToPages();
 
         $result = $this->pdf->send($filename);
         if(!$result){
