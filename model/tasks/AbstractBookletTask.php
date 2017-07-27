@@ -37,6 +37,7 @@ use oat\taoBooklet\model\export\PdfBookletExporter;
 use PHPSession;
 use tao_helpers_File;
 use tao_helpers_Uri;
+use \Jurosh\PDFMerge\PDFMerger;
 
 /**
  * Class AbstractBookletTask
@@ -95,25 +96,56 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
     protected function generatePdf()
     {
         $uri = $this->getParam('uri');
-        $instance = $this->getResource($uri);
-        
-        $config = $this->getBookletConfig($instance);
-        $storageKey = $this->cacheBookletData($uri, [
-            'testData' => $this->getTestData($instance),
-            'config' => $config,
-        ]);
+        $root = $this->getParam('root');
 
+        if (is_array($uri)) {
+            $list = array_values($uri);
+        } else {
+            $list = [$uri];
+        }
+
+        if (!$root) {
+            $root = $list[0];
+        }
+
+        $rootInstance = $this->getResource($root);
         $tmpFolder = tao_helpers_File::createTempDir();
-        $tmpFile = $tmpFolder . 'booklet.pdf';
+        $pdfFiles = [];
 
-        $exporter = new PdfBookletExporter($config[BookletConfigService::CONFIG_TITLE], $config);
-        $exporter->setContent($this->getRendererUrl($storageKey));
-        $exporter->saveAs($tmpFile);
+        foreach ($list as $idx => $uri) {
+            $instance = $this->getResource($uri);
 
-        $report = $this->storePdf($instance, $tmpFile);
+            $config = $this->getBookletConfig($instance);
+            $storageKey = $this->cacheBookletData($uri, [
+                'testData' => $this->getTestData($instance),
+                'config' => $config,
+            ]);
+
+            $tmpFile = "${tmpFolder}${idx}-booklet.pdf";
+            $pdfFiles[] = $tmpFile;
+
+            $exporter = new PdfBookletExporter($config[BookletConfigService::CONFIG_TITLE], $config);
+            $exporter->setContent($this->getRendererUrl($storageKey));
+            $exporter->saveAs($tmpFile);
+
+            $this->cleanBookletData($storageKey);
+        }
+
+        if (count($pdfFiles) == 1) {
+            $report = $this->storePdf($rootInstance, $pdfFiles[0]);
+        } else {
+            $tmpFile = "${tmpFolder}booklet.pdf";
+            $pdf = new PDFMerger();
+
+            foreach($pdfFiles as $pdfFile) {
+                $pdf->addPDF($pdfFile, 'all');
+            }
+            $pdf->merge('file', $tmpFile);
+            
+            $report = $this->storePdf($rootInstance, $tmpFile);
+        }
 
         tao_helpers_File::delTree($tmpFolder);
-        $this->cleanBookletData($storageKey);
 
         return $report;
     }
