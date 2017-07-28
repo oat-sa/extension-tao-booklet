@@ -28,6 +28,7 @@ use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
+use oat\taoBooklet\model\tasks\PrintDelivery;
 use oat\taoBooklet\model\tasks\PrintResults;
 use oat\taoBooklet\model\tasks\PrintBooklet;
 use oat\taoDelivery\model\execution\ServiceProxy;
@@ -64,7 +65,7 @@ class BookletTaskService extends ConfigurableService
     }
 
     /**
-     * Create task in queue
+     * Creates a task that will generate a Booklet PDF from an AssessmentTest
      * @param core_kernel_classes_Resource $resource
      * @return Task created task id
      */
@@ -82,7 +83,7 @@ class BookletTaskService extends ConfigurableService
     }
 
     /**
-     * Create task in queue
+     * Creates a task that will generate a Booklet PDF from a DeliveryExecution
      * @param core_kernel_classes_Resource $resource
      * @param array $printConfig
      * @return Task created task id
@@ -109,6 +110,33 @@ class BookletTaskService extends ConfigurableService
             $label .= ' - ' . $printConfig[BookletClassService::PROPERTY_DESCRIPTION];
         }
         $task = $this->getQueueService()->createTask($action, $queueParameters, false, $label, $delivery->getUri());
+
+        return $task;
+    }
+
+    /**
+     * Creates a task that will generate a Booklet PDF from a Delivery
+     * @param core_kernel_classes_Resource $resource
+     * @param array $printConfig
+     * @return Task created task id
+     */
+    public function createPrintDeliveryTask(core_kernel_classes_Resource $resource, $printConfig)
+    {
+        $action = new PrintDelivery();
+        $this->getServiceManager()->propagate($action);
+        
+        $queueParameters = [
+            'uri' => $resource->getUri(),
+            'user' => common_session_SessionManager::getSession()->getUserUri(),
+            'config' => $printConfig,
+        ];
+
+        $label = $resource->getLabel();
+        if (isset($printConfig[RDFS_LABEL])) {
+            $label = $printConfig[RDFS_LABEL];
+        }
+        
+        $task = $this->getQueueService()->createTask($action, $queueParameters, false, $label, $resource->getUri());
 
         return $task;
     }
