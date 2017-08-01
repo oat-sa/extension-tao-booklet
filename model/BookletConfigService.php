@@ -35,6 +35,8 @@ class BookletConfigService extends ConfigurableService
     const OPTION_LINK = 'link';
     const OPTION_LOGO = 'logo';
 
+    const OPTION_SMALL_PRINT = 'small_print';
+
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
     const CONFIG_COVER_PAGE = 'cover_page';
@@ -53,6 +55,10 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_LINK = 'link';
     const CONFIG_PAGE_NUMBER = 'page_number';
     const CONFIG_UNIQUE_ID = 'unique_id';
+    const CONFIG_PAGE_QR_CODE = 'page_qr_code';
+    const CONFIG_PAGE_EXPIRATION_DATE = 'page_expiration_date';
+
+    const CONFIG_SMALL_PRINT = 'small_print';
 
     /**
      * Maps the properties to config names
@@ -88,6 +94,10 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_PAGE_DATE => self::CONFIG_DATE,
         BookletClassService::INSTANCE_PAGE_NUMBER => self::CONFIG_PAGE_NUMBER,
         BookletClassService::INSTANCE_PAGE_UNIQUE_ID => self::CONFIG_UNIQUE_ID,
+        BookletClassService::INSTANCE_PAGE_QR_CODE => self::CONFIG_PAGE_QR_CODE,
+        BookletClassService::INSTANCE_PAGE_EXPIRATION_DATE => self::CONFIG_PAGE_EXPIRATION_DATE,
+
+        BookletClassService::INSTANCE_PAGE_SMALL_PRINT => self::CONFIG_SMALL_PRINT
     ];
 
     /**
@@ -156,7 +166,9 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_REGULAR => false,
             self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
             self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
-            self::CONFIG_UNIQUE_ID => strtoupper(dechex(crc32(uniqid(microtime(), true))))
+            self::CONFIG_UNIQUE_ID => strtoupper(dechex(crc32(uniqid(microtime(), true)))),
+
+            self::CONFIG_SMALL_PRINT => $this->getOption(self::OPTION_SMALL_PRINT),
         ];
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {

@@ -128,7 +128,11 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
             $exporter->setContent($this->getRendererUrl($storageKey));
             $exporter->saveAs($tmpFile);
 
-            $this->cleanBookletData($storageKey);
+            //@todo do not commit this
+            // $this->cleanBookletData($storageKey);
+
+
+            \common_Logger::i('#### Booklet URL: ' . $this->getRendererUrl($storageKey));
         }
 
         if (count($pdfFiles) == 1) {
@@ -147,8 +151,12 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
 
         tao_helpers_File::delTree($tmpFolder);
 
+
+
         return $report;
     }
+
+
 
     /**
      * Validates the parameters provided to the task

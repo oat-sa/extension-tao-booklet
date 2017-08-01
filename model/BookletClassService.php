@@ -61,6 +61,9 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageDate';
     const INSTANCE_PAGE_NUMBER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber';
     const INSTANCE_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId';
+    const INSTANCE_PAGE_QR_CODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageQRCode';
+    const INSTANCE_PAGE_EXPIRATION_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageExpirationDate';
+    const INSTANCE_PAGE_SMALL_PRINT = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageSmallPrint';
 
     /**
      * (non-PHPdoc)

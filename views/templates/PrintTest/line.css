@@ -35,6 +35,11 @@
     text-align: left;
 }
 
+.cell.smallprint {
+    padding: 10px;
+    font-size: 9px
+}
+
 .middle {
     width: 50%;
     text-align: center;

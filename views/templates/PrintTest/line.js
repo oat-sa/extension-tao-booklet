@@ -62,6 +62,8 @@ function subst(type) {
         return '<span>' + content + '</span>';
     }
 
+    console.log(config)
+
     if (layoutConfig.cover_page && vars.page === vars.frompage) {
         document.getElementById('line').style.display = "none";
     } else {
@@ -83,6 +85,11 @@ function subst(type) {
 
         if (lineConfig.unique_id && config.unique_id) {
             addCellContent('right', wrap(config.unique_id));
+        }
+
+
+        if (lineConfig.small_print && config.small_print) {
+            addCellContent('smallprint', wrap(config.small_print));
         }
 
         if (lineConfig.date && vars.date) {
