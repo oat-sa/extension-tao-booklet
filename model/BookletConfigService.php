@@ -25,17 +25,31 @@ namespace oat\taoBooklet\model;
 
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
+use BigFish\PDF417\PDF417;
+use BigFish\PDF417\Renderers\ImageRenderer;
+use BigFish\PDF417\Renderers\SvgRenderer;
 
 class BookletConfigService extends ConfigurableService
 {
     const SERVICE_ID = 'taoBooklet/BookletConfigService';
 
     const OPTION_DEFAULT_VALUES = 'default_values';
-    const OPTION_MENTION = 'mention';
-    const OPTION_LINK = 'link';
-    const OPTION_LOGO = 'logo';
+    const OPTION_MENTION = 'mention'; // string
+    const OPTION_LINK = 'link';       // string
+    const OPTION_LOGO = 'logo';       // string
 
-    const OPTION_SMALL_PRINT = 'small_print';
+    // time related
+    const OPTION_DATE_FORMAT       = 'date_format';       // everything that works with DateTime::format(), default d/m/Y
+    const OPTION_EXPIRATION_PERIOD = 'expiration_period'; // everything that works with DateTime::add(), default null
+    const OPTION_EXPIRATION_DATE   = 'expiration_date';
+
+    // formats for sprintf()
+    const OPTION_EXPIRATION_STRING = 'expiration_string'; // default ''
+    const OPTION_UNIQUE_ID_STRING  = 'unique_id_string';  // default ''
+    const OPTION_CREATION_STRING   = 'creation_string';   // default ''
+
+    const OPTION_SMALL_PRINT       = 'small_print'; // string
+    const OPTION_PDF417            = 'pdf417';      // base64 encoded pdf417 code
 
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
@@ -56,9 +70,19 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_PAGE_NUMBER = 'page_number';
     const CONFIG_UNIQUE_ID = 'unique_id';
     const CONFIG_PAGE_QR_CODE = 'page_qr_code';
-    const CONFIG_PAGE_EXPIRATION_DATE = 'page_expiration_date';
 
-    const CONFIG_SMALL_PRINT = 'small_print';
+    const CONFIG_EXPIRATION_DATE   = 'expiration_date';
+    const CONFIG_EXPIRATION_PERIOD = 'expiration_period';
+    const CONFIG_EXPIRATION_STRING = 'expiration_string';
+    const CONFIG_UNIQUE_ID_STRING  = 'unique_id_string';
+    const CONFIG_DATE_FORMAT       = 'date_format';
+
+    const CONFIG_CREATION_STRING   = 'date_string';
+
+    const CONFIG_SMALL_PRINT       = 'small_print';
+    const CONFIG_PDF417            = 'pdf417';      // base64 encoded pdf417 code
+
+    const CONFIG_EXTERNAL_DATA_PROVIDER = 'external_data_provider';
 
     /**
      * Maps the properties to config names
@@ -95,9 +119,11 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_PAGE_NUMBER => self::CONFIG_PAGE_NUMBER,
         BookletClassService::INSTANCE_PAGE_UNIQUE_ID => self::CONFIG_UNIQUE_ID,
         BookletClassService::INSTANCE_PAGE_QR_CODE => self::CONFIG_PAGE_QR_CODE,
-        BookletClassService::INSTANCE_PAGE_EXPIRATION_DATE => self::CONFIG_PAGE_EXPIRATION_DATE,
 
-        BookletClassService::INSTANCE_PAGE_SMALL_PRINT => self::CONFIG_SMALL_PRINT
+        BookletClassService::INSTANCE_PAGE_EXPIRATION_DATE => self::CONFIG_EXPIRATION_DATE,
+
+        BookletClassService::INSTANCE_PAGE_SMALL_PRINT => self::CONFIG_SMALL_PRINT,
+        BookletClassService::INSTANCE_PAGE_PDF417 => self::CONFIG_PDF417
     ];
 
     /**
@@ -162,14 +188,26 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_MENTION => $this->getOption(self::OPTION_MENTION),
             self::CONFIG_LINK => $this->getOption(self::OPTION_LINK),
             self::CONFIG_LOGO => $this->getOption(self::OPTION_LOGO),
-            self::CONFIG_DATE => \tao_helpers_Date::displayeDate(time()),
+            self::CONFIG_DATE => $this->formatValue(
+                $this->getOption(self::OPTION_CREATION_STRING),
+                $this->getDate()
+            ),
             self::CONFIG_REGULAR => false,
             self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
             self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
-            self::CONFIG_UNIQUE_ID => strtoupper(dechex(crc32(uniqid(microtime(), true)))),
+            self::CONFIG_UNIQUE_ID => $this->formatValue(
+                $this->getOption(self::OPTION_UNIQUE_ID_STRING),
+                strtoupper(dechex(crc32(uniqid(microtime(), true))))
+            ),
 
             self::CONFIG_SMALL_PRINT => $this->getOption(self::OPTION_SMALL_PRINT),
+
+            self::CONFIG_EXPIRATION_DATE => $this->formatValue(
+                $this->getOption(self::OPTION_EXPIRATION_STRING),
+                $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD))
+            ),
         ];
+
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
             $config[self::CONFIG_LAYOUT] = $this->getConfigSet($properties[BookletClassService::PROPERTY_LAYOUT]);
@@ -184,8 +222,84 @@ class BookletConfigService extends ConfigurableService
             $config[self::CONFIG_PAGE_FOOTER] = $this->getConfigSet($properties[BookletClassService::PROPERTY_PAGE_FOOTER]);
         }
 
+        $externalDataProviderClass = $this->getOption(self::CONFIG_EXTERNAL_DATA_PROVIDER);
+        if($externalDataProviderClass && class_exists($externalDataProviderClass)) {
+            $externalDataProvider = new $externalDataProviderClass($config);
+            //$config[self::CONFIG_PDF417] = $this->getPdf417Img($externalDataProvider->getPdf417Data());
+            $config[self::CONFIG_PDF417] = $externalDataProvider->getPdf417Data();
+        }
+
         return $config;
     }
+
+    /**
+     * Format dates and such with sprintf() if applicable
+     *
+     * @param $format
+     * @param $value
+     *
+     * @return string
+     */
+    protected function formatValue($format, $value) {
+        return $format ? sprintf($format, $value) : $value;
+    }
+
+
+    /**
+     * Create basic date in the provided format
+     *
+     * @param null $period
+     *
+     * @return string
+     */
+    protected function getDate($period=null) {
+        if(!$this->getOption(self::OPTION_EXPIRATION_PERIOD)
+            || !$this->getOption(self::OPTION_EXPIRATION_STRING)) {
+            return false;
+        }
+        $format = $this->getOption(self::OPTION_DATE_FORMAT);
+        $dateObj = new \DateTime();
+        if($period) {
+            $dateObj->add(\DateInterval::createFromDateString($period));
+        }
+        return $dateObj->format($format ? $format : 'd/m/Y');
+    }
+
+    /**
+     * Data for this class come normally from an external source that is configured in
+     * config/taoBooklet/BookletConfigService.conf.php
+     *
+     * @param $data
+     *
+     * @return string
+     */
+    protected function getPdf417Img($data) {
+
+        if(!$data) {
+            return;
+        }
+
+        $pdf417 = new PDF417();
+        $data = $pdf417->encode($data);
+
+        $renderer = new ImageRenderer([
+            'format' => 'data-url'
+        ]);
+
+        return $renderer->render($data)->encoded;
+    }
+
+    /**
+     * Get the correctly formatted unique id
+     *
+     * @return string
+     */
+    protected function getUniqueId() {
+        $format = $this->getOption(self::OPTION_UNIQUE_ID_STRING);
+        $id = strtoupper(dechex(crc32(uniqid(microtime(), true))));
+        return $format ? sprintf($format, $id) : $id;
+    }
+
 
     /**
      * Gets the value from a list of properties

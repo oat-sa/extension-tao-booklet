@@ -220,15 +220,15 @@
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageQRCode">
-        <rdfs:label xml:lang="en-US"><![CDATA[Booklet URL (QR Code)]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display the QR-code]]></rdfs:comment>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PagePdf417">
+        <rdfs:label xml:lang="en-US"><![CDATA[Custom code (PDF417)]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display custom code]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageExpirationDate">
-        <rdfs:label xml:lang="en-US"><![CDATA[Test expiration date]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display test expiration date]]></rdfs:comment>
+        <rdfs:label xml:lang="en-US"><![CDATA[Expiration date]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display expiration date]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 
