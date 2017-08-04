@@ -25,9 +25,6 @@ namespace oat\taoBooklet\model;
 
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ConfigurableService;
-use BigFish\PDF417\PDF417;
-use BigFish\PDF417\Renderers\ImageRenderer;
-use BigFish\PDF417\Renderers\SvgRenderer;
 
 class BookletConfigService extends ConfigurableService
 {
@@ -225,7 +222,6 @@ class BookletConfigService extends ConfigurableService
         $externalDataProviderClass = $this->getOption(self::CONFIG_EXTERNAL_DATA_PROVIDER);
         if($externalDataProviderClass && class_exists($externalDataProviderClass)) {
             $externalDataProvider = new $externalDataProviderClass($config);
-            //$config[self::CONFIG_PDF417] = $this->getPdf417Img($externalDataProvider->getPdf417Data());
             $config[self::CONFIG_PDF417] = $externalDataProvider->getPdf417Data();
         }
 
@@ -265,29 +261,6 @@ class BookletConfigService extends ConfigurableService
         return $dateObj->format($format ? $format : 'd/m/Y');
     }
 
-    /**
-     * Data for this class come normally from an external source that is configured in
-     * config/taoBooklet/BookletConfigService.conf.php
-     *
-     * @param $data
-     *
-     * @return string
-     */
-    protected function getPdf417Img($data) {
-
-        if(!$data) {
-            return;
-        }
-
-        $pdf417 = new PDF417();
-        $data = $pdf417->encode($data);
-
-        $renderer = new ImageRenderer([
-            'format' => 'data-url'
-        ]);
-
-        return $renderer->render($data)->encoded;
-    }
 
     /**
      * Get the correctly formatted unique id
