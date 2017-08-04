@@ -44,9 +44,11 @@ class BookletConfigService extends ConfigurableService
     const OPTION_EXPIRATION_STRING = 'expiration_string'; // default ''
     const OPTION_UNIQUE_ID_STRING  = 'unique_id_string';  // default ''
     const OPTION_CREATION_STRING   = 'creation_string';   // default ''
+    const OPTION_CUSTOM_ID_STRING  = 'custom_id_string';  // default ''
 
-    const OPTION_SMALL_PRINT       = 'small_print'; // string
-    const OPTION_PDF417            = 'pdf417';      // base64 encoded pdf417 code
+    const OPTION_SMALL_PRINT       = 'small_print';        // string
+    const OPTION_MATRIX_BARCODE    = 'matrix_barcode';     // string
+    const OPTION_CUSTOM_ID         = 'custom_id';          // string
 
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
@@ -72,12 +74,14 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_EXPIRATION_PERIOD = 'expiration_period';
     const CONFIG_EXPIRATION_STRING = 'expiration_string';
     const CONFIG_UNIQUE_ID_STRING  = 'unique_id_string';
+    const CONFIG_CUSTOM_ID_STRING  = 'custom_id_string';
     const CONFIG_DATE_FORMAT       = 'date_format';
 
     const CONFIG_CREATION_STRING   = 'date_string';
 
     const CONFIG_SMALL_PRINT       = 'small_print';
-    const CONFIG_PDF417            = 'pdf417';      // base64 encoded pdf417 code
+    const CONFIG_MATRIX_BARCODE    = 'matrix_barcode'; // string
+    const CONFIG_CUSTOM_ID         = 'custom_id';      // string
 
     const CONFIG_EXTERNAL_DATA_PROVIDER = 'external_data_provider';
 
@@ -120,7 +124,8 @@ class BookletConfigService extends ConfigurableService
         BookletClassService::INSTANCE_PAGE_EXPIRATION_DATE => self::CONFIG_EXPIRATION_DATE,
 
         BookletClassService::INSTANCE_PAGE_SMALL_PRINT => self::CONFIG_SMALL_PRINT,
-        BookletClassService::INSTANCE_PAGE_PDF417 => self::CONFIG_PDF417
+        BookletClassService::INSTANCE_PAGE_MATRIX_BARCODE => self::CONFIG_MATRIX_BARCODE,
+        BookletClassService::INSTANCE_PAGE_CUSTOM_ID => self::CONFIG_CUSTOM_ID
     ];
 
     /**
@@ -222,7 +227,11 @@ class BookletConfigService extends ConfigurableService
         $externalDataProviderClass = $this->getOption(self::CONFIG_EXTERNAL_DATA_PROVIDER);
         if($externalDataProviderClass && class_exists($externalDataProviderClass)) {
             $externalDataProvider = new $externalDataProviderClass($config);
-            $config[self::CONFIG_PDF417] = $externalDataProvider->getPdf417Data();
+            $config[self::CONFIG_MATRIX_BARCODE] = $externalDataProvider->getMatrixBarcodeData();
+            $config[self::CONFIG_CUSTOM_ID] = $this->formatValue(
+                $this->getOption(self::OPTION_CUSTOM_ID_STRING),
+                $externalDataProvider->getCustomId()
+            );
         }
 
         return $config;
@@ -237,6 +246,9 @@ class BookletConfigService extends ConfigurableService
      * @return string
      */
     protected function formatValue($format, $value) {
+        if(!$value) {
+            return '';
+        }
         return $format ? sprintf($format, $value) : $value;
     }
 
@@ -259,18 +271,6 @@ class BookletConfigService extends ConfigurableService
             $dateObj->add(\DateInterval::createFromDateString($period));
         }
         return $dateObj->format($format ? $format : 'd/m/Y');
-    }
-
-
-    /**
-     * Get the correctly formatted unique id
-     *
-     * @return string
-     */
-    protected function getUniqueId() {
-        $format = $this->getOption(self::OPTION_UNIQUE_ID_STRING);
-        $id = strtoupper(dechex(crc32(uniqid(microtime(), true))));
-        return $format ? sprintf($format, $id) : $id;
     }
 
 

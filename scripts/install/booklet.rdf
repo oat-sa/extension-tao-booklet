@@ -220,9 +220,15 @@
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PagePdf417">
-        <rdfs:label xml:lang="en-US"><![CDATA[Custom code (PDF417)]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Display custom code]]></rdfs:comment>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageMatrixBarcode">
+        <rdfs:label xml:lang="en-US"><![CDATA[Custom matrix barcode]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display custom matrix barcode]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageCustomId">
+        <rdfs:label xml:lang="en-US"><![CDATA[Custom identifier]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display custom identifier]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 

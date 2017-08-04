@@ -106,7 +106,7 @@ function subst(type) {
             usually bottom:
 
             unique_id       a1
-            org_id          a2
+            custom_id       a2
             expiration_date a3
             pdf417          a4
 
@@ -159,9 +159,9 @@ function subst(type) {
             addCellContent('a1', wrap(config.unique_id));
         }
 
-        // org id
-        if (lineConfig.org_id && config.org_id) {
-            addCellContent('a2', wrap(config.org_id));
+        // custom id
+        if (lineConfig.custom_id && config.custom_id) {
+            addCellContent('a2', wrap(config.custom_id));
         }
 
         // expiration date
@@ -169,10 +169,12 @@ function subst(type) {
             addCellContent('a3', wrap(config.expiration_date));
         }
 
-        // pdf417
-        if (lineConfig.pdf417 && config.pdf417) {
-            addCellContent('a4', wrap(config.pdf417/*, 'img'*/));
-        }
+        // // matrix barcode
+        // needs to be commented until the qr generation is fixed
+        // if (lineConfig.matrix_barcode && config.matrix_barcode) {
+        //     addCellContent('a4', wrap(config.matrix_barcode, 'img'));
+        // }
+
 
         writeCells();
         deleteEmptyRows();

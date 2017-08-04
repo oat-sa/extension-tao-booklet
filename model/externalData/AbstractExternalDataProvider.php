@@ -46,7 +46,14 @@ abstract class AbstractExternalDataProvider
     /**
      * @return string
      */
-    public function getPdf417Data() {
+    public function getMatrixBarcodeData() {
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomId() {
         return '';
     }
 }
