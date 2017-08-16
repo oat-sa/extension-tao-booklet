@@ -81,6 +81,10 @@ function subst(type) {
             addCellContent('middle', wrap(vars.doctitle));
         }
 
+        if (lineConfig.unique_id && config.unique_id) {
+            addCellContent('right', wrap(config.unique_id));
+        }
+
         if (lineConfig.date && vars.date) {
             addCellContent('right', wrap(vars.date));
         }

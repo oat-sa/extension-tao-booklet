@@ -83,7 +83,7 @@ class Results extends AbstractBookletController
         if ($form->isValid() && $form->isSubmited()) {
             $values = $form->getValues();
 
-            $task = $bookletTaskService->createPrintResultsTask($delivery, $resultId, $values);
+            $task = $bookletTaskService->createPrintResultsTask($this->getResource($resultId), $values);
             $report = $this->getTaskReport($task);
 
             if (!$asyncQueue) {

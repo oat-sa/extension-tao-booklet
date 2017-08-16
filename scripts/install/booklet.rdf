@@ -129,6 +129,11 @@
         <rdfs:comment xml:lang="en-US"><![CDATA[Display the QR-code on the cover page]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageOptions"/>
     </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageUniqueId">
+        <rdfs:label xml:lang="en-US"><![CDATA[Unique identifier]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display unique identifier of the booklet]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageOptions"/>
+    </rdf:Description>
 
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageHeader">
         <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
@@ -182,6 +187,11 @@
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber">
         <rdfs:label xml:lang="en-US"><![CDATA[Page number]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Display the page number]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId">
+        <rdfs:label xml:lang="en-US"><![CDATA[Unique identifier]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display unique identifier of the booklet]]></rdfs:comment>
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 

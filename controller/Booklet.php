@@ -116,7 +116,7 @@ class Booklet extends AbstractBookletController
     {
         $instance  = $this->getCurrentInstance();
 
-        $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createBookletTask($instance);
+        $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
 
         $report = $this->getTaskReport($task);
 
@@ -247,7 +247,7 @@ class Booklet extends AbstractBookletController
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
         $binder->bind($form->getValues());
 
-        $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createBookletTask($instance);
+        $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
 
         // return report with instance
         $report->setMessage(__('Booklet %s created', $instance->getLabel()));
