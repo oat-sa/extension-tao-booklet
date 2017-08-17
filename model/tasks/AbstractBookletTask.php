@@ -141,7 +141,7 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
                 $pdf->addPDF($pdfFile, 'all');
             }
             $pdf->merge('file', $tmpFile);
-            
+
             $report = $this->storePdf($rootInstance, $tmpFile);
         }
 
