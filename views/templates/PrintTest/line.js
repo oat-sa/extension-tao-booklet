@@ -48,6 +48,40 @@ function subst(type) {
         cells[position] = (cells[position] || '') + value;
     }
 
+    function getBarCode(dataStr) {
+
+        PDF417.init(dataStr);
+
+        var barcode = PDF417.getBarcodeArray();
+
+        // block sizes (width and height) in pixels
+        var bw = 1;
+        var bh = 1;
+
+        var canvas = document.createElement('canvas');
+        canvas.id = 'pdf417Code';
+        canvas.width = bw * barcode['num_cols'];
+        canvas.height = bh * barcode['num_rows'];
+
+        var ctx = canvas.getContext('2d');
+
+        // graph barcode elements
+        var y = 0;
+        // for each row
+        for (var r = 0; r < barcode['num_rows']; ++r) {
+            var x = 0;
+            // for each column
+            for (var c = 0; c < barcode['num_cols']; ++c) {
+                if (barcode['bcode'][r][c] == 1) {
+                    ctx.fillRect(x, y, bw, bh);
+                }
+                x += bw;
+            }
+            y += bh;
+        }
+        return canvas.toDataURL('image/png');
+    }
+
     function deleteEmptyRows() {
 
         var tr = document.querySelectorAll('tr');
@@ -81,12 +115,18 @@ function subst(type) {
         }
     }
 
-    function wrap(content, element) {
-        element = element || 'span';
-        if(element === 'img') {
-           return '<img src="' + content + '" alt="" />';
+    function wrap(content, nodeName, id) {
+        var element = '<' + (nodeName || 'span');
+        if(id) {
+            element += ' id="' + id + '"';
         }
-        return '<' + element + '>' + content + '</' + element + '>';
+        if(nodeName === 'img') {
+            element += 'src="' + content + '" alt="" />';
+        }
+        else {
+            element += '>' + content + '</' + nodeName + '>';
+        }
+        return element;
     }
 
 
@@ -121,7 +161,7 @@ function subst(type) {
 
         // logo
         if (lineConfig.logo && config.logo) {
-            addCellContent('b1', wrap(config.logo, 'img'));
+            addCellContent('b1', wrap(config.logo, 'img', 'company_logo'));
         }
 
         // title
@@ -169,14 +209,14 @@ function subst(type) {
             addCellContent('a3', wrap(config.expiration_date));
         }
 
-        // // matrix barcode
-        // needs to be commented until the qr generation is fixed
-        // if (lineConfig.matrix_barcode && config.matrix_barcode) {
-        //     addCellContent('a4', wrap(config.matrix_barcode, 'img'));
-        // }
-
+        // matrix barcode
+        if (lineConfig.matrix_barcode && config.matrix_barcode) {
+            addCellContent('a4', wrap(getBarCode(config.matrix_barcode), 'img', 'pdf417_code'));
+            document.querySelector('#cell-a4').style.padding = 0;
+        }
 
         writeCells();
+
         deleteEmptyRows();
     }
 }
