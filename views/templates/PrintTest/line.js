@@ -48,6 +48,29 @@ function subst(type) {
         cells[position] = (cells[position] || '') + value;
     }
 
+    function deleteEmptyRows() {
+
+        var tr = document.querySelectorAll('tr');
+        var th;
+        var iTr = tr.length;
+        var iTh;
+        var hasContent;
+
+        while(iTr--) {
+            hasContent = false;
+            th = tr[iTr].querySelectorAll('th');
+            iTh = th.length;
+            while(iTh--) {
+                if(th[iTh].innerHTML.trim()){
+                    hasContent = true;
+                }
+            }
+            if(!hasContent){
+                tr[iTr].parentNode.removeChild(tr[iTr]);
+            }
+        }
+    }
+
     function writeCells() {
         var name, cell;
         for (name in cells) {
@@ -58,41 +81,102 @@ function subst(type) {
         }
     }
 
-    function wrap(content) {
-        return '<span>' + content + '</span>';
+    function wrap(content, element) {
+        element = element || 'span';
+        if(element === 'img') {
+           return '<img src="' + content + '" alt="" />';
+        }
+        return '<' + element + '>' + content + '</' + element + '>';
     }
+
 
     if (layoutConfig.cover_page && vars.page === vars.frompage) {
         document.getElementById('line').style.display = "none";
     } else {
+        /*
+            cell overview
+            =============
+            usually top:
+
+            logo            b1
+            doctitle        b2
+            date            b3 (creation date)
+
+
+            usually bottom:
+
+            unique_id       a1
+            custom_id       a2
+            expiration_date a3
+            pdf417          a4
+
+            mention         b1
+            link            b2
+            page_number     b3
+
+            small_print     c
+
+            rows that are completely empty will be removed
+         */
+
+        // logo
         if (lineConfig.logo && config.logo) {
-            addCellContent('left', '<img src="' + config.logo + '" alt="logo" />');
+            addCellContent('b1', wrap(config.logo, 'img'));
         }
 
-        if (lineConfig.mention && config.mention) {
-            addCellContent('left', wrap(config.mention));
-        }
-
-        if (lineConfig.link && config.link) {
-            addCellContent('middle', wrap(config.link));
-        }
-
+        // title
         if (lineConfig.title && vars.doctitle) {
-            addCellContent('middle', wrap(vars.doctitle));
+            addCellContent('b2', wrap(vars.doctitle));
         }
 
-        if (lineConfig.unique_id && config.unique_id) {
-            addCellContent('right', wrap(config.unique_id));
-        }
-
+        // date
         if (lineConfig.date && vars.date) {
-            addCellContent('right', wrap(vars.date));
+            addCellContent('b3', wrap(vars.date));
         }
 
-        if (lineConfig.page_number) {
-            addCellContent('right', wrap(vars.page + '/' + vars.topage));
+        // mention
+        if (lineConfig.mention && config.mention) {
+            addCellContent('b1', wrap(config.mention));
         }
+
+        // link
+        if (lineConfig.link && config.link) {
+            addCellContent('b2', wrap(config.link));
+        }
+
+        // page number
+        if (lineConfig.page_number) {
+            addCellContent('b3', wrap(vars.page + '/' + vars.topage));
+        }
+
+        // small print
+        if (lineConfig.small_print && config.small_print) {
+            addCellContent('c', wrap(config.small_print, 'small'));
+        }
+
+        // unique id
+        if (lineConfig.unique_id && config.unique_id) {
+            addCellContent('a1', wrap(config.unique_id));
+        }
+
+        // custom id
+        if (lineConfig.custom_id && config.custom_id) {
+            addCellContent('a2', wrap(config.custom_id));
+        }
+
+        // expiration date
+        if (lineConfig.expiration_date && config.expiration_date) {
+            addCellContent('a3', wrap(config.expiration_date));
+        }
+
+        // // matrix barcode
+        // needs to be commented until the qr generation is fixed
+        // if (lineConfig.matrix_barcode && config.matrix_barcode) {
+        //     addCellContent('a4', wrap(config.matrix_barcode, 'img'));
+        // }
+
 
         writeCells();
+        deleteEmptyRows();
     }
 }
