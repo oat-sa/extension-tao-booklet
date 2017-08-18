@@ -23,7 +23,8 @@
     "require": {
         "oat-sa/oatbox-extension-installer": "dev-master",
         "mikehaertl/phpwkhtmltopdf": "dev-master",
-        "tecnickcom/tcpdf" : "dev-master"
+        "tecnickcom/tcpdf" : "dev-master",
+        "jurosh/pdf-merge": "dev-master"
     },
     "autoload" : {
         "psr-4" : {

@@ -17,12 +17,14 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
  *
  */
+
 /**
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
 
 namespace oat\taoBooklet\model\tasks;
 
+use core_kernel_classes_Resource;
 use JsonSerializable;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
@@ -31,10 +33,10 @@ use taoQtiTest_models_classes_QtiTestService;
 use taoTests_models_classes_TestsService;
 
 /**
- * Class UpdateBooklet
+ * Class PrintBooklet
  * @package oat\taoBooklet\model\tasks
  */
-class UpdateBooklet extends AbstractBookletTask
+class PrintBooklet extends AbstractBookletTask
 {
     /**
      * @var BookletClassService
@@ -51,22 +53,25 @@ class UpdateBooklet extends AbstractBookletTask
 
     /**
      * Gets the config for a booklet instance using either the instance itself or an array of properties
+     * @param core_kernel_classes_Resource $instance
      * @return mixed
      */
-    protected function getBookletConfig()
+    protected function getBookletConfig($instance)
     {
         $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
-        return $configService->getConfig($this->getInstance());
+        return $configService->getConfig($instance);
     }
 
     /**
-     * @return JsonSerializable
+     * Gets the test definition data in order to print it
+     * @param core_kernel_classes_Resource $instance
+     * @return JsonSerializable|array
      * @throws \Exception
      */
-    protected function getTestData()
+    protected function getTestData($instance)
     {
         $testService = taoTests_models_classes_TestsService::singleton();
-        $test = $this->bookletClassService->getTest($this->getInstance());
+        $test = $this->bookletClassService->getTest($instance);
 
         $model = $testService->getTestModel($test);
         if ($model->getUri() != taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
@@ -79,12 +84,14 @@ class UpdateBooklet extends AbstractBookletTask
     }
 
     /**
+     * Stores the generated PDF file
+     * @param core_kernel_classes_Resource $instance
      * @param string $filePath
      * @return \common_report_Report
      */
-    protected function storePdf($filePath)
+    protected function storePdf($instance, $filePath)
     {
-        return $this->bookletClassService->updateInstanceAttachment($this->getInstance(), $filePath);
+        return $this->bookletClassService->updateInstanceAttachment($instance, $filePath);
     }
 
     /**

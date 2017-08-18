@@ -48,6 +48,63 @@ function subst(type) {
         cells[position] = (cells[position] || '') + value;
     }
 
+    function getBarCode(dataStr) {
+
+        PDF417.init(dataStr);
+
+        var barcode = PDF417.getBarcodeArray();
+
+        // block sizes (width and height) in pixels
+        var bw = 1;
+        var bh = 1;
+
+        var canvas = document.createElement('canvas');
+        canvas.id = 'pdf417Code';
+        canvas.width = bw * barcode['num_cols'];
+        canvas.height = bh * barcode['num_rows'];
+
+        var ctx = canvas.getContext('2d');
+
+        // graph barcode elements
+        var y = 0;
+        // for each row
+        for (var r = 0; r < barcode['num_rows']; ++r) {
+            var x = 0;
+            // for each column
+            for (var c = 0; c < barcode['num_cols']; ++c) {
+                if (barcode['bcode'][r][c] == 1) {
+                    ctx.fillRect(x, y, bw, bh);
+                }
+                x += bw;
+            }
+            y += bh;
+        }
+        return canvas.toDataURL('image/png');
+    }
+
+    function deleteEmptyRows() {
+
+        var tr = document.querySelectorAll('tr');
+        var th;
+        var iTr = tr.length;
+        var iTh;
+        var hasContent;
+
+        while(iTr--) {
+            hasContent = false;
+            th = tr[iTr].querySelectorAll('th');
+            iTh = th.length;
+            while(iTh--) {
+                if(th[iTh].innerHTML.trim()){
+                    hasContent = true;
+                }
+            }
+            if(!hasContent){
+                tr[iTr].parentNode.removeChild(tr[iTr]);
+            }
+        }
+    }
+
     function writeCells() {
         var name, cell;
         for (name in cells) {
@@ -58,37 +115,108 @@ function subst(type) {
         }
     }
 
-    function wrap(content) {
-        return '<span>' + content + '</span>';
+    function wrap(content, nodeName, id) {
+        var element = '<' + (nodeName || 'span');
+        if(id) {
+            element += ' id="' + id + '"';
+        }
+        if(nodeName === 'img') {
+            element += 'src="' + content + '" alt="" />';
+        }
+        else {
+            element += '>' + content + '</' + nodeName + '>';
+        }
+        return element;
     }
+
 
     if (layoutConfig.cover_page && vars.page === vars.frompage) {
         document.getElementById('line').style.display = "none";
     } else {
+        /*
+            cell overview
+            =============
+            usually top:
+
+            logo            b1
+            doctitle        b2
+            date            b3 (creation date)
+
+
+            usually bottom:
+
+            unique_id       a1
+            custom_id       a2
+            expiration_date a3
+            pdf417          a4
+
+            mention         b1
+            link            b2
+            page_number     b3
+
+            small_print     c
+
+            rows that are completely empty will be removed
+         */
+
+        // logo
         if (lineConfig.logo && config.logo) {
-            addCellContent('left', '<img src="' + config.logo + '" alt="logo" />');
+            addCellContent('b1', wrap(config.logo, 'img', 'company_logo'));
         }
 
-        if (lineConfig.mention && config.mention) {
-            addCellContent('left', wrap(config.mention));
-        }
-
-        if (lineConfig.link && config.link) {
-            addCellContent('middle', wrap(config.link));
-        }
-
+        // title
         if (lineConfig.title && vars.doctitle) {
-            addCellContent('middle', wrap(vars.doctitle));
+            addCellContent('b2', wrap(vars.doctitle));
         }
 
+        // date
         if (lineConfig.date && vars.date) {
-            addCellContent('right', wrap(vars.date));
+            addCellContent('b3', wrap(vars.date));
         }
 
+        // mention
+        if (lineConfig.mention && config.mention) {
+            addCellContent('b1', wrap(config.mention));
+        }
+
+        // link
+        if (lineConfig.link && config.link) {
+            addCellContent('b2', wrap(config.link));
+        }
+
+        // page number
         if (lineConfig.page_number) {
-            addCellContent('right', wrap(vars.page + '/' + vars.topage));
+            addCellContent('b3', wrap(vars.page + '/' + vars.topage));
+        }
+
+        // small print
+        if (lineConfig.small_print && config.small_print) {
+            addCellContent('c', wrap(config.small_print, 'small'));
+        }
+
+        // unique id
+        if (lineConfig.unique_id && config.unique_id) {
+            addCellContent('a1', wrap(config.unique_id));
+        }
+
+        // custom id
+        if (lineConfig.custom_id && config.custom_id) {
+            addCellContent('a2', wrap(config.custom_id));
+        }
+
+        // expiration date
+        if (lineConfig.expiration_date && config.expiration_date) {
+            addCellContent('a3', wrap(config.expiration_date));
+        }
+
+        // matrix barcode
+        if (lineConfig.matrix_barcode && config.matrix_barcode) {
+            addCellContent('a4', wrap(getBarCode(config.matrix_barcode), 'img', 'pdf417_code'));
+            document.querySelector('#cell-a4').style.padding = 0;
         }
 
         writeCells();
+
+        deleteEmptyRows();
     }
 }

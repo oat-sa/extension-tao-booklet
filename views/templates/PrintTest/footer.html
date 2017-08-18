@@ -2,15 +2,25 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="line.css">
+    <script type="text/javascript" charset="utf-8" src="lib/bcmath-min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="lib/pdf417-min.js"></script>
     <script type="text/javascript" charset="utf-8" src="line.js"></script>
 </head>
 <body onload="subst('page_footer')">
-<table id="line" class="line">
+<table id="line" class="line footer-block">
     <tr>
-        <th></th>
-        <th id="cell-left" class="cell left"></th>
-        <th id="cell-middle" class="cell middle"></th>
-        <th id="cell-right" class="cell right"></th>
+        <th id="cell-a1" class="cell left"></th>
+        <th id="cell-a2" class="cell center"></th>
+        <th id="cell-a3" class="cell center"></th>
+        <th id="cell-a4" class="cell right"></th>
+    </tr>
+    <tr>
+        <th id="cell-b1" class="cell left"></th>
+        <th id="cell-b2" colspan="2" class="cell center"></th>
+        <th id="cell-b3" class="cell right"></th>
+    </tr>
+    <tr>
+        <th colspan="4" id="cell-c" class="cell left"></th>
     </tr>
 </table>
 </body>

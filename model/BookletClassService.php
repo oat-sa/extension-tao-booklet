@@ -52,6 +52,7 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_COVER_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDate';
     const INSTANCE_COVER_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageLogo';
     const INSTANCE_COVER_PAGE_QRCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageQRCode';
+    const INSTANCE_COVER_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageUniqueId';
 
     const INSTANCE_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLogo';
     const INSTANCE_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle';
@@ -59,6 +60,15 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_PAGE_LINK = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLink';
     const INSTANCE_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageDate';
     const INSTANCE_PAGE_NUMBER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber';
+    const INSTANCE_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId';
+    const INSTANCE_PAGE_QR_CODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageQRCode';
+
+    const INSTANCE_PAGE_EXPIRATION_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageExpirationDate';
+    const INSTANCE_PAGE_SMALL_PRINT = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageSmallPrint';
+
+    const INSTANCE_PAGE_MATRIX_BARCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageMatrixBarcode';
+
+    const INSTANCE_PAGE_CUSTOM_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageCustomId';
 
     /**
      * (non-PHPdoc)

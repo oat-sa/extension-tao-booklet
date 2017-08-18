@@ -28,15 +28,13 @@ use core_kernel_classes_Resource;
 use JsonSerializable;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\StorageService;
-use oat\taoDelivery\model\execution\ServiceProxy;
-use oat\taoQtiPrint\model\DeliveryExecutionPacker;
-use tao_helpers_Date;
+use oat\taoQtiPrint\model\DeliveryPacker;
 
 /**
- * Class PrintResults
+ * Class PrintDeliveries
  * @package oat\taoBooklet\model\tasks
  */
-class PrintResults extends AbstractBookletTask
+class PrintDelivery extends AbstractBookletTask
 {
     /**
      *
@@ -69,11 +67,8 @@ class PrintResults extends AbstractBookletTask
      */
     protected function getBookletConfig($instance)
     {
-        $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($instance);
         $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
         $config = $configService->getConfig($this->getParam('config'));
-        $config[BookletConfigService::CONFIG_REGULAR] = true;
-        $config[BookletConfigService::CONFIG_DATE] = tao_helpers_Date::displayeDate($deliveryExecution->getStartTime());
         return $config;
     }
 
@@ -85,11 +80,9 @@ class PrintResults extends AbstractBookletTask
      */
     protected function getTestData($instance)
     {
-        $deliveryExecutionPacker = $this->getServiceLocator()->get(DeliveryExecutionPacker::SERVICE_ID);
+        $deliveryExecutionPacker = $this->getServiceLocator()->get(DeliveryPacker::SERVICE_ID);
 
-        $testData = $deliveryExecutionPacker->getTestData($instance);
-        $testData['states'] = $deliveryExecutionPacker->getResultVariables($instance->getUri());
-        return $testData;
+        return $deliveryExecutionPacker->getTestData($instance, $this->getParam('user'));
     }
 
     /**
