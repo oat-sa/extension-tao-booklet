@@ -24,7 +24,7 @@ return array(
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '1.8.0',
+    'version'     => '1.8.1',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => array(
         'tao'          => '>=10.2.0',

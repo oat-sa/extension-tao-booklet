@@ -95,14 +95,8 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
      */
     protected function generatePdf()
     {
-        $uri = $this->getParam('uri');
         $root = $this->getParam('root');
-
-        if (is_array($uri)) {
-            $list = array_values($uri);
-        } else {
-            $list = [$uri];
-        }
+        $list = $this->getUris();
 
         if (!$root) {
             $root = $list[0];
@@ -148,6 +142,24 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
         tao_helpers_File::delTree($tmpFolder);
 
         return $report;
+    }
+
+    /**
+     * Get the array of URIs.
+     *
+     * @return array
+     */
+    protected function getUris()
+    {
+        $uri = $this->getParam('uri');
+
+        if (is_array($uri)) {
+            $list = array_values($uri);
+        } else {
+            $list = [$uri];
+        }
+
+        return $list;
     }
 
     /**
