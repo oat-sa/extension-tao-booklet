@@ -163,17 +163,6 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
     }
 
     /**
-     * Get the max count of iterations over the uris.
-     *
-     * @param array $uris
-     * @return int
-     */
-    protected function getLoopCount(array $uris)
-    {
-        return count($uris);
-    }
-
-    /**
      * Validates the parameters provided to the task
      * @param array $params
      * @throws common_exception_MissingParameter
