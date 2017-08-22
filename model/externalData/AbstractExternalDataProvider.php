@@ -31,29 +31,34 @@ namespace oat\taoBooklet\model\externalData;
  */
 abstract class AbstractExternalDataProvider
 {
+    protected $bookletConfig = [];
+    protected $initialConfig = [];
 
     /**
-     * Configuration from BookletConfigService
+     * AbstractExternalDataProvider constructor.
      *
-     * @var array
+     * @param array $bookletConfig Configuration composed by BookletConfigService
+     * @param array $initialConfig Initial configuration of booklet instance
      */
-    protected $config = [];
-
-    public function __construct($config) {
-        $this->config = $config;
+    public function __construct($bookletConfig, $initialConfig)
+    {
+        $this->bookletConfig = $bookletConfig;
+        $this->initialConfig = $initialConfig;
     }
 
     /**
      * @return string
      */
-    public function getMatrixBarcodeData() {
+    public function getMatrixBarcodeData()
+    {
         return '';
     }
 
     /**
      * @return string
      */
-    public function getCustomId() {
+    public function getCustomId()
+    {
         return '';
     }
 }

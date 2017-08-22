@@ -226,7 +226,7 @@ class BookletConfigService extends ConfigurableService
 
         $externalDataProviderClass = $this->getOption(self::CONFIG_EXTERNAL_DATA_PROVIDER);
         if($externalDataProviderClass && class_exists($externalDataProviderClass)) {
-            $externalDataProvider = new $externalDataProviderClass($config);
+            $externalDataProvider = new $externalDataProviderClass($config, $properties);
             $config[self::CONFIG_MATRIX_BARCODE] = $externalDataProvider->getMatrixBarcodeData();
             $config[self::CONFIG_CUSTOM_ID] = $this->formatValue(
                 $this->getOption(self::OPTION_CUSTOM_ID_STRING),
