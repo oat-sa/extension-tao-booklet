@@ -160,6 +160,6 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.8.0');
         }
 
-        $this->skip('1.8.0', '1.9.0');
+        $this->skip('1.8.0', '1.9.1');
     }
 }
