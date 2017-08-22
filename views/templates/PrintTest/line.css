@@ -24,23 +24,37 @@
     border-collapse: collapse;
 }
 
-.cell {
+th {
     font-family: Optima, sans-serif;
     font-size: 11px;
     font-weight: 100;
     padding: 2px 5px;
+    vertical-align: bottom;
 }
 
-.footer-block tr:first-child .cell {
+.footer-block tr:first-child th {
     padding-top: 15px;
 }
 
-.header-block tr:last-child .cell {
+.header-block tr:last-child th {
     padding-bottom: 15px;
 }
 
-.cell.barcode {
+td.barcode {
     padding: 0;
+}
+
+td.scan-mark {
+    padding: 0;
+}
+
+
+.footer-block tr .scan-mark {
+    vertical-align: bottom;
+}
+
+.header-block tr .scan-mark {
+    vertical-align: top;
 }
 
 .left {
@@ -83,7 +97,7 @@ img#company_logo {
 }
 
 img#pdf417_code {
-    height: 60px;
+    height: 120px;
 }
 
 span {

@@ -55,8 +55,8 @@ function subst(type) {
         var barcode = PDF417.getBarcodeArray();
 
         // block sizes (width and height) in pixels
-        var bw = 1;
-        var bh = 1;
+        var bw = 2;
+        var bh = 2;
 
         var canvas = document.createElement('canvas');
         canvas.id = 'pdf417Code';
