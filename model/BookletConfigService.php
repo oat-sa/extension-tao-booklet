@@ -68,9 +68,11 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_LINK = 'link';
     const CONFIG_PAGE_NUMBER = 'page_number';
     const CONFIG_UNIQUE_ID = 'unique_id';
+    const CONFIG_UNIQUE_ID_NO_FORMAT = 'unique_id_no_format';
     const CONFIG_PAGE_QR_CODE = 'page_qr_code';
 
     const CONFIG_EXPIRATION_DATE   = 'expiration_date';
+    const CONFIG_EXPIRATION_DATE_NO_FORMAT   = 'expiration_date_no_format';
     const CONFIG_EXPIRATION_PERIOD = 'expiration_period';
     const CONFIG_EXPIRATION_STRING = 'expiration_string';
     const CONFIG_UNIQUE_ID_STRING  = 'unique_id_string';
@@ -182,6 +184,8 @@ class BookletConfigService extends ConfigurableService
             );
         }
 
+        $uniqueId = strtoupper(dechex(crc32(uniqid(microtime(), true))));
+
         $config = [
             self::CONFIG_LAYOUT => [],
             self::CONFIG_COVER_PAGE => [],
@@ -197,19 +201,18 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_REGULAR => false,
             self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
             self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
-            self::CONFIG_UNIQUE_ID => $this->formatValue(
-                $this->getOption(self::OPTION_UNIQUE_ID_STRING),
-                strtoupper(dechex(crc32(uniqid(microtime(), true))))
-            ),
+
+            self::CONFIG_UNIQUE_ID_NO_FORMAT => $uniqueId,
+            self::CONFIG_UNIQUE_ID => $this->formatValue($this->getOption(self::OPTION_UNIQUE_ID_STRING), $uniqueId),
 
             self::CONFIG_SMALL_PRINT => $this->getOption(self::OPTION_SMALL_PRINT),
 
+            self::CONFIG_EXPIRATION_DATE_NO_FORMAT => $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD)),
             self::CONFIG_EXPIRATION_DATE => $this->formatValue(
                 $this->getOption(self::OPTION_EXPIRATION_STRING),
                 $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD))
             ),
         ];
-
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
             $config[self::CONFIG_LAYOUT] = $this->getConfigSet($properties[BookletClassService::PROPERTY_LAYOUT]);
