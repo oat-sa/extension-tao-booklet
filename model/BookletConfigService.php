@@ -50,6 +50,8 @@ class BookletConfigService extends ConfigurableService
     const OPTION_MATRIX_BARCODE    = 'matrix_barcode';     // string
     const OPTION_CUSTOM_ID         = 'custom_id';          // string
 
+    const OPTION_SCAN_MARK_SYMBOL  = 'scan_mark_symbol';   // string
+
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
     const CONFIG_COVER_PAGE = 'cover_page';
@@ -68,9 +70,11 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_LINK = 'link';
     const CONFIG_PAGE_NUMBER = 'page_number';
     const CONFIG_UNIQUE_ID = 'unique_id';
+    const CONFIG_UNIQUE_ID_NO_FORMAT = 'unique_id_no_format';
     const CONFIG_PAGE_QR_CODE = 'page_qr_code';
 
     const CONFIG_EXPIRATION_DATE   = 'expiration_date';
+    const CONFIG_EXPIRATION_DATE_NO_FORMAT   = 'expiration_date_no_format';
     const CONFIG_EXPIRATION_PERIOD = 'expiration_period';
     const CONFIG_EXPIRATION_STRING = 'expiration_string';
     const CONFIG_UNIQUE_ID_STRING  = 'unique_id_string';
@@ -80,8 +84,10 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_CREATION_STRING   = 'date_string';
 
     const CONFIG_SMALL_PRINT       = 'small_print';
-    const CONFIG_MATRIX_BARCODE    = 'matrix_barcode'; // string
-    const CONFIG_CUSTOM_ID         = 'custom_id';      // string
+    const CONFIG_MATRIX_BARCODE    = 'matrix_barcode';   // string
+    const CONFIG_CUSTOM_ID         = 'custom_id';        // string
+    const CONFIG_SCAN_MARKS        = 'scan_marks';       // boolean
+    const CONFIG_SCAN_MARK_SYMBOL  = 'scan_mark_symbol'; // unicode string, default \u271B (✛)
 
     const CONFIG_EXTERNAL_DATA_PROVIDER = 'external_data_provider';
 
@@ -125,6 +131,7 @@ class BookletConfigService extends ConfigurableService
 
         BookletClassService::INSTANCE_PAGE_SMALL_PRINT => self::CONFIG_SMALL_PRINT,
         BookletClassService::INSTANCE_PAGE_MATRIX_BARCODE => self::CONFIG_MATRIX_BARCODE,
+        BookletClassService::INSTANCE_PAGE_SCAN_MARKS => self::CONFIG_SCAN_MARKS,
         BookletClassService::INSTANCE_PAGE_CUSTOM_ID => self::CONFIG_CUSTOM_ID
     ];
 
@@ -182,6 +189,8 @@ class BookletConfigService extends ConfigurableService
             );
         }
 
+        $uniqueId = strtoupper(dechex(crc32(uniqid(microtime(), true))));
+
         $config = [
             self::CONFIG_LAYOUT => [],
             self::CONFIG_COVER_PAGE => [],
@@ -197,19 +206,19 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_REGULAR => false,
             self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
             self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
-            self::CONFIG_UNIQUE_ID => $this->formatValue(
-                $this->getOption(self::OPTION_UNIQUE_ID_STRING),
-                strtoupper(dechex(crc32(uniqid(microtime(), true))))
-            ),
+
+            self::CONFIG_UNIQUE_ID_NO_FORMAT => $uniqueId,
+            self::CONFIG_UNIQUE_ID => $this->formatValue($this->getOption(self::OPTION_UNIQUE_ID_STRING), $uniqueId),
 
             self::CONFIG_SMALL_PRINT => $this->getOption(self::OPTION_SMALL_PRINT),
 
+            self::CONFIG_EXPIRATION_DATE_NO_FORMAT => $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD)),
             self::CONFIG_EXPIRATION_DATE => $this->formatValue(
                 $this->getOption(self::OPTION_EXPIRATION_STRING),
                 $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD))
             ),
+            self::CONFIG_SCAN_MARK_SYMBOL => $this->getScanMarkSymbol()
         ];
-
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
             $config[self::CONFIG_LAYOUT] = $this->getConfigSet($properties[BookletClassService::PROPERTY_LAYOUT]);
@@ -226,7 +235,7 @@ class BookletConfigService extends ConfigurableService
 
         $externalDataProviderClass = $this->getOption(self::CONFIG_EXTERNAL_DATA_PROVIDER);
         if($externalDataProviderClass && class_exists($externalDataProviderClass)) {
-            $externalDataProvider = new $externalDataProviderClass($config);
+            $externalDataProvider = new $externalDataProviderClass($config, $properties);
             $config[self::CONFIG_MATRIX_BARCODE] = $externalDataProvider->getMatrixBarcodeData();
             $config[self::CONFIG_CUSTOM_ID] = $this->formatValue(
                 $this->getOption(self::OPTION_CUSTOM_ID_STRING),
@@ -271,6 +280,16 @@ class BookletConfigService extends ConfigurableService
             $dateObj->add(\DateInterval::createFromDateString($period));
         }
         return $dateObj->format($format ? $format : 'd/m/Y');
+    }
+
+    /**
+     * The symbol that is used as a scan mark if any
+     *
+     * @return string
+     */
+    protected function getScanMarkSymbol() {
+        $scanMarkSymbol = $this->getOption(self::OPTION_SCAN_MARK_SYMBOL);
+        return $scanMarkSymbol ? $scanMarkSymbol : '✛';
     }
 
 

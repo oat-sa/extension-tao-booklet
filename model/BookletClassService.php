@@ -67,6 +67,7 @@ class BookletClassService extends tao_models_classes_ClassService
     const INSTANCE_PAGE_SMALL_PRINT = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageSmallPrint';
 
     const INSTANCE_PAGE_MATRIX_BARCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageMatrixBarcode';
+    const INSTANCE_PAGE_SCAN_MARKS = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageScanMarks';
 
     const INSTANCE_PAGE_CUSTOM_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageCustomId';
 

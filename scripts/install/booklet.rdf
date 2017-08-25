@@ -244,4 +244,10 @@
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
     </rdf:Description>
 
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#PageScanMarks">
+        <rdfs:label xml:lang="en-US"><![CDATA[Scan marks]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Display scan marks]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions"/>
+    </rdf:Description>
+
 </rdf:RDF>

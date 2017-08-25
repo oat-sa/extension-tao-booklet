@@ -24,22 +24,43 @@
     border-collapse: collapse;
 }
 
-.cell {
-    font-family: Optima, sans-serif;
+.scan-mark {
+    font-size: 28px;
+    line-height: 20px;
+    padding:0 !important;
+
+}
+
+.footer-block .scan-mark {
+    vertical-align: bottom;
+}
+
+.header-block .scan-mark {
+    vertical-align: top;
+}
+
+.header-block .scan-mark span {
+    position: relative;
+    top: -5px;
+}
+
+td {
+    font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
     font-size: 11px;
     font-weight: 100;
     padding: 2px 5px;
+    vertical-align: bottom;
 }
 
-.footer-block tr:first-child .cell {
+.footer-block tr:first-child td {
     padding-top: 15px;
 }
 
-.header-block tr:last-child .cell {
+.header-block tr:last-child td {
     padding-bottom: 15px;
 }
 
-.cell.barcode {
+td.barcode {
     padding: 0;
 }
 
@@ -83,7 +104,7 @@ img#company_logo {
 }
 
 img#pdf417_code {
-    height: 60px;
+    height: 120px;
 }
 
 span {
