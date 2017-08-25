@@ -50,6 +50,8 @@ class BookletConfigService extends ConfigurableService
     const OPTION_MATRIX_BARCODE    = 'matrix_barcode';     // string
     const OPTION_CUSTOM_ID         = 'custom_id';          // string
 
+    const OPTION_SCAN_MARK_SYMBOL  = 'scan_mark_symbol';   // string
+
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
     const CONFIG_COVER_PAGE = 'cover_page';
@@ -82,8 +84,10 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_CREATION_STRING   = 'date_string';
 
     const CONFIG_SMALL_PRINT       = 'small_print';
-    const CONFIG_MATRIX_BARCODE    = 'matrix_barcode'; // string
-    const CONFIG_CUSTOM_ID         = 'custom_id';      // string
+    const CONFIG_MATRIX_BARCODE    = 'matrix_barcode';   // string
+    const CONFIG_CUSTOM_ID         = 'custom_id';        // string
+    const CONFIG_SCAN_MARKS        = 'scan_marks';       // boolean
+    const CONFIG_SCAN_MARK_SYMBOL  = 'scan_mark_symbol'; // unicode string, default \u271B (✛)
 
     const CONFIG_EXTERNAL_DATA_PROVIDER = 'external_data_provider';
 
@@ -127,6 +131,7 @@ class BookletConfigService extends ConfigurableService
 
         BookletClassService::INSTANCE_PAGE_SMALL_PRINT => self::CONFIG_SMALL_PRINT,
         BookletClassService::INSTANCE_PAGE_MATRIX_BARCODE => self::CONFIG_MATRIX_BARCODE,
+        BookletClassService::INSTANCE_PAGE_SCAN_MARKS => self::CONFIG_SCAN_MARKS,
         BookletClassService::INSTANCE_PAGE_CUSTOM_ID => self::CONFIG_CUSTOM_ID
     ];
 
@@ -212,6 +217,7 @@ class BookletConfigService extends ConfigurableService
                 $this->getOption(self::OPTION_EXPIRATION_STRING),
                 $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD))
             ),
+            self::CONFIG_SCAN_MARK_SYMBOL => $this->getScanMarkSymbol()
         ];
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
@@ -274,6 +280,16 @@ class BookletConfigService extends ConfigurableService
             $dateObj->add(\DateInterval::createFromDateString($period));
         }
         return $dateObj->format($format ? $format : 'd/m/Y');
+    }
+
+    /**
+     * The symbol that is used as a scan mark if any
+     *
+     * @return string
+     */
+    protected function getScanMarkSymbol() {
+        $scanMarkSymbol = $this->getOption(self::OPTION_SCAN_MARK_SYMBOL);
+        return $scanMarkSymbol ? $scanMarkSymbol : '✛';
     }
 
 

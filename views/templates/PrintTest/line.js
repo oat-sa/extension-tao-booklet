@@ -17,6 +17,7 @@
  */
 /**
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
+ * @author Dieter Raber <dieter@taotesting.com>
  */
 function subst(type) {
     var vars = extractVars();
@@ -80,29 +81,6 @@ function subst(type) {
             y += bh;
         }
         return canvas.toDataURL('image/png');
-    }
-
-    function deleteEmptyRows() {
-
-        var tr = document.querySelectorAll('tr');
-        var th;
-        var iTr = tr.length;
-        var iTh;
-        var hasContent;
-
-        while(iTr--) {
-            hasContent = false;
-            th = tr[iTr].querySelectorAll('th');
-            iTh = th.length;
-            while(iTh--) {
-                if(th[iTh].innerHTML.trim()){
-                    hasContent = true;
-                }
-            }
-            if(!hasContent){
-                tr[iTr].parentNode.removeChild(tr[iTr]);
-            }
-        }
     }
 
     function writeCells() {
@@ -215,8 +193,12 @@ function subst(type) {
             document.querySelector('#cell-a4').style.padding = 0;
         }
 
-        writeCells();
+        // scan marks
+        if (lineConfig.scan_marks && config.scan_mark_symbol) {
+            addCellContent('left-scan-mark', wrap(config.scan_mark_symbol));
+            addCellContent('right-scan-mark', wrap(config.scan_mark_symbol));
+        }
 
-        deleteEmptyRows();
+        writeCells();
     }
 }
