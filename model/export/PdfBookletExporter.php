@@ -78,7 +78,7 @@ class PdfBookletExporter extends BookletExporter
             'load-media-error-handling' => 'ignore',
 
             //print resolution
-            'dpi' => 300,
+            'dpi' => 600,
 
             //document title
             'title' => $title,
