@@ -15,34 +15,12 @@
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
  */
+
+
 /**
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
+ * @author Dieter Raber <dieter@taotesting.com>
  */
-.line {
-    position: relative;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.scan-mark {
-    font-size: 28px;
-    line-height: 20px;
-    padding:0 !important;
-
-}
-
-.footer-block .scan-mark {
-    vertical-align: bottom;
-}
-
-.header-block .scan-mark {
-    vertical-align: top;
-}
-
-.header-block .scan-mark span {
-    position: relative;
-    top: -5px;
-}
 
 td {
     font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif;
@@ -50,18 +28,76 @@ td {
     font-weight: 100;
     padding: 2px 5px;
     vertical-align: bottom;
+    &.barcode {
+        padding: 0;
+    }
 }
 
-.footer-block tr:first-child td {
-    padding-top: 15px;
+img {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    &#company_logo {
+        height: 25px;
+    }
+    &#pdf417_code {
+        height: 120px;
+    }
 }
 
-.header-block tr:last-child td {
-    padding-bottom: 15px;
+small {
+    font-size: 7.7px;
 }
 
-td.barcode {
+span, small {
+    display: block;
+}
+
+.line {
+    position: relative;
+    width: 100%;
+    border-collapse: collapse;
+
+    &.footer-block {
+        .scan-mark {
+            vertical-align: bottom;
+            span {
+                position: relative;
+                bottom: -5px;
+            }
+        }
+        tr:first-child td {
+            padding-top: 15px;
+        }
+    }
+
+    &.header-block {
+        .scan-mark {
+            vertical-align: top;
+            span {
+                position: relative;
+                top: -17px;
+            }
+        }
+        tr:last-child td {
+            padding-bottom: 15px;
+        }
+    }
+}
+
+.scan-mark {
+    font-size: 46px;
+    line-height: 1;
     padding: 0;
+    span {
+        position: relative;
+    }
+    &.left-mark span {
+        left: -2px;
+    }
+    &.right-mark span {
+        right: -2px;
+    }
 }
 
 .left {
@@ -93,27 +129,6 @@ td.barcode {
     width: 50%;
 }
 
-img {
-    position: relative;
-    display: inline-block;
-    width: auto;
-}
-
-img#company_logo {
-    height: 25px;
-}
-
-img#pdf417_code {
-    height: 120px;
-}
-
-span {
-}
-
-small {
-    font-size: 7.7px;
-}
-
-span, small {
-    display: block;
+#cell-b2 {
+    width: 50%;
 }
