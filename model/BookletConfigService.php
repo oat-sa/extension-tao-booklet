@@ -52,6 +52,8 @@ class BookletConfigService extends ConfigurableService
 
     const OPTION_SCAN_MARK_SYMBOL  = 'scan_mark_symbol';   // string
 
+    const OPTION_TABLE_THEME       = 'table_theme';        // url
+
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
     const CONFIG_COVER_PAGE = 'cover_page';
@@ -87,7 +89,9 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_MATRIX_BARCODE    = 'matrix_barcode';   // string
     const CONFIG_CUSTOM_ID         = 'custom_id';        // string
     const CONFIG_SCAN_MARKS        = 'scan_marks';       // boolean
-    const CONFIG_SCAN_MARK_SYMBOL  = 'scan_mark_symbol'; // unicode string, default \u271B (✛)
+    const CONFIG_SCAN_MARK_SYMBOL  = 'scan_mark_symbol'; // unicode string, default 'square'
+
+    const CONFIG_TABLE_THEME       = 'table_theme';      // url
 
     const CONFIG_EXTERNAL_DATA_PROVIDER = 'external_data_provider';
 
@@ -217,7 +221,8 @@ class BookletConfigService extends ConfigurableService
                 $this->getOption(self::OPTION_EXPIRATION_STRING),
                 $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD))
             ),
-            self::CONFIG_SCAN_MARK_SYMBOL => $this->getScanMarkSymbol()
+            self::CONFIG_SCAN_MARK_SYMBOL => $this->getScanMarkSymbol(),
+            self::CONFIG_TABLE_THEME => $this->getOption(self::OPTION_TABLE_THEME)
         ];
 
         if (isset($properties[BookletClassService::PROPERTY_LAYOUT])) {
@@ -283,13 +288,14 @@ class BookletConfigService extends ConfigurableService
     }
 
     /**
-     * The symbol that is used as a scan mark if any
+     * The symbol that is used as a scan mark if any.
+     * This is a reference to taoBooklet/views/templates/PrintTest/line.js::addScanMarks
      *
      * @return string
      */
     protected function getScanMarkSymbol() {
         $scanMarkSymbol = $this->getOption(self::OPTION_SCAN_MARK_SYMBOL);
-        return $scanMarkSymbol ? $scanMarkSymbol : '✛';
+        return $scanMarkSymbol ? $scanMarkSymbol : 'square';
     }
 
 
