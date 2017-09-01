@@ -61,7 +61,7 @@ span, small {
     &.footer-block {
         .scan-mark {
             vertical-align: bottom;
-            span {
+            img {
                 position: relative;
                 bottom: -5px;
             }
@@ -74,7 +74,7 @@ span, small {
     &.header-block {
         .scan-mark {
             vertical-align: top;
-            span {
+            img {
                 position: relative;
                 top: -4px;
             }
@@ -86,16 +86,18 @@ span, small {
 }
 
 .scan-mark {
-    font-size: 46px;
-    line-height: 1;
+    //font-size: 46px;
+    //line-height: 1;
     padding: 0;
-    span {
+    img {
         position: relative;
+        width: 46px;
+        height: 46px;
     }
-    &.left-mark span {
+    &.left-mark img {
         left: -2px;
     }
-    &.right-mark span {
+    &.right-mark img {
         right: -2px;
     }
 }
