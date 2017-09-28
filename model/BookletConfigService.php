@@ -68,6 +68,8 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_DATE = 'date';
     const CONFIG_LOGO = 'logo';
     const CONFIG_QRCODE = 'qr_code';
+    const CONFIG_QRCODE_DATA = 'qr_code_data';
+    const CONFIG_URI = 'uri';
     const CONFIG_MENTION = 'mention';
     const CONFIG_LINK = 'link';
     const CONFIG_PAGE_NUMBER = 'page_number';
@@ -246,6 +248,10 @@ class BookletConfigService extends ConfigurableService
                 $this->getOption(self::OPTION_CUSTOM_ID_STRING),
                 $externalDataProvider->getCustomId()
             );
+        }
+
+        if ($instance instanceof core_kernel_classes_Resource) {
+            $config[self::CONFIG_URI] = $instance->getUri();
         }
 
         return $config;
