@@ -46,6 +46,10 @@ class PrintTest extends tao_actions_CommonModule
      */
     public function render()
     {
+        if ($this->hasRequestParameter('uri') && !$this->hasRequestParameter('token')) {
+            return $this->forward('preview');
+        }
+
         session_write_close();
 
         $storageKey = $this->getRequestParameter('token');
@@ -67,25 +71,34 @@ class PrintTest extends tao_actions_CommonModule
     public function preview()
     {
         session_write_close();
+        try {
 
-        $instance = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($this->getRequestParameter('uri')));
-        $test = BookletClassService::singleton()->getTest($instance);
-        $testService = \taoTests_models_classes_TestsService::singleton();
-        $model = $testService->getTestModel($test);
-        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
-            throw new \Exception('Not a QTI test');
+            $uri = \tao_helpers_Uri::decode($this->getRequestParameter('uri'));
+            $instance = new \core_kernel_classes_Resource($uri);
+            $test = BookletClassService::singleton()->getTest($instance);
+            if (!$test || !$test->exists()) {
+                throw new \common_exception_NotFound('Unknown resource ' . $uri);
+            }
+            $testService = \taoTests_models_classes_TestsService::singleton();
+            $model = $testService->getTestModel($test);
+            if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
+                throw new \common_exception_NotFound('Not a QTI test');
+            }
+
+            $packer = new QtiTestPacker();
+            $this->getServiceManager()->propagate($packer);
+
+            $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+            $bookletData = [
+                'testData' => $packer->packTest($test),
+                'config' => $configService->getConfig($instance),
+            ];
+
+            $this->renderTest($bookletData);
+        } catch (\common_exception_NotFound $e) {
+            header("HTTP/1.0 404 Not Found");
+            $this->setView('error/error404.tpl', 'tao');
         }
-
-        $packer = new QtiTestPacker();
-        $this->getServiceManager()->propagate($packer);
-
-        $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
-        $bookletData = [
-            'testData' => $packer->packTest($test),
-            'config' => $configService->getConfig($instance),
-        ];
-
-        $this->renderTest($bookletData);
     }
 
     /**
