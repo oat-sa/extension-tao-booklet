@@ -95,6 +95,7 @@ define([
                             dataType: "text"
                         }).done(displayReport);
                     } else {
+                        $submitter.attr('disabled', true);
                         // download file after form submit
                         $.fileDownload($form.attr('action'), {
                             httpMethod: 'POST',
