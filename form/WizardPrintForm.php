@@ -36,5 +36,14 @@ class WizardPrintForm extends GenerateForm
         parent::initElements();
 
         $this->getForm()->removeElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
+
+        // the QR code is only compatible with booklet instances
+        $coverPage = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_COVER_PAGE ) );
+        $options = $coverPage->getOptions();
+        $qrcode = tao_helpers_Uri::encode( BookletClassService::INSTANCE_COVER_PAGE_QRCODE );
+        if (isset($options[$qrcode])) {
+            unset($options[$qrcode]);
+            $coverPage->setOptions($options);
+        }
     }
 }
