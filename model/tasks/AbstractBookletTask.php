@@ -110,6 +110,7 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
             $instance = $this->getResource($uri);
 
             $config = $this->getBookletConfig($instance);
+            $config[BookletConfigService::CONFIG_URI] = $uri;
             $storageKey = $this->cacheBookletData($uri, [
                 'testData' => $this->getTestData($instance),
                 'config' => $config,
