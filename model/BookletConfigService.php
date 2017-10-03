@@ -53,6 +53,7 @@ class BookletConfigService extends ConfigurableService
     const OPTION_SCAN_MARK_SYMBOL  = 'scan_mark_symbol';   // string
 
     const OPTION_TABLE_THEME       = 'table_theme';        // url
+    const OPTION_PAGE_FORMAT       = 'page_format';
 
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
@@ -73,6 +74,7 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_MENTION = 'mention';
     const CONFIG_LINK = 'link';
     const CONFIG_PAGE_NUMBER = 'page_number';
+    const CONFIG_PAGE_FORMAT = 'page_format';       // eg. Page %s of %s
     const CONFIG_UNIQUE_ID = 'unique_id';
     const CONFIG_UNIQUE_ID_NO_FORMAT = 'unique_id_no_format';
     const CONFIG_PAGE_QR_CODE = 'page_qr_code';
@@ -224,6 +226,7 @@ class BookletConfigService extends ConfigurableService
                 $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD))
             ),
             self::CONFIG_SCAN_MARK_SYMBOL => $this->getScanMarkSymbol(),
+            self::CONFIG_PAGE_FORMAT => $this->getPageFormat(),
             self::CONFIG_TABLE_THEME => $this->getOption(self::OPTION_TABLE_THEME)
         ];
 
@@ -270,6 +273,16 @@ class BookletConfigService extends ConfigurableService
             return '';
         }
         return $format ? sprintf($format, $value) : $value;
+    }
+
+
+    /**
+     * Generates a string that can be used with sprintf()
+     * @return string
+     */
+    protected function getPageFormat() {
+        $format = $this->getOption(self::OPTION_PAGE_FORMAT);
+        return $format ? $format : '%s/%s';
     }
 
 
