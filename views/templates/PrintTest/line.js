@@ -209,7 +209,7 @@ function subst(type) {
         // page number
         if (lineConfig.page_number) {
             position = lineConfig.matrix_barcode ? 'b2' : 'b3';
-            addCellContent(position, wrap(vars.page + '/' + vars.topage));
+            addCellContent(position, wrap(config.page_format.replace(/%1\$d/, vars.page).replace(/%2\$d/, vars.topage)));
         }
 
         // small print
