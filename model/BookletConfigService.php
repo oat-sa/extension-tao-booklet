@@ -99,6 +99,11 @@ class BookletConfigService extends ConfigurableService
 
     const CONFIG_EXTERNAL_DATA_PROVIDER = 'external_data_provider';
 
+    // default formats
+    const DEFAULT_DATE_FORMAT      = 'd/m/Y';            // @see http://php.net/manual/en/function.date.php
+    const DEFAULT_PAGE_FORMAT      = '%1$d/%2$d';        // 1/2, @see http://php.net/manual/en/function.sprintf.php
+    const DEFAULT_SCAN_MARK_FORMAT = 'square';           // @see taoBooklet/views/templates/PrintTest/line.js::addScanMarks for available options
+
     /**
      * Maps the properties to config names
      * @var array
@@ -282,7 +287,7 @@ class BookletConfigService extends ConfigurableService
      */
     protected function getPageFormat() {
         $format = $this->getOption(self::OPTION_PAGE_FORMAT);
-        return $format ? $format : '%s/%s';
+        return $format ? $format : self::DEFAULT_PAGE_FORMAT;
     }
 
 
@@ -303,7 +308,7 @@ class BookletConfigService extends ConfigurableService
         if($period) {
             $dateObj->add(\DateInterval::createFromDateString($period));
         }
-        return $dateObj->format($format ? $format : 'd/m/Y');
+        return $dateObj->format($format ? $format : self::DEFAULT_DATE_FORMAT);
     }
 
     /**
@@ -314,7 +319,7 @@ class BookletConfigService extends ConfigurableService
      */
     protected function getScanMarkSymbol() {
         $scanMarkSymbol = $this->getOption(self::OPTION_SCAN_MARK_SYMBOL);
-        return $scanMarkSymbol ? $scanMarkSymbol : 'square';
+        return $scanMarkSymbol ? $scanMarkSymbol : self::DEFAULT_SCAN_MARK_FORMAT;
     }
 
 
