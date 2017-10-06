@@ -53,6 +53,7 @@ class BookletConfigService extends ConfigurableService
     const OPTION_SCAN_MARK_SYMBOL  = 'scan_mark_symbol';   // string
 
     const OPTION_TABLE_THEME       = 'table_theme';        // url
+    const OPTION_PAGE_FORMAT       = 'page_format';
 
     const CONFIG_REGULAR = 'regular';
     const CONFIG_LAYOUT = 'layout';
@@ -74,6 +75,7 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_MENTION = 'mention';
     const CONFIG_LINK = 'link';
     const CONFIG_PAGE_NUMBER = 'page_number';
+    const CONFIG_PAGE_FORMAT = 'page_format';       // eg. Page %s of %s
     const CONFIG_UNIQUE_ID = 'unique_id';
     const CONFIG_UNIQUE_ID_NO_FORMAT = 'unique_id_no_format';
     const CONFIG_PAGE_QR_CODE = 'page_qr_code';
@@ -97,6 +99,11 @@ class BookletConfigService extends ConfigurableService
     const CONFIG_TABLE_THEME       = 'table_theme';      // url
 
     const CONFIG_EXTERNAL_DATA_PROVIDER = 'external_data_provider';
+
+    // default formats
+    const DEFAULT_DATE_FORMAT      = 'd/m/Y';            // @see http://php.net/manual/en/function.date.php
+    const DEFAULT_PAGE_FORMAT      = '%1$d/%2$d';        // 1/2, @see http://php.net/manual/en/function.sprintf.php
+    const DEFAULT_SCAN_MARK_FORMAT = 'square';           // @see taoBooklet/views/templates/PrintTest/line.js::addScanMarks for available options
 
     /**
      * Maps the properties to config names
@@ -226,6 +233,7 @@ class BookletConfigService extends ConfigurableService
                 $this->getDate($this->getOption(self::OPTION_EXPIRATION_PERIOD))
             ),
             self::CONFIG_SCAN_MARK_SYMBOL => $this->getScanMarkSymbol(),
+            self::CONFIG_PAGE_FORMAT => $this->getPageFormat(),
             self::CONFIG_TABLE_THEME => $this->getOption(self::OPTION_TABLE_THEME)
         ];
 
@@ -276,6 +284,16 @@ class BookletConfigService extends ConfigurableService
 
 
     /**
+     * Generates a string that can be used with sprintf()
+     * @return string
+     */
+    protected function getPageFormat() {
+        $format = $this->getOption(self::OPTION_PAGE_FORMAT);
+        return $format ? $format : self::DEFAULT_PAGE_FORMAT;
+    }
+
+
+    /**
      * Create basic date in the provided format
      *
      * @param null $period
@@ -292,7 +310,7 @@ class BookletConfigService extends ConfigurableService
         if($period) {
             $dateObj->add(\DateInterval::createFromDateString($period));
         }
-        return $dateObj->format($format ? $format : 'd/m/Y');
+        return $dateObj->format($format ? $format : self::DEFAULT_DATE_FORMAT);
     }
 
     /**
@@ -303,7 +321,7 @@ class BookletConfigService extends ConfigurableService
      */
     protected function getScanMarkSymbol() {
         $scanMarkSymbol = $this->getOption(self::OPTION_SCAN_MARK_SYMBOL);
-        return $scanMarkSymbol ? $scanMarkSymbol : 'square';
+        return $scanMarkSymbol ? $scanMarkSymbol : self::DEFAULT_SCAN_MARK_FORMAT;
     }
 
 
