@@ -24,6 +24,7 @@
 namespace oat\taoBooklet\model;
 
 use core_kernel_classes_Resource;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 
 class BookletConfigService extends ConfigurableService
@@ -176,7 +177,7 @@ class BookletConfigService extends ConfigurableService
     {
         if ($instance instanceof core_kernel_classes_Resource) {
             $properties = $instance->getPropertiesValues([
-                RDFS_LABEL,
+                OntologyRdfs::RDFS_LABEL,
                 BookletClassService::PROPERTY_DESCRIPTION,
                 BookletClassService::PROPERTY_LAYOUT,
                 BookletClassService::PROPERTY_COVER_PAGE,
@@ -210,7 +211,7 @@ class BookletConfigService extends ConfigurableService
                 $this->getDate()
             ),
             self::CONFIG_REGULAR => false,
-            self::CONFIG_TITLE => $this->getPropertyValue($properties, RDFS_LABEL),
+            self::CONFIG_TITLE => $this->getPropertyValue($properties, OntologyRdfs::RDFS_LABEL),
             self::CONFIG_DESCRIPTION => $this->getPropertyValue($properties, BookletClassService::PROPERTY_DESCRIPTION),
 
             self::CONFIG_UNIQUE_ID_NO_FORMAT => $uniqueId,

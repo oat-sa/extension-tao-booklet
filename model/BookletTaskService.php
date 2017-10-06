@@ -25,6 +25,7 @@ namespace oat\taoBooklet\model;
 
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
@@ -103,8 +104,8 @@ class BookletTaskService extends ConfigurableService
         ];
 
         $label = $delivery->getLabel();
-        if (isset($printConfig[RDFS_LABEL])) {
-            $label = $printConfig[RDFS_LABEL];
+        if (isset($printConfig[OntologyRdfs::RDFS_LABEL])) {
+            $label = $printConfig[OntologyRdfs::RDFS_LABEL];
         }
         if (isset($printConfig[BookletClassService::PROPERTY_DESCRIPTION])) {
             $label .= ' - ' . $printConfig[BookletClassService::PROPERTY_DESCRIPTION];
@@ -132,8 +133,8 @@ class BookletTaskService extends ConfigurableService
         ];
 
         $label = $resource->getLabel();
-        if (isset($printConfig[RDFS_LABEL])) {
-            $label = $printConfig[RDFS_LABEL];
+        if (isset($printConfig[OntologyRdfs::RDFS_LABEL])) {
+            $label = $printConfig[OntologyRdfs::RDFS_LABEL];
         }
         
         $task = $this->getQueueService()->createTask($action, $queueParameters, false, $label, $resource->getUri());
