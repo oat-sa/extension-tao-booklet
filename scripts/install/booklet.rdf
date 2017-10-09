@@ -82,6 +82,12 @@
         <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#LayoutOptions"/>
     </rdf:Description>
 
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#ShowResponseIdentifier">
+        <rdfs:label xml:lang="en-US"><![CDATA[Show Response Identifier]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Show the interaction's response identifier]]></rdfs:comment>
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/Booklet.rdf#LayoutOptions"/>
+    </rdf:Description>
+
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/Booklet.rdf#OnePageItem">
         <rdfs:label xml:lang="en-US"><![CDATA[One Item per page]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Place each Item on a dedicated page]]></rdfs:comment>
