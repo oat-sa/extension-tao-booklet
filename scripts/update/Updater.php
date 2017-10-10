@@ -170,6 +170,13 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.9.1');
         }
 
-        $this->skip('1.9.1', '1.10.1');
+        $this->skip('1.9.1', '1.11.0');
+
+        if ($this->isVersion('1.11.0')) {
+
+            OntologyUpdater::syncModels();
+
+            $this->setVersion('1.12.0');
+        }
     }
 }
