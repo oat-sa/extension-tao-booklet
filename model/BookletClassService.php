@@ -22,6 +22,7 @@
 namespace oat\taoBooklet\model;
 
 use oat\generis\model\OntologyAwareTrait;
+use oat\generis\model\OntologyRdfs;
 use tao_models_classes_ClassService;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
@@ -93,7 +94,7 @@ class BookletClassService extends tao_models_classes_ClassService
     public function createBookletInstance(core_kernel_classes_Class $class, $label, $test)
     {
         return $class->createInstanceWithProperties(array(
-            RDFS_LABEL => $label,
+            OntologyRdfs::RDFS_LABEL => $label,
             self::PROPERTY_TEST => $test
         ));
     }

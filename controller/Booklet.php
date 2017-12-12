@@ -23,6 +23,7 @@ namespace oat\taoBooklet\controller;
 use common_report_Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\GenerateForm;
@@ -214,7 +215,7 @@ class Booklet extends AbstractBookletController
 
                 $this->returnReport($report, false);
             } else {
-                $myForm->getElement(tao_helpers_Uri::encode(RDFS_LABEL))->setValue($test->getLabel());
+                $myForm->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($test->getLabel());
 
                 $this->renderForm($myForm);
             }
