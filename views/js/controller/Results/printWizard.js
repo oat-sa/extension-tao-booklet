@@ -52,6 +52,7 @@ define([
             function displayReport(response) {
                 switchContainer('report');
                 $reportContainer.append(response);
+                $submitter.removeAttr('disabled');
 
                 // Fold action (show detailed report)
                 hider.toggle($('#fold', $reportContainer), response.nested);
@@ -70,6 +71,8 @@ define([
                 var params = {};
                 var instances = [];
                 var classes = [];
+
+                $submitter.attr('disabled', true);
 
                 e.preventDefault();
                 if (parseInt($sent.val(), 10)) {
