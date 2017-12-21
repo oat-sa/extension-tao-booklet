@@ -24,6 +24,8 @@
 namespace oat\taoBooklet\controller;
 
 use core_kernel_classes_Resource;
+use oat\generis\model\GenerisRdf;
+use oat\generis\model\OntologyRdfs;
 use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
@@ -101,7 +103,7 @@ class Results extends AbstractBookletController
             $this->returnReport($report);
 
         } else {
-            $form->getElement(tao_helpers_Uri::encode(RDFS_LABEL))->setValue($delivery->getLabel());
+            $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($delivery->getLabel());
             $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
             $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue($testTaker['userLabel']);
 
@@ -132,18 +134,18 @@ class Results extends AbstractBookletController
             $userLastName = $testTaker;
             $userEmail = $testTaker;
         } else {
-            $login = (count($testTaker[PROPERTY_USER_LOGIN]) > 0) ? current(
-                $testTaker[PROPERTY_USER_LOGIN]
+            $login = (count($testTaker[GenerisRdf::PROPERTY_USER_LOGIN]) > 0) ? current(
+                $testTaker[GenerisRdf::PROPERTY_USER_LOGIN]
             )->literal : "";
-            $label = (count($testTaker[RDFS_LABEL]) > 0) ? current($testTaker[RDFS_LABEL])->literal : "";
-            $firstName = (count($testTaker[PROPERTY_USER_FIRSTNAME]) > 0) ? current(
-                $testTaker[PROPERTY_USER_FIRSTNAME]
+            $label = (count($testTaker[OntologyRdfs::RDFS_LABEL]) > 0) ? current($testTaker[OntologyRdfs::RDFS_LABEL])->literal : "";
+            $firstName = (count($testTaker[GenerisRdf::PROPERTY_USER_FIRSTNAME]) > 0) ? current(
+                $testTaker[GenerisRdf::PROPERTY_USER_FIRSTNAME]
             )->literal : "";
-            $userLastName = (count($testTaker[PROPERTY_USER_LASTNAME]) > 0) ? current(
-                $testTaker[PROPERTY_USER_LASTNAME]
+            $userLastName = (count($testTaker[GenerisRdf::PROPERTY_USER_LASTNAME]) > 0) ? current(
+                $testTaker[GenerisRdf::PROPERTY_USER_LASTNAME]
             )->literal : "";
-            $userEmail = (count($testTaker[PROPERTY_USER_MAIL]) > 0) ? current(
-                $testTaker[PROPERTY_USER_MAIL]
+            $userEmail = (count($testTaker[GenerisRdf::PROPERTY_USER_MAIL]) > 0) ? current(
+                $testTaker[GenerisRdf::PROPERTY_USER_MAIL]
             )->literal : "";
         }
 
