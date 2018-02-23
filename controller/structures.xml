@@ -13,13 +13,17 @@
                           selectClass="booklet-class-properties"
                           selectInstance="booklet-properties"
                           moveInstance="booklet-move"
-						  rootNode="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"
+                          rootNode="http://www.tao.lu/Ontologies/Booklet.rdf#Booklet"
                     />
                 </trees>
                 <actions>
 
-                	<action id="booklet-class-properties" name="Properties" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                    <action id="booklet-class-properties" name="Properties" url="/taoBooklet/Booklet/editClassLabel" group="content" context="class">
                         <icon id="icon-edit"/>
+                    </action>
+
+                    <action id="booklet-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                        <icon id="icon-property-add"/>
                     </action>
 
                     <action id="booklet-properties" name="Properties"  url="/taoBooklet/Booklet/editBooklet" group="content" context="instance">
