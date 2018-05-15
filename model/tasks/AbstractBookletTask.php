@@ -102,6 +102,8 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
             $root = $list[0];
         }
 
+        shuffle($list);
+
         $rootInstance = $this->getResource($root);
         $tmpFolder = tao_helpers_File::createTempDir();
         $pdfFiles = [];
