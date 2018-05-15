@@ -102,6 +102,8 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
             $root = $list[0];
         }
 
+        $this->shuffleListOfUris($list);
+
         $rootInstance = $this->getResource($root);
         $tmpFolder = tao_helpers_File::createTempDir();
         $pdfFiles = [];
@@ -249,5 +251,21 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
     protected function getRendererUrl($storageKey)
     {
         return tao_helpers_Uri::url('render', 'PrintTest', 'taoBooklet', ['token' => $storageKey]);
+    }
+
+    /**
+     * Shuffle array using mt_rand function
+     * @param $array
+     */
+    private function shuffleListOfUris(&$array) {
+        $randArr = [];
+        $arrLength = count($array);
+        while (count($array)) {
+            $randPos = mt_rand(0, --$arrLength);
+            $randArr[] = $array[$randPos];
+            array_splice($array, $randPos, ($randPos == $arrLength ? 1 : $randPos - $arrLength));
+        }
+        $array = $randArr;
+        return;
     }
 }
