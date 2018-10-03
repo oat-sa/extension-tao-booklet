@@ -119,7 +119,12 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
             $tmpFile = "${tmpFolder}${idx}-booklet.pdf";
             $pdfFiles[] = $tmpFile;
 
-            $exporter = new PdfBookletExporter($config[BookletConfigService::CONFIG_TITLE], $config);
+            try {
+                $exporter = new PdfBookletExporter($config[BookletConfigService::CONFIG_TITLE], $config);
+            } catch (\Exception $e) {
+                return \common_report_Report::createFailure($e->getMessage());
+            }
+
             $exporter->setContent($this->getRendererUrl($storageKey));
             $exporter->saveAs($tmpFile);
 
@@ -207,7 +212,7 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
      */
     protected function startCliSession($userUri)
     {
-        if (PHP_SAPI == 'cli') {
+        if (PHP_SAPI == 'cli' && session_status() == PHP_SESSION_NONE) {
             $user = new core_kernel_users_GenerisUser(new core_kernel_classes_Resource($userUri));
             $session = new common_session_DefaultSession($user);
 
