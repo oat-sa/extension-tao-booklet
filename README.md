@@ -19,6 +19,16 @@ However, depending of the version of your system, the installed version of `wkht
 If you encounter errors when generating the document, you should install the tool using these commands:
 
 ```
+wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.jessie_amd64.deb
+sudo dpkg -i wkhtmltox_0.12.5-1.jessie_amd64.deb
+```
+after that you can use `/usr/local/bin/wkhtmltopdf` in your configuration
+
+
+Deprecated:
+Please note that the version 0.12.4 has a bug which was fixed in the version 0.12.5: sometimes footers and headers not provided in the pdf
+
+```
 sudo apt-get update
 sudo apt-get install libxrender1 fontconfig xvfb
 wget https://downloads.wkhtmltopdf.org/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -P /tmp/
