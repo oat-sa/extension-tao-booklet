@@ -32,7 +32,8 @@ module.exports = function(grunt) {
                     dependencies : ['taoQtiPrint', 'taoItems', 'taoQtiItem'],
                     bundles : [{
                         name : 'taoBooklet',
-                        default : true
+                        default : true,
+                        bootstrap : true
                     }]
                 }
             }
