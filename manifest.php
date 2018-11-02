@@ -24,13 +24,13 @@ return array(
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '1.14.3',
+    'version'     => '2.0.0',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => array(
-        'tao'          => '>=17.2.0',
-        'taoQtiTest'   => '>=7.0.0',
+        'tao'          => '>=21.0.0',
+        'taoQtiTest'   => '>=29.0.0',
         'taoQtiPrint'  => '>=1.6.0',
-        'taoOutcomeUi' => '>=4.5.0',
+        'taoOutcomeUi' => '>=7.0.0',
     ),
     // for compatibility
     'dependencies' => array('tao','taoQtiTest'),
