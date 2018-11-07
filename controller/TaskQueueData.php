@@ -34,6 +34,8 @@ use oat\Taskqueue\Persistence\RdsQueue;
  * Class tao_actions_TaskQueue
  * @package oat\tao\controller\api
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
+ *
+ * @deprecated since version 2.1.0, to be removed in 3.0. Use \tao_actions_TaskQueueWebApi instead.
  */
 class TaskQueueData extends AbstractBookletController
 {

@@ -131,12 +131,14 @@ class BookletClassService extends tao_models_classes_ClassService
 
         $this->removeInstanceAttachment($instance);
 
+        /** @var StorageService $storageService */
         $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
         $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
-        $instance->editPropertyValues($property, $storageService->storeFile($tmpFile));
+        $fileResource = $storageService->storeFile($tmpFile);
+        $instance->editPropertyValues($property, $fileResource);
 
         $report->setMessage(__('%s updated', $instance->getLabel()));
-        $report->setData($instance);
+        $report->setData($fileResource);
         return $report;
     }
 

@@ -83,12 +83,9 @@ class Booklet extends AbstractBookletController
             $this->setData( 'reload', true );
         }
 
-        $asyncQueue = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->isAsyncQueue();
-
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
-        $this->setData( 'queueId', $instance->getUri() );
-        $this->setData( 'asyncQueue', $asyncQueue );
+        $this->setData( 'queueId', $instance->getUri() ); //TODO: can it be removed?
         $this->setView( 'Booklet/edit.tpl' );
     }
 
@@ -110,18 +107,17 @@ class Booklet extends AbstractBookletController
 
     /**
      * Used for regeneration of attached pdf
-     * @throws \core_kernel_persistence_Exception
+     *
      * @throws \tao_models_classes_MissingRequestParameterException
      */
     public function regenerate()
     {
         $instance  = $this->getCurrentInstance();
 
-        $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
+        $task = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
 
-        $report = $this->getTaskReport($task);
-
-        $this->returnReport( $report );
+        //TODO: use the new queue js component for action `booklet-regenerate` in the tree
+        return $this->returnTaskJson($task);
     }
 
     /**
@@ -178,12 +174,12 @@ class Booklet extends AbstractBookletController
             $myForm        = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
-
                 $test   = $this->getResource($myForm->getValue(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST)));
                 $report = $this->generateFromForm($myForm, $test, $bookletClass);
 
                 $this->setData( 'reload', true );
 
+                //TODO: instead of report a special json string should be returned: $this->returnTaskJson()
                 $this->returnReport( $report );
             } else {
                 $this->renderForm($myForm);
@@ -213,6 +209,7 @@ class Booklet extends AbstractBookletController
                 $this->setData('reload', false);
                 $this->setData('selectNode', $test->getUri());
 
+                //TODO: instead of report a special json string should be returned: $this->returnTaskJson()
                 $this->returnReport($report, false);
             } else {
                 $myForm->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($test->getLabel());
@@ -235,6 +232,7 @@ class Booklet extends AbstractBookletController
     {
         $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
+        // TODO: this method should return the created task but how should we handle/display the following error????
         $model = \taoTests_models_classes_TestsService::singleton()->getTestModel($test);
         if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
             $report->setType(common_report_Report::TYPE_ERROR);
@@ -248,7 +246,7 @@ class Booklet extends AbstractBookletController
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
         $binder->bind($form->getValues());
 
-        $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
+        $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
 
         // return report with instance
         $report->setMessage(__('Booklet %s created', $instance->getLabel()));

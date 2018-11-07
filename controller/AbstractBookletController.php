@@ -26,16 +26,15 @@ namespace oat\taoBooklet\controller;
 use common_report_Report;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
-use oat\oatbox\task\Task;
-use oat\tao\model\TaskQueueActionTrait;
+use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\StorageService;
 use tao_actions_SaSModule;
 
 abstract class AbstractBookletController extends tao_actions_SaSModule
 {
-    use TaskQueueActionTrait;
     use OntologyAwareTrait;
+    use TaskLogActionTrait;
 
     /**
      * Results constructor.
@@ -46,21 +45,6 @@ abstract class AbstractBookletController extends tao_actions_SaSModule
         $this->service = BookletClassService::singleton();
 
         $this->defaultData();
-    }
-
-    /**
-     * @param Task $task
-     * @return common_report_Report
-     */
-    protected function getTaskReport(Task $task)
-    {
-        $status = $task->getStatus();
-        if ($status === Task::STATUS_FINISHED || $status === Task::STATUS_ARCHIVED) {
-            $report = $task->getReport();
-        } else {
-            $report = common_report_Report::createInfo(__('Booklet task created'));
-        }
-        return $report;
     }
 
     /**
@@ -83,6 +67,8 @@ abstract class AbstractBookletController extends tao_actions_SaSModule
      * Extracts the path of the file attached to a report
      * @param common_report_Report $report
      * @return mixed|null
+     *
+     * @deprecated since version 2.1.0, to be removed in 3.0.
      */
     protected function getReportAttachment(common_report_Report $report)
     {
@@ -103,6 +89,8 @@ abstract class AbstractBookletController extends tao_actions_SaSModule
      * Gets file from URI
      * @param string $fileUri
      * @return File
+     *
+     * @deprecated since version 2.1.0, to be removed in 3.0.
      */
     protected function getFile($fileUri)
     {

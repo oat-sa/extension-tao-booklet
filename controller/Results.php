@@ -17,9 +17,6 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
  *
  */
-/**
- * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
- */
 
 namespace oat\taoBooklet\controller;
 
@@ -36,30 +33,18 @@ use tao_helpers_Uri;
 
 /**
  * Class Results
+ *
  * @package oat\taoBooklet\controller
+ * @author  Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
 class Results extends AbstractBookletController
 {
-    /**
-     * @var ResultsService
-     */
-    private $resultsService;
-
-    /**
-     * Results constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->resultsService = ResultsService::singleton();
-    }
-
     /**
      * @return ResultsService
      */
     protected function getResultsService()
     {
-        return $this->resultsService;
+        return ResultsService::singleton();
     }
 
     /**
@@ -80,37 +65,22 @@ class Results extends AbstractBookletController
 
         /* @var BookletTaskService $bookletTaskService */
         $bookletTaskService = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID);
-        $asyncQueue = $bookletTaskService->isAsyncQueue();
 
         if ($form->isValid() && $form->isSubmited()) {
-            $values = $form->getValues();
+            $task = $bookletTaskService->createPrintResultsTask($this->getResource($resultId), $form->getValues());
 
-            $task = $bookletTaskService->createPrintResultsTask($this->getResource($resultId), $values);
-            $report = $this->getTaskReport($task);
-
-            if (!$asyncQueue) {
-                $filename = $this->getReportAttachment($report);
-                if ($filename) {
-                    $file = $this->getFile($filename);
-                    if ($file->exists()) {
-                        $this->prepareDownload($task->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
-                        \tao_helpers_Http::returnStream($file->readPsrStream());
-                        return;
-                    }
-                }
-            }
-
-            $this->returnReport($report);
-
+            //TODO: make sure that the new queue js component is used for the `Generate` button
+            return $this->returnTaskJson($task);
         } else {
             $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($delivery->getLabel());
             $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
-            $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue($testTaker['userLabel']);
+            $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue(
+                $testTaker['userLabel']
+            );
 
             $this->getServiceManager()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
 
-            $this->setData('asyncQueue', $asyncQueue);
-            $this->setData('queueId', $delivery->getUri());
+            $this->setData('queueId', $delivery->getUri()); //TODO: can it be removed?
             $this->setData('myForm', $form->render());
             $this->setData('formTitle', __('Print the results'));
             $this->setView('Results/print.tpl');
@@ -119,6 +89,7 @@ class Results extends AbstractBookletController
 
     /**
      * Gets the data of a particular test taker
+     *
      * @param string $resultId
      * @return array
      */
@@ -126,7 +97,9 @@ class Results extends AbstractBookletController
     {
         $testTaker = $this->getResultsService()->getTestTakerData($resultId);
 
-        if ((is_object($testTaker) && (get_class($testTaker) == 'core_kernel_classes_Literal')) || (is_null($testTaker))) {
+        if ((is_object($testTaker) && (get_class($testTaker) == 'core_kernel_classes_Literal')) || (is_null(
+                $testTaker
+            ))) {
             //the test taker is unknown
             $login = $testTaker;
             $label = $testTaker;
@@ -137,7 +110,9 @@ class Results extends AbstractBookletController
             $login = (count($testTaker[GenerisRdf::PROPERTY_USER_LOGIN]) > 0) ? current(
                 $testTaker[GenerisRdf::PROPERTY_USER_LOGIN]
             )->literal : "";
-            $label = (count($testTaker[OntologyRdfs::RDFS_LABEL]) > 0) ? current($testTaker[OntologyRdfs::RDFS_LABEL])->literal : "";
+            $label = (count($testTaker[OntologyRdfs::RDFS_LABEL]) > 0) ? current(
+                $testTaker[OntologyRdfs::RDFS_LABEL]
+            )->literal : "";
             $firstName = (count($testTaker[GenerisRdf::PROPERTY_USER_FIRSTNAME]) > 0) ? current(
                 $testTaker[GenerisRdf::PROPERTY_USER_FIRSTNAME]
             )->literal : "";
@@ -169,6 +144,7 @@ class Results extends AbstractBookletController
         $resultServerService = $this->getServiceManager()->get(ResultServerService::SERVICE_ID);
         $resultStorage = $resultServerService->getResultStorage($delivery->getUri());
         $this->getResultsService()->setImplementation($resultStorage);
+
         return $resultStorage;
     }
 }

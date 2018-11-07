@@ -36,6 +36,7 @@ class GenerateForm extends tao_actions_form_Instance
         parent::initElements();
 
         $createElt = tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
+        //TODO: use the new queue js component for the button
         $createElt->setValue( __( 'Generate' ) );
         $createElt->setIcon( "icon-play" );
         $createElt->addClass( "form-submitter btn-success small" );

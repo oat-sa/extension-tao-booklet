@@ -30,7 +30,7 @@ use core_kernel_classes_Resource;
 use core_kernel_users_GenerisUser;
 use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
-use oat\oatbox\task\AbstractTaskAction;
+use oat\oatbox\extension\AbstractAction;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletDataService;
 use oat\taoBooklet\model\export\PdfBookletExporter;
@@ -43,7 +43,7 @@ use \Jurosh\PDFMerge\PDFMerger;
  * Class AbstractBookletTask
  * @package oat\taoBooklet\model\tasks
  */
-abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSerializable
+abstract class AbstractBookletTask extends AbstractAction implements JsonSerializable
 {
     use OntologyAwareTrait;
 
