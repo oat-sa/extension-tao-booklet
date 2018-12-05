@@ -83,7 +83,6 @@ define([
                 //format and display error message to user
                 feedback().error(err);
                 taskCreationButton.terminate().reset();
-                console.log('err4');
             }).on('enqueued', function(){
                 refreshTree();
             }).render($submitter.closest('.form-toolbar'));
