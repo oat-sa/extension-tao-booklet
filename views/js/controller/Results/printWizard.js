@@ -74,15 +74,17 @@ define([
                         refreshTree(result.task.report.children[0].data.uriResource);
                     }else{
                         this.displayReport(result.task.report.children[0], __('Error'));
-                        $reportContainer.removeClass('hidden');
+                        switchContainer('report');
                     }
                 }
             }).on('continue', function(){
                 refreshTree();
             }).on('error', function(err){
                 //format and display error message to user
-                feedback().error(err);
+                // feedback().error(err);
                 taskCreationButton.terminate().reset();
+                this.displayReport(err, __('Error'));
+                switchContainer('report');
             }).on('enqueued', function(){
                 refreshTree();
             }).render($submitter.closest('.form-toolbar'));
