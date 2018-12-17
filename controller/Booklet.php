@@ -138,6 +138,8 @@ class Booklet extends AbstractBookletController
      */
     public function download()
     {
+        $this->defaultData();
+
         $instance = $this->getCurrentInstance();
 
         try {
@@ -246,8 +248,6 @@ class Booklet extends AbstractBookletController
      */
     protected function generateFromForm($form, $test, $bookletClass)
     {
-        $this->defaultData();
-
         $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
         $model = \taoTests_models_classes_TestsService::singleton()->getTestModel($test);
@@ -276,8 +276,6 @@ class Booklet extends AbstractBookletController
      */
     protected function renderForm($form)
     {
-        $this->defaultData();
-
         $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
 
         $this->setData('myForm', $form->render());
