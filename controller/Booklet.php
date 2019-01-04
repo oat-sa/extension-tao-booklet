@@ -54,6 +54,7 @@ class Booklet extends AbstractBookletController
      */
     public function index()
     {
+        $this->defaultData();
         $this->setView( 'index.tpl' );
     }
 
@@ -64,6 +65,8 @@ class Booklet extends AbstractBookletController
      */
     public function editBooklet()
     {
+        $this->defaultData();
+
         $clazz           = $this->getCurrentClass();
         $instance        = $this->getCurrentInstance();
         $myFormContainer = new EditForm( $clazz, $instance );
@@ -83,7 +86,7 @@ class Booklet extends AbstractBookletController
             $this->setData( 'reload', true );
         }
 
-        $asyncQueue = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->isAsyncQueue();
+        $asyncQueue = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->isAsyncQueue();
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
@@ -97,6 +100,8 @@ class Booklet extends AbstractBookletController
      */
     public function preview()
     {
+        $this->defaultData();
+
         $instance = $this->getCurrentInstance();
         $test     = $this->getClassService()->getTest( $instance );
         if(is_null($test)){
@@ -115,13 +120,15 @@ class Booklet extends AbstractBookletController
      */
     public function regenerate()
     {
+        $this->defaultData();
+
         $instance  = $this->getCurrentInstance();
 
-        $task = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
+        $task = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
 
         $report = $this->getTaskReport($task);
 
-        $this->returnReport( $report );
+        $this->returnReport($report);
     }
 
     /**
@@ -131,13 +138,15 @@ class Booklet extends AbstractBookletController
      */
     public function download()
     {
+        $this->defaultData();
+
         $instance = $this->getCurrentInstance();
 
         try {
             $fileResource = $this->getClassService()->getAttachment($instance);
             if ($fileResource) {
                 /** @var File $file */
-                $file = $this->getServiceManager()->get(StorageService::SERVICE_ID)->getFile($fileResource);
+                $file = $this->getServiceLocator()->get(StorageService::SERVICE_ID)->getFile($fileResource);
                 if ($file->exists()) {
                     $this->prepareDownload($instance->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
                     \tao_helpers_Http::returnStream($file->readPsrStream());
@@ -159,6 +168,8 @@ class Booklet extends AbstractBookletController
      */
     public function delete()
     {
+        $this->defaultData();
+
         if ($this->hasRequestParameter('uri')) {
             $instance = $this->getCurrentInstance();
             $this->getClassService()->removeInstanceAttachment($instance);
@@ -172,6 +183,8 @@ class Booklet extends AbstractBookletController
      */
     public function wizard()
     {
+        $this->defaultData();
+
         try {
             $bookletClass  = $this->getCurrentClass();
             $formContainer = new WizardBookletForm( $bookletClass );
@@ -189,7 +202,7 @@ class Booklet extends AbstractBookletController
                 $this->renderForm($myForm);
             }
 
-        } catch ( NoTestsException $e ) {
+        } catch (NoTestsException $e) {
             $this->setView( 'Booklet/wizard.tpl' );
         }
     }
@@ -200,6 +213,8 @@ class Booklet extends AbstractBookletController
      */
     public function testBooklet()
     {
+        $this->defaultData();
+
         try {
             $test = $this->getCurrentInstance();
             $bookletClass = $this->getRootClass();
@@ -248,7 +263,7 @@ class Booklet extends AbstractBookletController
         $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
         $binder->bind($form->getValues());
 
-        $this->getServiceManager()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
+        $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
 
         // return report with instance
         $report->setMessage(__('Booklet %s created', $instance->getLabel()));
@@ -261,7 +276,7 @@ class Booklet extends AbstractBookletController
      */
     protected function renderForm($form)
     {
-        $this->getServiceManager()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
+        $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
 
         $this->setData('myForm', $form->render());
         $this->setData('formTitle', __('Create a new booklet'));

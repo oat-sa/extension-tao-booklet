@@ -38,17 +38,6 @@ abstract class AbstractBookletController extends tao_actions_SaSModule
     use OntologyAwareTrait;
 
     /**
-     * Results constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->service = BookletClassService::singleton();
-
-        $this->defaultData();
-    }
-
-    /**
      * @param Task $task
      * @return common_report_Report
      */
@@ -107,8 +96,19 @@ abstract class AbstractBookletController extends tao_actions_SaSModule
     protected function getFile($fileUri)
     {
         /* @var StorageService $storageService */
-        $storageService = $this->getServiceManager()->get(StorageService::SERVICE_ID);
+        $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
         $fileResource = $this->getResource($fileUri);
         return $storageService->getFile($fileResource);
+    }
+
+    /**
+     * @return BookletClassService
+     */
+    protected function getClassService()
+    {
+        if (is_null($this->service)) {
+            $this->service = BookletClassService::singleton();
+        }
+        return $this->service;
     }
 }
