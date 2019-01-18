@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2017-2018 (original work) Open Assessment Technologies SA ;
  *
  */
 /**
@@ -23,7 +23,6 @@
 
 namespace oat\taoBooklet\controller;
 
-use common_session_SessionManager;
 use oat\oatbox\task\Queue;
 use oat\oatbox\task\Task;
 use oat\Taskqueue\Persistence\RdsQueue;
@@ -37,15 +36,14 @@ use oat\Taskqueue\Persistence\RdsQueue;
  */
 class TaskQueueData extends AbstractBookletController
 {
-
     /**
      * Lists all tasks related to booklet create/regenerate
      */
     public function getTasks()
     {
-        $user = common_session_SessionManager::getSession()->getUser();
+        $user = $this->getSession()->getUser();
 
-        $taskQueue = $this->getServiceManager()->get(Queue::SERVICE_ID);
+        $taskQueue = $this->getServiceLocator()->get(Queue::SERVICE_ID);
 
         if ($taskQueue instanceof RdsQueue) {
             $dataPayLoad = $taskQueue->getPayload($user->getIdentifier());
@@ -91,7 +89,7 @@ class TaskQueueData extends AbstractBookletController
         /**
          * @var $taskService Queue
          */
-        $taskService = $this->getServiceManager()->get(Queue::SERVICE_ID);
+        $taskService = $this->getServiceLocator()->get(Queue::SERVICE_ID);
         try {
             $task = $this->getTask($taskId);
         } catch (\Exception $e) {

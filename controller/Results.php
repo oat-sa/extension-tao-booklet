@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2017-2018 (original work) Open Assessment Technologies SA ;
  *
  */
 /**
@@ -23,7 +23,6 @@
 
 namespace oat\taoBooklet\controller;
 
-use core_kernel_classes_Resource;
 use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyRdfs;
 use oat\taoBooklet\form\WizardPrintForm;
@@ -41,37 +40,17 @@ use tao_helpers_Uri;
 class Results extends AbstractBookletController
 {
     /**
-     * @var ResultsService
-     */
-    private $resultsService;
-
-    /**
-     * Results constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->resultsService = ResultsService::singleton();
-    }
-
-    /**
-     * @return ResultsService
-     */
-    protected function getResultsService()
-    {
-        return $this->resultsService;
-    }
-
-    /**
      * Setup the print of the results
      */
     public function printWizard()
     {
+        $this->defaultData();
+
         $resultId = tao_helpers_Uri::decode($this->getRequestParameter('id'));
         $deliveryUri = tao_helpers_Uri::decode($this->getRequestParameter('uri'));
         $bookletClass = $this->getRootClass();
 
-        $delivery = new core_kernel_classes_Resource($deliveryUri);
+        $delivery = $this->getResource($deliveryUri);
         $formContainer = new WizardPrintForm($bookletClass, $delivery);
         $form = $formContainer->getForm();
 
@@ -79,7 +58,7 @@ class Results extends AbstractBookletController
         $testTaker = $this->getTestTakerData($resultId);
 
         /* @var BookletTaskService $bookletTaskService */
-        $bookletTaskService = $this->getServiceManager()->get(BookletTaskService::SERVICE_ID);
+        $bookletTaskService = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID);
         $asyncQueue = $bookletTaskService->isAsyncQueue();
 
         if ($form->isValid() && $form->isSubmited()) {
@@ -107,7 +86,7 @@ class Results extends AbstractBookletController
             $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
             $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue($testTaker['userLabel']);
 
-            $this->getServiceManager()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
+            $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
 
             $this->setData('asyncQueue', $asyncQueue);
             $this->setData('queueId', $delivery->getUri());
@@ -166,9 +145,17 @@ class Results extends AbstractBookletController
      */
     protected function getResultStorage($delivery)
     {
-        $resultServerService = $this->getServiceManager()->get(ResultServerService::SERVICE_ID);
+        $resultServerService = $this->getServiceLocator()->get(ResultServerService::SERVICE_ID);
         $resultStorage = $resultServerService->getResultStorage($delivery->getUri());
         $this->getResultsService()->setImplementation($resultStorage);
         return $resultStorage;
+    }
+
+    /**
+     * @return ResultsService
+     */
+    protected function getResultsService()
+    {
+        return ResultsService::singleton();
     }
 }

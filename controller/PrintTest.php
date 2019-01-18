@@ -14,10 +14,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA;
  *
  */
-
 
 /**
  * Controller to generate html(print-ready) version of tests
@@ -29,6 +28,7 @@
 namespace oat\taoBooklet\controller;
 
 use common_ext_ExtensionsManager;
+use oat\generis\model\OntologyAwareTrait;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletDataService;
@@ -41,6 +41,8 @@ use tao_actions_CommonModule;
  */
 class PrintTest extends tao_actions_CommonModule
 {
+    use OntologyAwareTrait;
+
     /**
      * Generate html(print-ready) version of tests
      */
@@ -53,7 +55,7 @@ class PrintTest extends tao_actions_CommonModule
         session_write_close();
 
         $storageKey = $this->getRequestParameter('token');
-        $storageService = $this->getServiceManager()->get(BookletDataService::SERVICE_ID);
+        $storageService = $this->getServiceLocator()->get(BookletDataService::SERVICE_ID);
         $bookletData = $storageService->getData($storageKey);
 
         if (!$bookletData) {
@@ -74,7 +76,7 @@ class PrintTest extends tao_actions_CommonModule
         try {
 
             $uri = \tao_helpers_Uri::decode($this->getRequestParameter('uri'));
-            $instance = new \core_kernel_classes_Resource($uri);
+            $instance = $this->getResource($uri);
             $test = BookletClassService::singleton()->getTest($instance);
             if (!$test || !$test->exists()) {
                 throw new \common_exception_NotFound('Unknown resource ' . $uri);
@@ -85,10 +87,9 @@ class PrintTest extends tao_actions_CommonModule
                 throw new \common_exception_NotFound('Not a QTI test');
             }
 
-            $packer = new QtiTestPacker();
-            $this->getServiceManager()->propagate($packer);
+            $packer = $this->propagate(new QtiTestPacker());
 
-            $configService = $this->getServiceManager()->get(BookletConfigService::SERVICE_ID);
+            $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
             $bookletData = [
                 'testData' => $packer->packTest($test),
                 'config' => $configService->getConfig($instance),
@@ -106,7 +107,7 @@ class PrintTest extends tao_actions_CommonModule
      */
     protected function renderTest($bookletData)
     {
-        $config = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet')->getConfig('rendering');
+        $config = $this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->getExtensionById('taoBooklet')->getConfig('rendering');
         if (isset($bookletData['config'])) {
             $config = array_merge($config, $bookletData['config']);
         }
