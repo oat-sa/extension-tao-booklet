@@ -116,7 +116,7 @@ class BookletClassService extends tao_models_classes_ClassService
      */
     public function getAttachment(core_kernel_classes_Resource $booklet)
     {
-        return $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_FILE_CONTENT));
+        return (string) $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_FILE_CONTENT));
     }
 
     /**
@@ -134,11 +134,11 @@ class BookletClassService extends tao_models_classes_ClassService
         /** @var StorageService $storageService */
         $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
         $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
-        $fileResource = $storageService->storeFile($tmpFile);
-        $instance->editPropertyValues($property, $fileResource);
+        $serial = $storageService->storeFile($tmpFile);
+        $instance->editPropertyValues($property, $serial);
 
         $report->setMessage(__('%s updated', $instance->getLabel()));
-        $report->setData($fileResource);
+        $report->setData($serial);
         return $report;
     }
 
@@ -151,7 +151,7 @@ class BookletClassService extends tao_models_classes_ClassService
     {
         $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
         $contentUri = $instance->getOnePropertyValue($property);
-        
+
         if ($contentUri && !($contentUri instanceof \core_kernel_classes_Literal)) {
             $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
             $storageService->deleteFile($contentUri);

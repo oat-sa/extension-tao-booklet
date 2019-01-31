@@ -14,13 +14,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\taoBooklet\controller;
 
 use common_ext_ExtensionsManager as ExtensionsManager;
+use oat\generis\model\OntologyAwareTrait;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletDataService;
@@ -35,11 +36,15 @@ use tao_actions_CommonModule;
  */
 class PrintTest extends tao_actions_CommonModule
 {
+    use OntologyAwareTrait;
+
     /**
      * Generate html(print-ready) version of tests
      */
     public function render()
     {
+        $this->defaultData();
+
         if ($this->hasRequestParameter('uri') && !$this->hasRequestParameter('token')) {
             return $this->forward('preview');
         }
@@ -64,11 +69,13 @@ class PrintTest extends tao_actions_CommonModule
      */
     public function preview()
     {
+        $this->defaultData();
+
         session_write_close();
         try {
 
             $uri = \tao_helpers_Uri::decode($this->getRequestParameter('uri'));
-            $instance = new \core_kernel_classes_Resource($uri);
+            $instance = $this->getResource($uri);
             $test = BookletClassService::singleton()->getTest($instance);
             if (!$test || !$test->exists()) {
                 throw new \common_exception_NotFound('Unknown resource '.$uri);
@@ -79,8 +86,7 @@ class PrintTest extends tao_actions_CommonModule
                 throw new \common_exception_NotFound('Not a QTI test');
             }
 
-            $packer = new QtiTestPacker();
-            $this->propagate($packer);
+            $packer = $this->propagate(new QtiTestPacker());
 
             $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
             $bookletData = [

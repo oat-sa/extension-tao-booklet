@@ -37,17 +37,6 @@ abstract class AbstractBookletController extends tao_actions_SaSModule
     use TaskLogActionTrait;
 
     /**
-     * Results constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->service = BookletClassService::singleton();
-
-        $this->defaultData();
-    }
-
-    /**
      * Sets the headers to download a file
      * @param string $fileName
      * @param string $mimeType
@@ -87,16 +76,24 @@ abstract class AbstractBookletController extends tao_actions_SaSModule
 
     /**
      * Gets file from URI
-     * @param string $fileUri
+     * @param string $serial
      * @return File
      *
      * @deprecated since version 2.1.0, to be removed in 3.0.
      */
-    protected function getFile($fileUri)
+    protected function getFile($serial)
     {
-        /* @var StorageService $storageService */
-        $storageService = $this->getServiceManager()->get(StorageService::SERVICE_ID);
-        $fileResource = $this->getResource($fileUri);
-        return $storageService->getFile($fileResource);
+        return $this->getServiceLocator()->get(StorageService::SERVICE_ID)->getFile($serial);
+    }
+
+    /**
+     * @return BookletClassService
+     */
+    protected function getClassService()
+    {
+        if (is_null($this->service)) {
+            $this->service = BookletClassService::singleton();
+        }
+        return $this->service;
     }
 }
