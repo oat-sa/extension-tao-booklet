@@ -61,23 +61,20 @@ class Results extends AbstractBookletController
 
         if ($form->isValid() && $form->isSubmited()) {
             $task = $bookletTaskService->createPrintResultsTask($this->getResource($resultId), $form->getValues());
-
-            //TODO: make sure that the new queue js component is used for the `Generate` button
             return $this->returnTaskJson($task);
-        } else {
-            $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($delivery->getLabel());
-            $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
-            $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue(
-                $testTaker['userLabel']
-            );
-
-            $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
-
-            $this->setData('queueId', $delivery->getUri()); //TODO: can it be removed?
-            $this->setData('myForm', $form->render());
-            $this->setData('formTitle', __('Print the results'));
-            $this->setView('Results/print.tpl');
         }
+
+        $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($delivery->getLabel());
+        $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
+        $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue(
+            $testTaker['userLabel']
+        );
+
+        $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
+
+        $this->setData('myForm', $form->render());
+        $this->setData('formTitle', __('Print the results'));
+        $this->setView('Results/print.tpl');
     }
 
     /**

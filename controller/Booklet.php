@@ -34,6 +34,7 @@ use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletTaskService;
 use oat\taoBooklet\model\StorageService;
+use oat\taoBooklet\model\tasks\CompileBooklet;
 use oat\taoDeliveryRdf\model\NoTestsException;
 use tao_helpers_Uri;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
@@ -96,7 +97,6 @@ class Booklet extends AbstractBookletController
 
         $this->setData( 'formTitle', __( 'Edit Booklet' ) );
         $this->setData( 'myForm', $myForm->render() );
-        $this->setData( 'queueId', $instance->getUri() ); //TODO: can it be removed?
         $this->setView( 'Booklet/edit.tpl' );
     }
 
@@ -131,7 +131,6 @@ class Booklet extends AbstractBookletController
 
         $task = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
 
-        //TODO: use the new queue js component for action `booklet-regenerate` in the tree
         return $this->returnTaskJson($task);
     }
 
@@ -184,7 +183,8 @@ class Booklet extends AbstractBookletController
 
     /**
      * Creates new instance of booklet
-     * @throws \tao_models_classes_dataBinding_GenerisFormDataBindingException
+     * @return mixed
+     * @throws \common_ext_ExtensionException
      */
     public function wizard()
     {
@@ -197,24 +197,19 @@ class Booklet extends AbstractBookletController
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
                 $test   = $this->getResource($myForm->getValue(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST)));
-                $report = $this->generateFromForm($myForm, $test, $bookletClass);
-
-                $this->setData( 'reload', true );
-
-                //TODO: instead of report a special json string should be returned: $this->returnTaskJson()
-                $this->returnReport( $report );
-            } else {
-                $this->renderForm($myForm);
+                return $this->returnTaskJson(CompileBooklet::createTask($test, $bookletClass, $myForm->getValues()));
             }
 
-        } catch (NoTestsException $e) {
+            $this->renderForm($myForm);
+        } catch (\Exception $e) {
             $this->setView( 'Booklet/wizard.tpl' );
         }
     }
 
     /**
      * Creates new instance of booklet from a test instance
-     * @throws \tao_models_classes_dataBinding_GenerisFormDataBindingException
+     * @return mixed
+     * @throws \common_ext_ExtensionException
      */
     public function testBooklet()
     {
@@ -227,55 +222,14 @@ class Booklet extends AbstractBookletController
             $myForm = $formContainer->getForm();
 
             if ($myForm->isValid() && $myForm->isSubmited()) {
-
-                $report = $this->generateFromForm($myForm, $test, $bookletClass);
-
-                $this->setData('reload', false);
-                $this->setData('selectNode', $test->getUri());
-
-                //TODO: instead of report a special json string should be returned: $this->returnTaskJson()
-                $this->returnReport($report, false);
-            } else {
-                $myForm->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($test->getLabel());
-
-                $this->renderForm($myForm);
+                return $this->returnTaskJson(CompileBooklet::createTask($test, $bookletClass, $myForm->getValues()));
             }
 
-        } catch (NoTestsException $e) {
+            $myForm->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($test->getLabel());
+            $this->renderForm($myForm);
+        } catch (\Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }
-    }
-
-    /**
-     * @param GenerateForm $form
-     * @param core_kernel_classes_Resource $test
-     * @param core_kernel_classes_Class $bookletClass
-     * @return \common_report_Report
-     */
-    protected function generateFromForm($form, $test, $bookletClass)
-    {
-        $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
-
-        // TODO: this method should return the created task but how should we handle/display the following error????
-        $model = \taoTests_models_classes_TestsService::singleton()->getTestModel($test);
-        if ($model->getUri() != \taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
-            $report->setType(common_report_Report::TYPE_ERROR);
-            $report->setMessage(__('%s is not a QTI test', $test->getLabel()));
-            return $report;
-        }
-
-        // generate tao instance
-        $class  = $this->getClass($bookletClass);
-        $instance = BookletClassService::singleton()->createBookletInstance($class, __('%s Booklet', $test->getLabel()), $test);
-        $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-        $binder->bind($form->getValues());
-
-        $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
-
-        // return report with instance
-        $report->setMessage(__('Booklet %s created', $instance->getLabel()));
-        $report->setData($instance);
-        return $report;
     }
 
     /**
