@@ -35,8 +35,7 @@ define([
             var $regenerateBtn = $('#booklet-regenerate');
             var taskRegenerateButton;
 
-            // hide regenerate to replace it with queue button
-            // $regenerateBtn.hide();
+            $regenerateBtn.show();
 
             taskRegenerateButton = treeTaskButtonFactory({
                 replace : true,

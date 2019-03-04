@@ -63,25 +63,35 @@ define([
                     return $form.serializeArray();
                 },
                 taskReportContainer : $container
-            }).on('finished', function(result){
+            })
+            .on('enqueued', function () {
+                refreshTree();
+            })
+            .on('finished', function(result){
                 if (result.task
                     && result.task.report
                     && _.isArray(result.task.report.children)
                     && result.task.report.children.length
                     && result.task.report.children[0]) {
-                    if(result.task.report.children[0].data
-                        && result.task.report.children[0].data.uriResource){
-                        feedback().info(__('%s completed', result.task.taskLabel));
-                        refreshTree(result.task.report.children[0].data.uriResource);
-                    }else{
-                        this.displayReport(result.task.report.children[0], __('Error'));
-                    }
+
+                        if(result.task.report.children[0].data
+                            && result.task.report.children[0].data.uriResource){
+                            feedback().info(__('%s completed', result.task.taskLabel));
+                            refreshTree(result.task.report.children[0].data.uriResource);
+                        }else{
+                            refreshTree();
+                        }
+                } else {
+                    // move from the wizard on generated
+                    refreshTree();
                 }
             }).on('continue', function(){
                 refreshTree();
             }).on('error', function(err){
                 //format and display error message to user
                 feedback().error(err);
+                // refreshTree();
+                $('#booklet-new a').click();
             }).render($oldSubmitter.closest('.form-toolbar'));
 
             //replace the old submitter with the new one and apply its style
