@@ -16,13 +16,44 @@
  * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
-define(['jquery', 'lodash', 'module', 'util/url'], function ($, _, module, urlHelper) {
+define([
+    'jquery',
+    'lodash',
+    'i18n',
+    'module',
+    'util/url',
+    'core/taskQueue/taskQueue',
+    'ui/taskQueueButton/treeButton',
+    'layout/actions/binder'
+], function ($, _, __, module, urlHelper, taskQueue, treeTaskButtonFactory, binder) {
     'use strict';
 
     return {
         start: function () {
 
             var $downloader = $('<iframe/>').hide();
+            var $regenerateBtn = $('#booklet-regenerate');
+            var taskRegenerateButton;
+
+            // hide regenerate to replace it with queue button
+            // $regenerateBtn.hide();
+
+            taskRegenerateButton = treeTaskButtonFactory({
+                replace : true,
+                icon : 'reset',
+                label : __('Regenerate'),
+                taskQueue : taskQueue
+            }).render($regenerateBtn);
+
+            binder.register('booklet_regenerate', function register(actionContext) {
+                var data = _.pick(actionContext, ['uri', 'classUri', 'id']);
+                var uniqueValue = data.uri || data.classUri || '';
+                taskRegenerateButton.setTaskConfig({
+                    taskCreationUrl : this.url,
+                    taskCreationData : {uri : uniqueValue}
+                }).start();
+            });
+
             $('form').append($downloader);
 
             $('.btn-download').on('click', function (e) {

@@ -45,6 +45,10 @@ define([
             var $form = $('#form_1');
             var $container = $form.closest('.content-block');
             var taskCreationButton, $oldSubmitter;
+            var $regenerateBtn = $('#booklet-regenerate');
+
+            // hide regenerate on the create page
+            $regenerateBtn.hide();
 
             //find the old submitter and replace it with the new component
             $oldSubmitter = $form.find('.form-submitter');

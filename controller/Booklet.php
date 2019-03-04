@@ -121,6 +121,8 @@ class Booklet extends AbstractBookletController
     /**
      * Used for regeneration of attached pdf
      *
+     * @return mixed
+     * @throws \common_ext_ExtensionException
      * @throws \tao_models_classes_MissingRequestParameterException
      */
     public function regenerate()
