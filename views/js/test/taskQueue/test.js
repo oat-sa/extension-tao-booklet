@@ -1,8 +1,7 @@
 define([
     'jquery',
-    'util/url',
     'taoBooklet/component/taskQueue'
-], function($, urlHelper, taskQueueFactory) {
+], function($, taskQueueFactory) {
     QUnit.module('Runner API');
 
     QUnit.test('module', function(assert) {
