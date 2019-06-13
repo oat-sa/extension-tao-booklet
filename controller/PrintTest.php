@@ -113,8 +113,10 @@ class PrintTest extends tao_actions_CommonModule
         }
 
         $this->setData('client_config_url', $this->getClientConfigUrl());
-        $this->setData('testData', json_encode($bookletData['testData']));
-        $this->setData('options', json_encode($config));
+        $this->setData('client_params', [
+            'testData' => $bookletData['testData'],
+            'options' => $config
+        ]);
         $this->setView('PrintTest/render.tpl');
     }
 }
