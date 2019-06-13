@@ -4,9 +4,18 @@ extension-tao-booklet
 An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)
 
 ## Warning
-Due to the move of core libs to `npm` repositories, some code might not work on legacy browsers.
-Especially for code that use to rely on polyfills, like for the `Promise`. The polyfills are now linked only when the code is bundled, and are not reachable anymore in development mode.
-For that reason, and because `wkhtmltopdf` is not supporting ES2015 and requires polyfills, the generation of PDF only works with bundled version (aka production mode).   
+Due to the move to `ES2015`, some code might not work on legacy browsers. 
+Especially for code that use to rely on polyfills, like for the `Promise`.
+The polyfills are now linked only when the code is bundled, and are not reachable anymore in development mode.
+For that reason, and because `wkhtmltopdf` is not supporting ES2015 and requires polyfills,
+the generation of PDF only works with bundled version (aka production mode).
+
+As a reminder, to activate the production mode, open the config file `config/generis.conf.php`, line 50,
+and set the constant `DEBUG_MODE` to `false`:
+```php
+#mode
+define('DEBUG_MODE', false);
+```
 
 ## Requirements
 
