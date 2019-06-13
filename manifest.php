@@ -29,7 +29,7 @@ return array(
     'requires'    => array(
         'tao'          => '>=30.0.0',
         'taoQtiTest'   => '>=29.0.0',
-        'taoQtiPrint'  => '>=1.6.0',
+        'taoQtiPrint'  => '>=1.8.1',
         'taoOutcomeUi' => '>=7.0.0',
     ),
     // for compatibility
