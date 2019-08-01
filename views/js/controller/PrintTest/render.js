@@ -113,8 +113,9 @@ define([
          * @param {Object} testData - the packed test data required by the testRunner
          * @param {Object} options
          */
-        start: function start(testData, options) {
-
+        start: function start(config) {
+            var testData = config.testData;
+            var options = config.options;
             var layoutOptions = options && options.layout || {};
             var layoutClasses = {
                 'one_page_item': 'one-item-per-page',

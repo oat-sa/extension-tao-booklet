@@ -22,7 +22,7 @@ define([
     'i18n',
     'module',
     'util/url',
-    'core/taskQueue/taskQueue',
+    'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/treeButton',
     'layout/actions/binder'
 ], function ($, _, __, module, urlHelper, taskQueue, treeTaskButtonFactory, binder) {

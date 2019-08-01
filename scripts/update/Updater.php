@@ -183,9 +183,9 @@ class Updater extends \common_ext_ExtensionUpdater {
             $this->setVersion('1.12.0');
         }
 
-        $this->skip('1.12.0', '2.1.0');
+        $this->skip('1.12.0', '3.1.0');
 
-        if ($this->isVersion('2.1.0')) {
+        if ($this->isVersion('3.1.0')) {
 
             OntologyUpdater::syncModels();
 
@@ -199,7 +199,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             });
             $extension->setConfig('results_list_plugin_registry', $config);
 
-            $this->setVersion('2.2.0');
+            $this->setVersion('3.2.0');
         }
     }
 }

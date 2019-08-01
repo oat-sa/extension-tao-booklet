@@ -24,7 +24,7 @@ define([
     'util/url',
     'ui/feedback',
     'layout/actions/binder',
-    'core/taskQueue/taskQueue',
+    'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/standardButton'
 ], function ($, _, __, hider, urlHelper, feedback, binder, taskQueue, taskCreationButtonFactory) {
     'use strict';

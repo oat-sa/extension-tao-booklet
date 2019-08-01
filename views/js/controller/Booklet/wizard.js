@@ -25,7 +25,7 @@ define([
     'util/url',
     'layout/actions',
     'core/promise',
-    'core/taskQueue/taskQueue',
+    'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/standardButton'
 ], function (_, $, __, filterFactory, feedback, urlUtils, actionManager, Promise, taskQueue, taskCreationButtonFactory) {
     'use strict';

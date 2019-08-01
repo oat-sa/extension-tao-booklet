@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <title>Test Runner Test</title>
-        <base href="../../../../../../tao/views/" />
+        <base href="../../../../../tao/views/" />
 
         <link rel="stylesheet" type="text/css" href="js/lib/qunit/qunit.css">
         <link rel="stylesheet" type="text/css" href="css/tao-main-style.css">
-        <script type="text/javascript" src="js/lib/require.js"></script>
         <script type="text/javascript" src="js/lib/qunit/qunit.js"></script>
-        <script type="text/javascript" src="js/lib/blanket/blanket.min.js" data-cover-only="testRunner.js"></script>
+        <script type="text/javascript" src="js/lib/require.js"></script>
+        <script type="text/javascript" src="js/lib/blanket/blanket.min.js" data-cover-only="taskQueue.js"></script>
 
         <script  type="text/javascript">
 
             //don't start the test now
             QUnit.config.autostart = false;
+            QUnit.config.reorder = false;
+
 
             //load the config
             require(['/tao/ClientConfig/config'], function(){
 
                 //load the test
-                require(['taoBooklet/test/runner/testRunner/test'], function(){
-
+                require(['taoBooklet/test/taskQueue/test'], function(){
                     //Tests loaded, run tests
-                    QUnit.config.reorder = false;
                     QUnit.start();
                 });
             });
@@ -34,6 +34,5 @@
         <div id="qunit-fixture">
             <div class="container"></div>
         </div>
-        <div class="outside-container"></div>
     </body>
 </html>
