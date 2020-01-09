@@ -18,16 +18,9 @@
  *
  */
 
-/**
- * Controller to generate html(print-ready) version of tests
- *
- * @author Mikhail Kamarouski, <Komarouski@1pt.com>
- * @package taoBooklet
- */
-
 namespace oat\taoBooklet\controller;
 
-use common_ext_ExtensionsManager;
+use common_ext_ExtensionsManager as ExtensionsManager;
 use oat\generis\model\OntologyAwareTrait;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
@@ -36,8 +29,10 @@ use oat\taoQtiPrint\model\QtiTestPacker;
 use tao_actions_CommonModule;
 
 /**
- * Class PrintTest
- * @package oat\taoBooklet\controller
+ * Controller to generate html(print-ready) version of tests
+ *
+ * @author  Mikhail Kamarouski, <Komarouski@1pt.com>
+ * @package taoBooklet
  */
 class PrintTest extends tao_actions_CommonModule
 {
@@ -48,6 +43,8 @@ class PrintTest extends tao_actions_CommonModule
      */
     public function render()
     {
+        $this->defaultData();
+
         if ($this->hasRequestParameter('uri') && !$this->hasRequestParameter('token')) {
             return $this->forward('preview');
         }
@@ -60,7 +57,7 @@ class PrintTest extends tao_actions_CommonModule
 
         if (!$bookletData) {
             $bookletData = [
-                'testData' => null
+                'testData' => null,
             ];
         }
 
@@ -72,6 +69,8 @@ class PrintTest extends tao_actions_CommonModule
      */
     public function preview()
     {
+        $this->defaultData();
+
         session_write_close();
         try {
 
@@ -79,7 +78,7 @@ class PrintTest extends tao_actions_CommonModule
             $instance = $this->getResource($uri);
             $test = BookletClassService::singleton()->getTest($instance);
             if (!$test || !$test->exists()) {
-                throw new \common_exception_NotFound('Unknown resource ' . $uri);
+                throw new \common_exception_NotFound('Unknown resource '.$uri);
             }
             $testService = \taoTests_models_classes_TestsService::singleton();
             $model = $testService->getTestModel($test);
@@ -92,7 +91,7 @@ class PrintTest extends tao_actions_CommonModule
             $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
             $bookletData = [
                 'testData' => $packer->packTest($test),
-                'config' => $configService->getConfig($instance),
+                'config'   => $configService->getConfig($instance),
             ];
 
             $this->renderTest($bookletData);
@@ -107,7 +106,9 @@ class PrintTest extends tao_actions_CommonModule
      */
     protected function renderTest($bookletData)
     {
-        $config = $this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->getExtensionById('taoBooklet')->getConfig('rendering');
+        /** @var ExtensionsManager $extManager */
+        $extManager = $this->getServiceLocator()->get(ExtensionsManager::SERVICE_ID);
+        $config = $extManager->getExtensionById('taoBooklet')->getConfig('rendering');
         if (isset($bookletData['config'])) {
             $config = array_merge($config, $bookletData['config']);
         }

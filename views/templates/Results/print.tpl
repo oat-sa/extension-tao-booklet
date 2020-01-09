@@ -6,7 +6,6 @@ Template::inc('form_context.tpl', 'tao');
 <?= tao_helpers_Scriptloader::render() ?>
 <header class="section-header flex-container-full"
         data-select-node="<?= get_data('selectNode'); ?>"
-        data-async-queue="<?= json_encode(get_data('asyncQueue')); ?>"
         data-queue="<?= get_data('queueId'); ?>"
 >
     <h2><?=get_data('formTitle')?></h2>
@@ -16,9 +15,6 @@ Template::inc('form_context.tpl', 'tao');
         <?=get_data('myForm')?>
     </div>
 </div>
-<?php if (get_data('asyncQueue')): ?>
-<div class="print-tasks data-container-wrapper col-6" data-purpose="form"></div>
-<?php endif; ?>
 <div class="print-report main-container flex-container-full report hidden" data-purpose="report">
     <label id="fold">
         <span class="check-txt"><?php echo __("Show detailed report"); ?></span>

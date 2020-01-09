@@ -47,32 +47,31 @@ class StorageService extends ConfigurableService
             $file->put($stream);
             fclose($stream);
         }
-        
-        return $this->getResource($this->getFileReferenceSerializer()->serialize($file));
+
+        return $this->getFileReferenceSerializer()->serialize($file);
     }
 
     /**
-     * @param core_kernel_classes_Resource $fileResource
+     * @param string $serial
      * @return File
      */
-    public function getFile($fileResource)
+    public function getFile($serial)
     {
-        $fileResource = $this->getResource($fileResource);
-        if ($fileResource->exists()) {
-            return $this->getFileReferenceSerializer()->unserializeFile($fileResource->getUri());
+        try {
+            return $this->getFileReferenceSerializer()->unserializeFile($serial);
+        } catch (\common_Exception $e) {
+            return null;
         }
-        return null;
     }
 
     /**
-     * @param core_kernel_classes_Resource $fileResource
+     * @param string $serial
      */
-    public function deleteFile($fileResource)
+    public function deleteFile($serial)
     {
-        $fileResource = $this->getResource($fileResource);
-        if ($fileResource->exists()) {
-            $this->getFile($fileResource)->delete();
-            $fileResource->delete();
+        $file = $this->getFile($serial);
+        if ($file instanceof File && $file->exists()) {
+            $file->delete();
         }
     }
 

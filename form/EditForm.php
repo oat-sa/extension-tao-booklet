@@ -18,7 +18,6 @@
  *
  *
  */
-namespace oat\taoBooklet\form;
 
 /**
  * Create a form from a resource of your ontology.
@@ -50,7 +49,10 @@ class EditForm extends tao_actions_form_Instance
         }
     }
 
-
+    /**
+     * @return mixed|void
+     * @throws \common_Exception
+     */
     protected function initElements()
     {
         parent::initElements();

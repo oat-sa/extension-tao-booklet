@@ -19,12 +19,14 @@
 define([
     'jquery',
     'lodash',
+    'i18n',
     'ui/hider',
     'util/url',
-    'report',
-    'taoBooklet/component/taskQueue',
-    'jquery.fileDownload'
-], function ($, _, hider, urlHelper, report, taskQueueTableFactory) {
+    'ui/feedback',
+    'layout/actions/binder',
+    'ui/taskQueue/taskQueue',
+    'ui/taskQueueButton/standardButton'
+], function ($, _, __, hider, urlHelper, feedback, binder, taskQueue, taskCreationButtonFactory) {
     'use strict';
 
     return {
@@ -34,9 +36,8 @@ define([
             var $reportContainer = $('.print-report');
             var $form = $('form', $formContainer);
             var $submitter = $('.form-submitter', $form);
-            var $sent = $(":input[name='" + $form.attr('name') + "_sent']", $form);
-            var asyncQueue = $header.data('async-queue');
             var $containers = $('.main-container');
+            var taskCreationButton;
 
             function switchContainer(purpose) {
                 hider.hide($containers);
@@ -49,71 +50,47 @@ define([
                 }]);
             }
 
-            function displayReport(response) {
-                switchContainer('report');
-                $reportContainer.append(response);
-                $submitter.removeAttr('disabled');
-
-                // Fold action (show detailed report)
-                hider.toggle($('#fold', $reportContainer), response.nested);
-                $('#fold > input[type="checkbox"]', $reportContainer).on('click', function() {
-                    report.fold();
-                });
-
-                // Continue button
-                $('#import-continue', $reportContainer).on('click', refreshTree);
-            }
-
             switchContainer('form');
-
-            //overwrite the submit behaviour
-            $submitter.off('click').on('click', function (e) {
-                var params = {};
-                var instances = [];
-                var classes = [];
-
-                $submitter.attr('disabled', true);
-
-                e.preventDefault();
-                if (parseInt($sent.val(), 10)) {
-                    // prepare download params
-                    _.forEach($form.serializeArray(), function (param) {
-                        if (param.name.indexOf('instances_') === 0) {
-                            instances.push(param.value);
-                        } else if (param.name.indexOf('classes_') === 0) {
-                            classes.push(param.value);
-                        } else {
-                            params[param.name] = param.value;
-                        }
-                    });
-                    params.instances = encodeURIComponent(JSON.stringify(instances));
-                    params.classes = encodeURIComponent(JSON.stringify(classes));
-
-                    if (asyncQueue) {
-                        // display report after form submit
-                        $.ajax({
-                            url: $form.attr('action'),
-                            data: params,
-                            type: 'POST',
-                            dataType: "text"
-                        }).done(displayReport);
-                    } else {
-                        // download file after form submit
-                        $.fileDownload($form.attr('action'), {
-                            httpMethod: 'POST',
-                            data: params,
-                            failCallback: displayReport,
-                            successCallback: refreshTree
-                        });
+            taskCreationButton = taskCreationButtonFactory({
+                type : 'info',
+                icon : 'play',
+                title : __('Generate Results'),
+                label : __('Generate'),
+                taskQueue : taskQueue,
+                taskCreationUrl : $form.prop('action'),
+                taskCreationData : function getTaskCreationData(){
+                    return $form.serializeArray();
+                },
+                taskReportContainer : $reportContainer
+            }).on('finished', function(result){
+                if (result.task
+                    && result.task.report
+                    && _.isArray(result.task.report.children)
+                    && result.task.report.children.length
+                    && result.task.report.children[0]) {
+                    if(result.task.report.children[0].data
+                        && result.task.report.children[0].data.uriResource){
+                        feedback().info(__('%s completed', result.task.taskLabel));
+                        refreshTree(result.task.report.children[0].data.uriResource);
+                    }else{
+                        this.displayReport(result.task.report.children[0], __('Error'));
+                        switchContainer('report');
                     }
                 }
-            });
+            }).on('continue', function(){
+                refreshTree();
+            }).on('error', function(err){
+                //format and display error message to user
+                // feedback().error(err);
+                taskCreationButton.terminate().reset();
+                this.displayReport(err, __('Error'));
+                switchContainer('report');
+            }).on('enqueued', function(){
+                refreshTree();
+            }).render($submitter.closest('.form-toolbar'));
 
-            if (asyncQueue) {
-                taskQueueTableFactory($header.data('queue'), $containers.filter('.print-tasks'), {
-                    downloadUrl: urlHelper.route('downloadTask', 'TaskQueueData', 'taoBooklet')
-                });
-            }
+            //replace the old submitter with the new one and apply its style
+            $submitter.replaceWith(taskCreationButton.getElement().css({float: 'right'}));
         }
     };
 });

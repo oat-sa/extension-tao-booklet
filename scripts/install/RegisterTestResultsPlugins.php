@@ -43,17 +43,6 @@ class RegisterTestResultsPlugins extends InstallAction
                 'tags' => [ 'print', 'action' ]
             ]
         ],
-        'tool' => [
-            [
-                'id' => 'taskQueue',
-                'name' => 'Results tasks queue',
-                'module' => 'taoBooklet/plugins/taskQueue/taskQueue',
-                'description' => 'List the print tasks',
-                'category' => 'tool',
-                'active' => true,
-                'tags' => [ 'print', 'tool' ]
-            ]
-        ]
     ];
 
     public function __invoke($params)

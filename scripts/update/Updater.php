@@ -20,9 +20,12 @@
  */
 namespace oat\taoBooklet\scripts\update;
 
+use common_ext_Extension;
+use common_ext_ExtensionsManager;
 use oat\tao\helpers\Template;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
+use oat\tao\model\plugins\PluginModule;
 use oat\tao\model\user\TaoRoles;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBooklet\model\BookletDataService;
@@ -33,6 +36,7 @@ use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
 use oat\taoBooklet\scripts\install\SetupEventListeners;
 use oat\taoBooklet\scripts\install\SetupStorage;
+use oat\taoOutcomeUi\model\plugins\ResultsPluginService;
 
 /**
  *
@@ -51,7 +55,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         if ($this->isVersion('0.3.0')) {
 
-            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
+            $extension = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
             $config = $extension->getConfig('wkhtmltopdf');
             $config['options'] = array_merge($config['options'], [
                 'page-size' => 'A4',
@@ -71,7 +75,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $this->runExtensionScript(SetupBookletConfigService::class);
 
-            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
+            $extension = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
             $config = $extension->getConfig('wkhtmltopdf');
             $config['options'] = array_merge($config['options'], [
                 'header-html' => Template::getTemplate('PrintTest' . DIRECTORY_SEPARATOR . 'header.html', 'taoBooklet'),
@@ -180,5 +184,22 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         $this->skip('1.12.0', '3.1.0');
+
+        if ($this->isVersion('3.1.0')) {
+
+            OntologyUpdater::syncModels();
+
+            /** @var common_ext_ExtensionsManager $extensionManager */
+            $extensionManager = $this->getServiceManager()->get(common_ext_ExtensionsManager::SERVICE_ID);
+            /** @var common_ext_Extension $extension */
+            $extension = $extensionManager->getExtensionById('taoOutcomeUi');
+            $config = $extension->getConfig('results_list_plugin_registry');
+            $config = array_filter($config, function($plugin) {
+                return !(array_key_exists('id', $plugin) && $plugin['id'] === 'taskQueue');
+            });
+            $extension->setConfig('results_list_plugin_registry', $config);
+
+            $this->setVersion('3.2.0');
+        }
     }
 }

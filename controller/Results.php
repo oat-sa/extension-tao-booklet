@@ -17,9 +17,6 @@
  * Copyright (c) 2017-2018 (original work) Open Assessment Technologies SA ;
  *
  */
-/**
- * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
- */
 
 namespace oat\taoBooklet\controller;
 
@@ -35,7 +32,9 @@ use tao_helpers_Uri;
 
 /**
  * Class Results
+ *
  * @package oat\taoBooklet\controller
+ * @author  Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
 class Results extends AbstractBookletController
 {
@@ -59,45 +58,28 @@ class Results extends AbstractBookletController
 
         /* @var BookletTaskService $bookletTaskService */
         $bookletTaskService = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID);
-        $asyncQueue = $bookletTaskService->isAsyncQueue();
 
         if ($form->isValid() && $form->isSubmited()) {
-            $values = $form->getValues();
-
-            $task = $bookletTaskService->createPrintResultsTask($this->getResource($resultId), $values);
-            $report = $this->getTaskReport($task);
-
-            if (!$asyncQueue) {
-                $filename = $this->getReportAttachment($report);
-                if ($filename) {
-                    $file = $this->getFile($filename);
-                    if ($file->exists()) {
-                        $this->prepareDownload($task->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
-                        \tao_helpers_Http::returnStream($file->readPsrStream());
-                        return;
-                    }
-                }
-            }
-
-            $this->returnReport($report);
-
-        } else {
-            $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($delivery->getLabel());
-            $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
-            $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue($testTaker['userLabel']);
-
-            $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
-
-            $this->setData('asyncQueue', $asyncQueue);
-            $this->setData('queueId', $delivery->getUri());
-            $this->setData('myForm', $form->render());
-            $this->setData('formTitle', __('Print the results'));
-            $this->setView('Results/print.tpl');
+            $task = $bookletTaskService->createPrintResultsTask($this->getResource($resultId), $form->getValues());
+            return $this->returnTaskJson($task);
         }
+
+        $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($delivery->getLabel());
+        $form->getElement('id')->setValue(tao_helpers_Uri::encode($resultId));
+        $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_DESCRIPTION))->setValue(
+            $testTaker['userLabel']
+        );
+
+        $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
+
+        $this->setData('myForm', $form->render());
+        $this->setData('formTitle', __('Print the results'));
+        $this->setView('Results/print.tpl');
     }
 
     /**
      * Gets the data of a particular test taker
+     *
      * @param string $resultId
      * @return array
      */
@@ -105,7 +87,9 @@ class Results extends AbstractBookletController
     {
         $testTaker = $this->getResultsService()->getTestTakerData($resultId);
 
-        if ((is_object($testTaker) && (get_class($testTaker) == 'core_kernel_classes_Literal')) || (is_null($testTaker))) {
+        if ((is_object($testTaker) && (get_class($testTaker) == 'core_kernel_classes_Literal')) || (is_null(
+                $testTaker
+            ))) {
             //the test taker is unknown
             $login = $testTaker;
             $label = $testTaker;
@@ -116,7 +100,9 @@ class Results extends AbstractBookletController
             $login = (count($testTaker[GenerisRdf::PROPERTY_USER_LOGIN]) > 0) ? current(
                 $testTaker[GenerisRdf::PROPERTY_USER_LOGIN]
             )->literal : "";
-            $label = (count($testTaker[OntologyRdfs::RDFS_LABEL]) > 0) ? current($testTaker[OntologyRdfs::RDFS_LABEL])->literal : "";
+            $label = (count($testTaker[OntologyRdfs::RDFS_LABEL]) > 0) ? current(
+                $testTaker[OntologyRdfs::RDFS_LABEL]
+            )->literal : "";
             $firstName = (count($testTaker[GenerisRdf::PROPERTY_USER_FIRSTNAME]) > 0) ? current(
                 $testTaker[GenerisRdf::PROPERTY_USER_FIRSTNAME]
             )->literal : "";
@@ -148,6 +134,7 @@ class Results extends AbstractBookletController
         $resultServerService = $this->getServiceLocator()->get(ResultServerService::SERVICE_ID);
         $resultStorage = $resultServerService->getResultStorage($delivery->getUri());
         $this->getResultsService()->setImplementation($resultStorage);
+
         return $resultStorage;
     }
 
