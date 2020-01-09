@@ -57,16 +57,6 @@ class BookletTaskService extends ConfigurableService
     }
 
     /**
-     * Checks if the queue manager is asynchronous
-     *
-     * @return bool
-     */
-    public function isAsyncQueue()
-    {
-        return $this->getQueueService()->isSync();
-    }
-
-    /**
      * Creates a task that will generate a Booklet PDF from an AssessmentTest
      *
      * @param core_kernel_classes_Resource $bookletResource
