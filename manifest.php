@@ -20,12 +20,17 @@
  *
  */
 
+use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
+use oat\taoBooklet\scripts\install\SetupBookletConfigService;
+use oat\taoBooklet\scripts\install\SetupEventListeners;
+use oat\taoBooklet\scripts\install\SetupStorage;
+
 return [
     'name'        => 'taoBooklet',
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '3.2.0',
+    'version'     => '3.2.1',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => [
         'tao'          => '>=30.0.0',
@@ -45,13 +50,13 @@ return [
     ],
     'install' => [
         'php' => [
-            \oat\taoBooklet\scripts\install\SetupStorage::class,
-            \oat\taoBooklet\scripts\install\SetupBookletConfigService::class,
-            \oat\taoBooklet\scripts\install\RegisterTestResultsPlugins::class,
-            \oat\taoBooklet\scripts\install\SetupEventListeners::class,
+            SetupStorage::class,
+            SetupBookletConfigService::class,
+            RegisterTestResultsPlugins::class,
+            SetupEventListeners::class,
         ],
         'rdf' => [
-            dirname(__FILE__) . '/scripts/install/booklet.rdf',
+            __DIR__ . '/scripts/install/booklet.rdf',
         ],
         'checks' => [
         ]
@@ -64,12 +69,12 @@ return [
     ],
     'constants' => [
         # views directory
-        "DIR_VIEWS" => dirname(__FILE__) . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
+        "DIR_VIEWS" => __DIR__ . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
 
         #BASE URL (usually the domain root)
         'BASE_URL' => ROOT_URL . 'taoBooklet/',
     ],
     'extra' => [
-        'structures' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
+        'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     ]
 ];
