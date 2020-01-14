@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -87,9 +88,11 @@ class Results extends AbstractBookletController
     {
         $testTaker = $this->getResultsService()->getTestTakerData($resultId);
 
-        if ((is_object($testTaker) && (get_class($testTaker) == 'core_kernel_classes_Literal')) || (is_null(
+        if (
+            (is_object($testTaker) && (get_class($testTaker) == 'core_kernel_classes_Literal')) || (is_null(
                 $testTaker
-            ))) {
+            ))
+        ) {
             //the test taker is unknown
             $login = $testTaker;
             $label = $testTaker;

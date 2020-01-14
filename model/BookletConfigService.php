@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
  *
  */
+
 /**
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
@@ -159,12 +161,12 @@ class BookletConfigService extends ConfigurableService
     {
         $defaultValues = $this->getOption(self::OPTION_DEFAULT_VALUES);
         if (is_array($defaultValues)) {
-            foreach($defaultValues as $option => $value) {
+            foreach ($defaultValues as $option => $value) {
                 $formElt = $form->getElement(\tao_helpers_Uri::encode($option));
                 if ($formElt) {
                     if (!$formElt->getRawValue()) {
                         if (is_array($value)) {
-                            foreach($value as $val) {
+                            foreach ($value as $val) {
                                 $formElt->setValue($val);
                             }
                         } else {
@@ -193,7 +195,7 @@ class BookletConfigService extends ConfigurableService
                 BookletClassService::PROPERTY_PAGE_HEADER,
                 BookletClassService::PROPERTY_PAGE_FOOTER
             ]);
-        } else if (is_array($instance)) {
+        } elseif (is_array($instance)) {
             $properties = $instance;
         } else {
             throw new \common_exception_InvalidArgumentType(
@@ -252,7 +254,7 @@ class BookletConfigService extends ConfigurableService
         }
 
         $externalDataProviderClass = $this->getOption(self::CONFIG_EXTERNAL_DATA_PROVIDER);
-        if($externalDataProviderClass && class_exists($externalDataProviderClass)) {
+        if ($externalDataProviderClass && class_exists($externalDataProviderClass)) {
             $externalDataProvider = new $externalDataProviderClass($config, $properties);
             $config[self::CONFIG_MATRIX_BARCODE] = $externalDataProvider->getMatrixBarcodeData();
             $config[self::CONFIG_CUSTOM_ID] = $this->formatValue(
@@ -276,8 +278,9 @@ class BookletConfigService extends ConfigurableService
      *
      * @return string
      */
-    protected function formatValue($format, $value) {
-        if(!$value) {
+    protected function formatValue($format, $value)
+    {
+        if (!$value) {
             return '';
         }
         return $format ? sprintf($format, $value) : $value;
@@ -288,7 +291,8 @@ class BookletConfigService extends ConfigurableService
      * Generates a string that can be used with sprintf()
      * @return string
      */
-    protected function getPageFormat() {
+    protected function getPageFormat()
+    {
         $format = $this->getOption(self::OPTION_PAGE_FORMAT);
         return $format ? $format : self::DEFAULT_PAGE_FORMAT;
     }
@@ -301,14 +305,17 @@ class BookletConfigService extends ConfigurableService
      *
      * @return string
      */
-    protected function getDate($period=null) {
-        if(!$this->getOption(self::OPTION_EXPIRATION_PERIOD)
-            || !$this->getOption(self::OPTION_EXPIRATION_STRING)) {
+    protected function getDate($period = null)
+    {
+        if (
+            !$this->getOption(self::OPTION_EXPIRATION_PERIOD)
+            || !$this->getOption(self::OPTION_EXPIRATION_STRING)
+        ) {
             return false;
         }
         $format = $this->getOption(self::OPTION_DATE_FORMAT);
         $dateObj = new \DateTime();
-        if($period) {
+        if ($period) {
             $dateObj->add(\DateInterval::createFromDateString($period));
         }
         return $dateObj->format($format ? $format : self::DEFAULT_DATE_FORMAT);
@@ -320,7 +327,8 @@ class BookletConfigService extends ConfigurableService
      *
      * @return string
      */
-    protected function getScanMarkSymbol() {
+    protected function getScanMarkSymbol()
+    {
         $scanMarkSymbol = $this->getOption(self::OPTION_SCAN_MARK_SYMBOL);
         return $scanMarkSymbol ? $scanMarkSymbol : self::DEFAULT_SCAN_MARK_FORMAT;
     }
@@ -353,7 +361,7 @@ class BookletConfigService extends ConfigurableService
     {
         $config = [];
 
-        foreach($properties as $property) {
+        foreach ($properties as $property) {
             if ($property instanceof core_kernel_classes_Resource) {
                 $uri = $property->getUri();
             } else {

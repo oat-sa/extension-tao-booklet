@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoBooklet\scripts\update;
 
 use common_ext_Extension;
@@ -42,19 +44,20 @@ use oat\taoOutcomeUi\model\plugins\ResultsPluginService;
  *
  * @author Joel Bout <joel@taotesting.com>
  */
-class Updater extends \common_ext_ExtensionUpdater {
+class Updater extends \common_ext_ExtensionUpdater
+{
 
     /**
      *
      * @param string $initialVersion
      * @return string $versionUpdatedTo
      */
-    public function update($initialVersion) {
+    public function update($initialVersion)
+    {
 
-        $this->skip('0.1','0.3.0');
+        $this->skip('0.1', '0.3.0');
 
         if ($this->isVersion('0.3.0')) {
-
             $extension = common_ext_ExtensionsManager::singleton()->getExtensionById('taoBooklet');
             $config = $extension->getConfig('wkhtmltopdf');
             $config['options'] = array_merge($config['options'], [
@@ -70,7 +73,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('0.4.0', '1.0.0');
 
         if ($this->isVersion('1.0.0')) {
-
             OntologyUpdater::syncModels();
 
             $this->runExtensionScript(SetupBookletConfigService::class);
@@ -89,7 +91,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.1.0', '1.2.1');
 
         if ($this->isVersion('1.2.1')) {
-
             $storageService = new StorageService();
             $this->getServiceManager()->propagate($storageService);
             $this->getServiceManager()->register(StorageService::SERVICE_ID, $storageService);
@@ -99,7 +100,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
 
         if ($this->isVersion('1.3.0')) {
-
             $bookletDataService = new BookletDataService();
             $this->getServiceManager()->propagate($bookletDataService);
             $this->getServiceManager()->register(BookletDataService::SERVICE_ID, $bookletDataService);
@@ -107,14 +107,13 @@ class Updater extends \common_ext_ExtensionUpdater {
             AclProxy::applyRule(new AccessRule(
                 AccessRule::GRANT,
                 TaoRoles::ANONYMOUS,
-                ['ext'=>'taoBooklet', 'mod' => 'PrintTest', 'act' => 'render']
+                ['ext' => 'taoBooklet', 'mod' => 'PrintTest', 'act' => 'render']
             ));
 
             $this->setVersion('1.4.0');
         }
 
         if ($this->isVersion('1.4.0')) {
-
             $bookletDataService = new BookletDataService();
             $this->getServiceManager()->propagate($bookletDataService);
             $this->getServiceManager()->register(BookletDataService::SERVICE_ID, $bookletDataService);
@@ -125,7 +124,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.4.1', '1.4.3');
 
         if ($this->isVersion('1.4.3')) {
-
             $bookletListenerService = new BookletListenerService();
             $this->getServiceManager()->propagate($bookletListenerService);
             $this->getServiceManager()->register(BookletListenerService::SERVICE_ID, $bookletListenerService);
@@ -143,14 +141,12 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.5.0', '1.5.2');
 
         if ($this->isVersion('1.5.2')) {
-
             OntologyUpdater::syncModels();
 
             $this->setVersion('1.6.0');
         }
 
         if ($this->isVersion('1.6.0')) {
-
             OntologyUpdater::syncModels();
 
             $this->setVersion('1.7.0');
@@ -158,7 +154,6 @@ class Updater extends \common_ext_ExtensionUpdater {
 
 
         if ($this->isVersion('1.7.0')) {
-
             OntologyUpdater::syncModels();
 
             $this->setVersion('1.8.0');
@@ -168,7 +163,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.8.0', '1.9.0');
 
         if ($this->isVersion('1.9.0')) {
-
             OntologyUpdater::syncModels();
 
             $this->setVersion('1.9.1');
@@ -177,7 +171,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.9.1', '1.11.0');
 
         if ($this->isVersion('1.11.0')) {
-
             OntologyUpdater::syncModels();
 
             $this->setVersion('1.12.0');
@@ -186,7 +179,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         $this->skip('1.12.0', '3.1.0');
 
         if ($this->isVersion('3.1.0')) {
-
             OntologyUpdater::syncModels();
 
             /** @var common_ext_ExtensionsManager $extensionManager */
@@ -194,7 +186,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             /** @var common_ext_Extension $extension */
             $extension = $extensionManager->getExtensionById('taoOutcomeUi');
             $config = $extension->getConfig('results_list_plugin_registry');
-            $config = array_filter($config, function($plugin) {
+            $config = array_filter($config, function ($plugin) {
                 return !(array_key_exists('id', $plugin) && $plugin['id'] === 'taskQueue');
             });
             $extension->setConfig('results_list_plugin_registry', $config);

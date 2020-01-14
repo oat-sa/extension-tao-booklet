@@ -1,6 +1,6 @@
 <?php
-namespace oat\taoBooklet\model\tasks;
 
+namespace oat\taoBooklet\model\tasks;
 
 use common_report_Report;
 use oat\generis\model\OntologyAwareTrait;
@@ -14,8 +14,8 @@ use oat\taoBooklet\model\BookletTaskService;
 use oat\taoTests\models\MissingTestmodelException;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
-class CompileBooklet extends AbstractAction implements \JsonSerializable, TaskAwareInterface {
-
+class CompileBooklet extends AbstractAction implements \JsonSerializable, TaskAwareInterface
+{
     use TaskAwareTrait;
     use OntologyAwareTrait;
 
@@ -53,8 +53,11 @@ class CompileBooklet extends AbstractAction implements \JsonSerializable, TaskAw
         // generate tao instance
         $class  = $this->getClass($params['bookletClass']);
         try {
-            $instance = BookletClassService::singleton()->createBookletInstance($class,
-                __('%s Booklet', $test->getLabel()), $test);
+            $instance = BookletClassService::singleton()->createBookletInstance(
+                $class,
+                __('%s Booklet', $test->getLabel()),
+                $test
+            );
         } catch (\Exception $e) {
             \common_Logger::e($e->getMessage());
             return common_report_Report::createFailure(__('Error on the create booklet instance action'));
@@ -75,7 +78,8 @@ class CompileBooklet extends AbstractAction implements \JsonSerializable, TaskAw
         return $report;
     }
 
-    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $bookletClass, array $initialProperties = []) {
+    public static function createTask(\core_kernel_classes_Resource $test, \core_kernel_classes_Class $bookletClass, array $initialProperties = [])
+    {
         $action = new self();
         /** @var QueueDispatcher $queueDispatcher */
         $queueDispatcher = ServiceManager::getServiceManager()->get(QueueDispatcher::SERVICE_ID);
@@ -91,5 +95,4 @@ class CompileBooklet extends AbstractAction implements \JsonSerializable, TaskAw
 
         return $queueDispatcher->createTask($action, $parameters, __('Creating "%s"', $test->getLabel()), null, true);
     }
-
 }

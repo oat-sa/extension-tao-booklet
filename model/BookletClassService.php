@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -93,10 +94,10 @@ class BookletClassService extends tao_models_classes_ClassService
      */
     public function createBookletInstance(core_kernel_classes_Class $class, $label, $test)
     {
-        return $class->createInstanceWithProperties(array(
+        return $class->createInstanceWithProperties([
             OntologyRdfs::RDFS_LABEL => $label,
             self::PROPERTY_TEST => $test
-        ));
+        ]);
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -41,11 +42,11 @@ class EditForm extends tao_actions_form_Instance
      * Disable download button
      * @param boolean $allowDownload
      */
-    public function setAllowDownload( $allowDownload )
+    public function setAllowDownload($allowDownload)
     {
         $downloadBtn = $this->getForm()->getAction('Download');
-        if ( ! $allowDownload ) {
-            $downloadBtn->setAttribute( 'disabled', 'disabled' );
+        if (! $allowDownload) {
+            $downloadBtn->setAttribute('disabled', 'disabled');
         }
     }
 
@@ -58,22 +59,20 @@ class EditForm extends tao_actions_form_Instance
         parent::initElements();
 
         /** @var \tao_helpers_form_elements_xhtml_Combobox $originalTestElement */
-        $originalTestElement = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
+        $originalTestElement = $this->getForm()->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
         $options             = $originalTestElement->getOptions();
 
-        $formatElt = tao_helpers_form_FormFactory::getElement( 'test', 'Readonly' );
-        $formatElt->setDescription( __( 'Selected test' ) );
-        $formatElt->setValue( isset($options[$originalTestElement->getRawValue()])?$options[$originalTestElement->getRawValue()]:__('Test has been removed') );
+        $formatElt = tao_helpers_form_FormFactory::getElement('test', 'Readonly');
+        $formatElt->setDescription(__('Selected test'));
+        $formatElt->setValue(isset($options[$originalTestElement->getRawValue()]) ? $options[$originalTestElement->getRawValue()] : __('Test has been removed'));
 
-        $downloadBtn = tao_helpers_form_FormFactory::getElement( 'Download', 'Button' );
-        $downloadBtn->setValue( __( 'Download' ) . ' PDF' );
-        $downloadBtn->setIcon( 'icon-download' );
-        $downloadBtn->addClass( 'btn-download btn-success small' );
+        $downloadBtn = tao_helpers_form_FormFactory::getElement('Download', 'Button');
+        $downloadBtn->setValue(__('Download') . ' PDF');
+        $downloadBtn->setIcon('icon-download');
+        $downloadBtn->addClass('btn-download btn-success small');
 
-        $this->getForm()->removeElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
-        $this->getForm()->setActions( array_merge( $this->form->getActions(), array( $downloadBtn ) ), 'bottom' );
-        $this->getForm()->addElement( $formatElt );
-
+        $this->getForm()->removeElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
+        $this->getForm()->setActions(array_merge($this->form->getActions(), [ $downloadBtn ]), 'bottom');
+        $this->getForm()->addElement($formatElt);
     }
-
 }
