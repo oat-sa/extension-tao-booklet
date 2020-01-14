@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,7 @@
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
  */
+
 namespace oat\taoBooklet\form;
 
 use oat\taoBooklet\model\BookletClassService;
@@ -35,12 +37,12 @@ class WizardPrintForm extends GenerateForm
     {
         parent::initElements();
 
-        $this->getForm()->removeElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
+        $this->getForm()->removeElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
 
         // the QR code is only compatible with booklet instances
-        $coverPage = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_COVER_PAGE ) );
+        $coverPage = $this->getForm()->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_COVER_PAGE));
         $options = $coverPage->getOptions();
-        $qrcode = tao_helpers_Uri::encode( BookletClassService::INSTANCE_COVER_PAGE_QRCODE );
+        $qrcode = tao_helpers_Uri::encode(BookletClassService::INSTANCE_COVER_PAGE_QRCODE);
         if (isset($options[$qrcode])) {
             unset($options[$qrcode]);
             $coverPage->setOptions($options);

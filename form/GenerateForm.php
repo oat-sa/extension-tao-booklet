@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,7 @@
  *
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
  */
+
 namespace oat\taoBooklet\form;
 
 use tao_actions_form_Instance;
@@ -35,11 +37,11 @@ class GenerateForm extends tao_actions_form_Instance
     {
         parent::initElements();
 
-        $createElt = tao_helpers_form_FormFactory::getElement( 'create', 'Button' );
-        $createElt->setValue( __( 'Generate' ) );
-        $createElt->setIcon( "icon-play" );
-        $createElt->addClass( "form-submitter btn-success small" );
+        $createElt = tao_helpers_form_FormFactory::getElement('create', 'Button');
+        $createElt->setValue(__('Generate'));
+        $createElt->setIcon("icon-play");
+        $createElt->addClass("form-submitter btn-success small");
 
-        $this->form->setActions( array( $createElt ), 'bottom' );
+        $this->form->setActions([ $createElt ], 'bottom');
     }
 }

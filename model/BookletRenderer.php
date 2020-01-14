@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,7 +36,7 @@ class BookletRenderer
      * @param core_kernel_classes_Class $class
      * @return common_report_Report
      */
-    static public function generate(core_kernel_classes_Resource $test, core_kernel_classes_Class $class)
+    public static function generate(core_kernel_classes_Resource $test, core_kernel_classes_Class $class)
     {
         $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
@@ -48,7 +49,7 @@ class BookletRenderer
 
         // generate file content
         $tmpFolder = \tao_helpers_File::createTempDir();
-        $tmpFile = $tmpFolder.'test.txt';
+        $tmpFile = $tmpFolder . 'test.txt';
         $content = '';
         foreach (self::getItems($test) as $item) {
             $content .= self::renderItem($item);
@@ -73,7 +74,8 @@ class BookletRenderer
      * @return array
      * @todo Analyse test content and determin items to use
      */
-    static protected function getItems(core_kernel_classes_Resource $test) {
+    protected static function getItems(core_kernel_classes_Resource $test)
+    {
 
         $items = \taoTests_models_classes_TestsService::singleton()->getTestItems($test);
         return $items;
@@ -86,7 +88,8 @@ class BookletRenderer
      * @return string
      * @todo Real item rendering
      */
-    static protected function renderItem(core_kernel_classes_Resource $item) {
-        return 'Item '.$item->getLabel().PHP_EOL;
+    protected static function renderItem(core_kernel_classes_Resource $item)
+    {
+        return 'Item ' . $item->getLabel() . PHP_EOL;
     }
 }

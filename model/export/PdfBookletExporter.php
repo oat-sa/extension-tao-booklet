@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,7 +56,7 @@ class PdfBookletExporter extends BookletExporter
         $config = $ext->getConfig('wkhtmltopdf');
 
         //the default options
-        $options = array(
+        $options = [
 
             //as the page is built in JS, the engine is waiting for
             //window.status to equal 'runner-ready' to capture the content
@@ -83,10 +84,10 @@ class PdfBookletExporter extends BookletExporter
             //document title
             'title' => $title,
 
-        );
+        ];
 
         //load the options defined in the config
-        if(is_array($config['options'])){
+        if (is_array($config['options'])) {
             $options = array_merge($options, $config['options']);
         }
 
@@ -111,7 +112,7 @@ class PdfBookletExporter extends BookletExporter
         $this->pdf->ignoreWarnings = true;
 
         //set the path of the wkhtml binary
-        if(is_array($config)){
+        if (is_array($config)) {
             $this->pdf->binary = trim($config['binary']);
         }
 
@@ -126,21 +127,21 @@ class PdfBookletExporter extends BookletExporter
      * @param array $options list of global PDF options to set as name/value pairs
      * @return PdfBookletExporter instance for method chaining
      */
-    public function setOptions($options = array())
+    public function setOptions($options = [])
     {
         $this->pdf->setOptions($options);
         return $this;
     }
 
     /**
-     * Ensures the content match the expected format 
+     * Ensures the content match the expected format
      * @param string $content either a URL, a HTML string or a PDF/HTML filename
      * @return string either a URL, a HTML string or a PDF/HTML filename
      * @throws BookletExporterException
      */
     protected function filterContent($content)
     {
-        if (filter_var($content, FILTER_VALIDATE_URL)) { 
+        if (filter_var($content, FILTER_VALIDATE_URL)) {
             //if we call an external service with the same session, we need to close it before
             session_write_close();
 
@@ -167,7 +168,7 @@ class PdfBookletExporter extends BookletExporter
     protected function contentToPages()
     {
         if (is_array($this->_content)) {
-            foreach($this->_content as $content) {
+            foreach ($this->_content as $content) {
                 $this->pdf->addPage($content);
             }
         }
@@ -211,7 +212,7 @@ class PdfBookletExporter extends BookletExporter
         $this->contentToPages();
 
         $result = $this->pdf->saveAs($path);
-        if(!$result){
+        if (!$result) {
             throw new BookletExporterException('Unable to generate the PDF : '  . $this->pdf->getError());
         }
         return $result;
@@ -230,7 +231,7 @@ class PdfBookletExporter extends BookletExporter
         $this->contentToPages();
 
         $result = $this->pdf->send($filename);
-        if(!$result){
+        if (!$result) {
             throw new BookletExporterException('Unable to generate the PDF : '  . $this->pdf->getError());
         }
         return $result;
@@ -250,23 +251,23 @@ class PdfBookletExporter extends BookletExporter
      */
     private function isWkhtmltopdfInstalled()
     {
-        return file_exists( $this->pdf->binary ) && is_executable( $this->pdf->binary );
+        return file_exists($this->pdf->binary) && is_executable($this->pdf->binary);
     }
 
     /**
      * @return string guessed path to bin wkhtmltopdf
      */
-    static public function guessWhereWkhtmltopdfInstalled()
+    public static function guessWhereWkhtmltopdfInstalled()
     {
         $whereIsCommand = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'where' : 'which';
 
         $process = proc_open(
             "$whereIsCommand wkhtmltopdf",
-            array(
-                0 => array("pipe", "r"), //STDIN
-                1 => array("pipe", "w"), //STDOUT
-                2 => array("pipe", "w"), //STDERR
-            ),
+            [
+                0 => ["pipe", "r"], //STDIN
+                1 => ["pipe", "w"], //STDOUT
+                2 => ["pipe", "w"], //STDERR
+            ],
             $pipes
         );
         if ($process !== false) {
@@ -275,8 +276,8 @@ class PdfBookletExporter extends BookletExporter
             fclose($pipes[1]);
             fclose($pipes[2]);
             proc_close($process);
-            if($stderr){
-               \common_Logger::w('Got an error while trying to locate wkhtmltopdf : ' . $stderr);
+            if ($stderr) {
+                \common_Logger::w('Got an error while trying to locate wkhtmltopdf : ' . $stderr);
             }
             return $stdout;
         }

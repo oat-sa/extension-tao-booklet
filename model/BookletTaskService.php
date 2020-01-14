@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -104,7 +105,7 @@ class BookletTaskService extends ConfigurableService
             $label = $printConfig[OntologyRdfs::RDFS_LABEL];
         }
         if (isset($printConfig[BookletClassService::PROPERTY_DESCRIPTION])) {
-            $label .= ' - '.$printConfig[BookletClassService::PROPERTY_DESCRIPTION];
+            $label .= ' - ' . $printConfig[BookletClassService::PROPERTY_DESCRIPTION];
         }
 
         return $this->getQueueService()->createTask(

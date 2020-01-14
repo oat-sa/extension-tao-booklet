@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,14 +20,15 @@
 
 use oat\taoBooklet\model\export\PdfBookletExporter;
 use oat\tao\helpers\Template;
+
 $guessPath = PdfBookletExporter::guessWhereWkhtmltopdfInstalled();
 
 /**
  * Configuration for wkhtmltopdf tool
  */
-return array(
+return [
     'binary'  => $guessPath ? $guessPath : 'wkhtmltopdf',
-    'options' => array(
+    'options' => [
         'header-html'      => Template::getTemplate('PrintTest' . DIRECTORY_SEPARATOR . 'header.html', 'taoBooklet'),
         'footer-html'      => Template::getTemplate('PrintTest' . DIRECTORY_SEPARATOR . 'footer.html', 'taoBooklet'),
         'margin-bottom'    => '10mm',
@@ -37,5 +39,5 @@ return array(
 
         // the page orientation: Portrait or Landscape
         'orientation' => 'Portrait',
-    )
-);
+    ]
+];

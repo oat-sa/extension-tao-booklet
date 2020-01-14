@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -104,7 +105,7 @@ class StorageService extends ConfigurableService
         $returnValue = uniqid(hash('crc32', $originalName));
 
         $ext = @pathinfo($originalName, PATHINFO_EXTENSION);
-        if (!empty($ext)){
+        if (!empty($ext)) {
             $returnValue .= '.' . $ext;
         }
 

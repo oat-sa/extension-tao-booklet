@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoBooklet\controller;
 
 use common_report_Report;
@@ -57,7 +59,7 @@ class Booklet extends AbstractBookletController
     public function index()
     {
         $this->defaultData();
-        $this->setView( 'index.tpl' );
+        $this->setView('index.tpl');
     }
 
     /**
@@ -71,7 +73,7 @@ class Booklet extends AbstractBookletController
 
         $clazz           = $this->getCurrentClass();
         $instance        = $this->getCurrentInstance();
-        $myFormContainer = new EditForm( $clazz, $instance );
+        $myFormContainer = new EditForm($clazz, $instance);
 
         $myForm = $myFormContainer->getForm();
 
@@ -81,23 +83,22 @@ class Booklet extends AbstractBookletController
             $allowDownload = ($file instanceof File);
         } catch (\common_Exception $e) {
             $allowDownload = false;
-
         }
         $myFormContainer->setAllowDownload($allowDownload);
 
         if ($myForm->isSubmited() && $myForm->isValid()) {
             $values = $myForm->getValues();
             // save properties
-            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder( $instance );
-            $binder->bind( $values );
+            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+            $binder->bind($values);
 
-            $this->setData( 'message', __( 'Booklet saved' ) );
-            $this->setData( 'reload', true );
+            $this->setData('message', __('Booklet saved'));
+            $this->setData('reload', true);
         }
 
-        $this->setData( 'formTitle', __( 'Edit Booklet' ) );
-        $this->setData( 'myForm', $myForm->render() );
-        $this->setView( 'Booklet/edit.tpl' );
+        $this->setData('formTitle', __('Edit Booklet'));
+        $this->setData('myForm', $myForm->render());
+        $this->setView('Booklet/edit.tpl');
     }
 
     /**
@@ -108,14 +109,14 @@ class Booklet extends AbstractBookletController
         $this->defaultData();
 
         $instance = $this->getCurrentInstance();
-        $test     = $this->getClassService()->getTest( $instance );
-        if(is_null($test)){
+        $test     = $this->getClassService()->getTest($instance);
+        if (is_null($test)) {
             throw new \common_Exception('No test linked to the booklet');
         }
-        $url = tao_helpers_Uri::url( 'preview', 'PrintTest', 'taoBooklet', ['uri' => tao_helpers_Uri::encode($instance->getUri())]);
+        $url = tao_helpers_Uri::url('preview', 'PrintTest', 'taoBooklet', ['uri' => tao_helpers_Uri::encode($instance->getUri())]);
 
-        $this->setData( 'renderUrl', $url);
-        $this->setView( 'Booklet/preview.tpl');
+        $this->setData('renderUrl', $url);
+        $this->setView('Booklet/preview.tpl');
     }
 
     /**
@@ -194,15 +195,18 @@ class Booklet extends AbstractBookletController
 
         try {
             $bookletClass  = $this->getCurrentClass();
-            $formContainer = new WizardBookletForm( $bookletClass );
+            $formContainer = new WizardBookletForm($bookletClass);
             $myForm        = $formContainer->getForm();
 
             if ($myForm->isSubmited()) {
                 if ($myForm->isValid()) {
                     $test = $this->getResource($myForm->getValue(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST)));
 
-                    return $this->returnTaskJson(CompileBooklet::createTask($test, $bookletClass,
-                        $myForm->getValues()));
+                    return $this->returnTaskJson(CompileBooklet::createTask(
+                        $test,
+                        $bookletClass,
+                        $myForm->getValues()
+                    ));
                 } else {
                     return $this->returnJsonError(__('Fill in all required fields'));
                 }
@@ -210,7 +214,7 @@ class Booklet extends AbstractBookletController
 
             $this->renderForm($myForm);
         } catch (\Exception $e) {
-            $this->setView( 'Booklet/wizard.tpl' );
+            $this->setView('Booklet/wizard.tpl');
         }
     }
 
