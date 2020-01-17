@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoBooklet\form;
 
 use oat\taoBooklet\model\BookletClassService;
@@ -47,12 +49,12 @@ class WizardBookletForm extends GenerateForm
     {
         parent::initElements();
 
-        $testElement = $this->getForm()->getElement( tao_helpers_Uri::encode( BookletClassService::PROPERTY_TEST ) );
+        $testElement = $this->getForm()->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
 
-        if ( ! count( $testElement->getOptions() )) {
+        if (! count($testElement->getOptions())) {
             throw new NoTestsException();
         }
 
-        $testElement->addValidator( tao_helpers_form_FormFactory::getValidator( 'NotEmpty' ) );
+        $testElement->addValidator(tao_helpers_form_FormFactory::getValidator('NotEmpty'));
     }
 }

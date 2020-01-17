@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint104\n"
-"PO-Revision-Date: 2019-06-21T08:29:58\n"
+"Project-Id-Version: TAO 3.4.0-sprint119\n"
+"PO-Revision-Date: 2020-01-17T09:36:02\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: en-US\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "%s Booklet"
+msgstr ""
+
+msgid "%s completed"
 msgstr ""
 
 msgid "%s created"
@@ -39,7 +42,7 @@ msgstr ""
 msgid "Booklet %s created"
 msgstr ""
 
-msgid "Booklet task created"
+msgid "Booklet saved"
 msgstr ""
 
 #, tao-public
@@ -56,15 +59,48 @@ msgstr ""
 msgid "Create a test"
 msgstr ""
 
+msgid "Creating \"%s"
+msgstr ""
+
 #, tao-public
 msgid "Delete"
+msgstr ""
+
+msgid "Edit Booklet"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Error on the create booklet instance action"
+msgstr ""
+
+msgid "Error on the data binding"
+msgstr ""
+
+msgid "Fill in all required fields"
 msgstr ""
 
 #, tao-public
 msgid "Filter"
 msgstr ""
 
-msgid "impossible to update task status"
+msgid "Generate"
+msgstr ""
+
+msgid "Generate booklet"
+msgstr ""
+
+msgid "Generate booklet for \"%s"
+msgstr ""
+
+msgid "Generate booklet for delivery \"%s"
+msgstr ""
+
+msgid "Generate booklet for results of \"%s"
+msgstr ""
+
+msgid "Generate Results"
 msgstr ""
 
 #, tao-public
@@ -115,13 +151,13 @@ msgstr ""
 msgid "Show detailed report"
 msgstr ""
 
+msgid "Test Model does not exist for the test %s"
+msgstr ""
+
 #, tao-public
 msgid "Tests"
 msgstr ""
 
 msgid "There are currently no tests available to publish."
-msgstr ""
-
-msgid "unknown task id %s"
 msgstr ""
 

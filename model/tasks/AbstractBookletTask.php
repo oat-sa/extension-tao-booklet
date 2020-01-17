@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
  *
  */
+
 /**
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
@@ -30,7 +32,7 @@ use core_kernel_classes_Resource;
 use core_kernel_users_GenerisUser;
 use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
-use oat\oatbox\task\AbstractTaskAction;
+use oat\oatbox\extension\AbstractAction;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletDataService;
 use oat\taoBooklet\model\export\PdfBookletExporter;
@@ -43,7 +45,7 @@ use \Jurosh\PDFMerge\PDFMerger;
  * Class AbstractBookletTask
  * @package oat\taoBooklet\model\tasks
  */
-abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSerializable
+abstract class AbstractBookletTask extends AbstractAction implements JsonSerializable
 {
     use OntologyAwareTrait;
 
@@ -137,7 +139,7 @@ abstract class AbstractBookletTask extends AbstractTaskAction implements JsonSer
             $tmpFile = "${tmpFolder}booklet.pdf";
             $pdf = new PDFMerger();
 
-            foreach($pdfFiles as $pdfFile) {
+            foreach ($pdfFiles as $pdfFile) {
                 $pdf->addPDF($pdfFile, 'all');
             }
             $pdf->merge('file', $tmpFile);

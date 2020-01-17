@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,56 +20,61 @@
  *
  */
 
-return array(
+use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
+use oat\taoBooklet\scripts\install\SetupBookletConfigService;
+use oat\taoBooklet\scripts\install\SetupEventListeners;
+use oat\taoBooklet\scripts\install\SetupStorage;
+
+return [
     'name'        => 'taoBooklet',
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '3.1.0',
+    'version'     => '3.2.1',
     'author'      => 'Open Assessment Technologies SA',
-    'requires'    => array(
+    'requires'    => [
         'tao'          => '>=30.0.0',
         'taoQtiTest'   => '>=29.0.0',
         'taoQtiPrint'  => '>=1.8.1',
         'taoOutcomeUi' => '>=7.0.0',
-    ),
+    ],
     // for compatibility
-    'dependencies' => array('tao','taoQtiTest'),
+    'dependencies' => ['tao','taoQtiTest'],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager',
-    'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager', array('ext'=>'taoBooklet')),
-        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', array('ext'=>'taoBooklet', 'mod' => 'PrintTest', 'act' => 'render')),
-    ),
-    'models' => array(
+    'acl' => [
+        ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBookletManager', ['ext' => 'taoBooklet']],
+        ['grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', ['ext' => 'taoBooklet', 'mod' => 'PrintTest', 'act' => 'render']],
+    ],
+    'models' => [
        'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet'
-    ),
-    'install' => array(
-        'php' => array(
-            \oat\taoBooklet\scripts\install\SetupStorage::class,
-            \oat\taoBooklet\scripts\install\SetupBookletConfigService::class,
-            \oat\taoBooklet\scripts\install\RegisterTestResultsPlugins::class,
-            \oat\taoBooklet\scripts\install\SetupEventListeners::class,
-        ),
-        'rdf' => array(
-            dirname(__FILE__). '/scripts/install/booklet.rdf',
-        ),
-        'checks' => array(
-        )
-    ),
-    'uninstall' => array(
-    ),
+    ],
+    'install' => [
+        'php' => [
+            SetupStorage::class,
+            SetupBookletConfigService::class,
+            RegisterTestResultsPlugins::class,
+            SetupEventListeners::class,
+        ],
+        'rdf' => [
+            __DIR__ . '/scripts/install/booklet.rdf',
+        ],
+        'checks' => [
+        ]
+    ],
+    'uninstall' => [
+    ],
     'update' => 'oat\\taoBooklet\\scripts\\update\\Updater',
-    'routes' => array(
+    'routes' => [
         '/taoBooklet' => 'oat\\taoBooklet\\controller'
-    ),
-    'constants' => array(
+    ],
+    'constants' => [
         # views directory
-        "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
+        "DIR_VIEWS" => __DIR__ . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
 
         #BASE URL (usually the domain root)
-        'BASE_URL' => ROOT_URL.'taoBooklet/',
-    ),
-    'extra' => array(
-        'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
-    )
-);
+        'BASE_URL' => ROOT_URL . 'taoBooklet/',
+    ],
+    'extra' => [
+        'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
+    ]
+];

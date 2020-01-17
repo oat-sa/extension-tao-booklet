@@ -34,7 +34,7 @@
                         <icon id="icon-preview"/>
                     </action>
 
-                    <action id="booklet-regenerate" name="Regenerate"  url="/taoBooklet/Booklet/regenerate" group="tree" context="instance">
+                    <action id="booklet-regenerate" name="Regenerate"  url="/taoBooklet/Booklet/regenerate" group="tree" context="resource" binding="booklet_regenerate">
                         <icon id="icon-reset"/>
                     </action>
 

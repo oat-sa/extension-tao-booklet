@@ -1,21 +1,22 @@
 <?php
-/**  
+
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *               
+ *
  */
 
 namespace oat\taoBooklet\test;
@@ -25,7 +26,7 @@ use oat\taoBooklet\model\export\PdfBookletExporter;
 use oat\taoBooklet\model\export\BookletExporterException;
 
 /**
- * 
+ *
  * @author Aleh Hutnikau, <hutnikau@1pt.com>
  * @package taoBooklet
  */
@@ -61,7 +62,7 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
     
     /**
      * Check pdf file export
-     * 
+     *
      * @preserveGlobalState disabled
      * @runInSeparateProcess
      */
@@ -82,7 +83,7 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
     /**
      * Check different types of input (url, Html string, filepath)
      */
-    public function testSetContent() 
+    public function testSetContent()
     {
         $HTMLFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'samples' . DIRECTORY_SEPARATOR . 'bookletSample.html';
         //set document content as a string
@@ -105,7 +106,7 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
      * @expectedException oat\taoBooklet\model\export\BookletExporterException
      * @expectedExceptionMessage Wrong content type
      */
-    public function testSetContentException() 
+    public function testSetContentException()
     {
         $this->pdfBookletExporter->setContent(null);
     }
@@ -122,5 +123,4 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
         $this->assertFileExists($pdfFilePath);
         unlink($pdfFilePath);
     }
-    
 }
