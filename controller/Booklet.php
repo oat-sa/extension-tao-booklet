@@ -151,6 +151,8 @@ class Booklet extends AbstractBookletController
         try {
             $fileResource = $this->getClassService()->getAttachment($instance);
             if ($fileResource) {
+                //trimming is needed as a fix for INV-78: in some cases uri comes with additional spaces/new line. that breaks downloading
+                $fileResource = trim($fileResource);
                 /** @var File $file */
                 $file = $this->getServiceLocator()->get(StorageService::SERVICE_ID)->getFile($fileResource);
                 if ($file->exists()) {
