@@ -113,11 +113,25 @@ class BookletClassService extends tao_models_classes_ClassService
     /**
      * Get the attachment linked to a booklet
      * @param core_kernel_classes_Resource $booklet
-     * @return core_kernel_classes_Resource
+     * @return string
+     * @throws \core_kernel_persistence_Exception
      */
     public function getAttachment(core_kernel_classes_Resource $booklet)
     {
-        return (string) $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_FILE_CONTENT));
+        /** @var core_kernel_classes_Resource $attachment */
+        $attachment = $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_FILE_CONTENT));
+
+        if ($attachment instanceof core_kernel_classes_Resource) {
+            $returnValue = $attachment->getUri();
+        } elseif ($attachment instanceof \core_kernel_classes_Literal) {
+            $returnValue = $attachment->literal;
+        } elseif (is_string($attachment)) {
+            $returnValue = $attachment;
+        } else {
+            $returnValue = "";
+        }
+
+        return $returnValue;
     }
 
     /**
