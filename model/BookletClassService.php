@@ -121,14 +121,13 @@ class BookletClassService extends tao_models_classes_ClassService
         /** @var core_kernel_classes_Resource $attachment */
         $attachment = $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_FILE_CONTENT));
 
+        $returnValue = '';
         if ($attachment instanceof core_kernel_classes_Resource) {
             $returnValue = $attachment->getUri();
         } elseif ($attachment instanceof \core_kernel_classes_Literal) {
             $returnValue = $attachment->literal;
         } elseif (is_string($attachment)) {
             $returnValue = $attachment;
-        } else {
-            $returnValue = "";
         }
 
         return $returnValue;
