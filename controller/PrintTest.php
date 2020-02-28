@@ -40,10 +40,8 @@ class PrintTest extends tao_actions_CommonModule
     use OntologyAwareTrait;
 
     /**
-         * Generate html(print-ready) version of tests
-         */
-    
-
+     * Generate html(print-ready) version of tests
+     */
     public function render()
     {
         $this->defaultData();
@@ -55,6 +53,8 @@ class PrintTest extends tao_actions_CommonModule
         $storageKey = $this->getRequestParameter('token');
         $storageService = $this->getServiceLocator()->get(BookletDataService::SERVICE_ID);
         $bookletData = $storageService->getData($storageKey);
+        $bookletData = $this->filterSelectedItems($bookletData);
+
         if (!$bookletData) {
             $bookletData = [
                 'testData' => null,
@@ -99,6 +99,7 @@ class PrintTest extends tao_actions_CommonModule
 
     /**
      * @param array $bookletData
+     * @throws \common_ext_ExtensionException
      */
     protected function renderTest($bookletData)
     {
@@ -115,5 +116,35 @@ class PrintTest extends tao_actions_CommonModule
             'options' => $config
         ]);
         $this->setView('PrintTest/render.tpl');
+    }
+
+    /**
+     * @param array|null $bookletData
+     * @return array|null
+     */
+    private function filterSelectedItems($bookletData)
+    {
+        if (isset($bookletData['testData']['data']['testParts'])) {
+            foreach ($bookletData['testData']['data']['testParts'] as $partName => $partData) {
+                foreach ($partData['sections'] as $sectionName => $section) {
+                    if (isset($section['select'])) {
+                        $items = $section['items'];
+                        $selectedItems = array_rand($items, $section['select']);
+                        $newItems = [];
+                        foreach ($items as $itemKey => $itemData) {
+                            if (in_array($itemKey, $selectedItems, true)) {
+                                $newItems[] = $itemData;
+                            } else {
+                                unset($bookletData['testData']['items'][$itemData['href']]);
+                            }
+                        }
+                        $bookletData['testData']['data']['testParts'][$partName]['sections'][$sectionName]['items'] =
+                            $newItems;
+                    }
+                }
+            }
+        }
+
+        return $bookletData;
     }
 }
