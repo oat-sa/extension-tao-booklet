@@ -30,9 +30,10 @@ return [
     'label'       => 'Test Booklets',
     'description' => 'An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)',
     'license'     => 'GPL-2.0',
-    'version'     => '3.3.0',
+    'version'     => '3.4.0',
     'author'      => 'Open Assessment Technologies SA',
     'requires'    => [
+        'generis' => '>=12.15.0',
         'tao'          => '>=30.0.0',
         'taoQtiTest'   => '>=29.0.0',
         'taoQtiPrint'  => '>=1.9.0',
