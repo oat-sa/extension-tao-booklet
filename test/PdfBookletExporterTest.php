@@ -36,7 +36,7 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
      * @var PdfBookletExporter exporter instance
      */
     private $pdfBookletExporter;
-    
+
     /**
      * @var string sample html file content
      */
@@ -44,11 +44,11 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
                 <head></head>
                 <body>Body content</body>
             </html>';
-    
+
     /**
      * tests initialization
      */
-    public function setUp()
+    public function setUp(): void
     {
         TaoPhpUnitTestRunner::initTest();
         try {
@@ -59,7 +59,7 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
             );
         }
     }
-    
+
     /**
      * Check pdf file export
      *
@@ -73,13 +73,13 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
         ob_start();
         $this->assertTrue($this->pdfBookletExporter->export($name));
         $pdfFileContent = ob_get_clean();
-        
+
         $headers = xdebug_get_headers();
-        
+
         $this->assertStringStartsWith('%PDF', $pdfFileContent);
         $this->assertTrue(in_array('Content-Type: application/pdf', $headers));
     }
-    
+
     /**
      * Check different types of input (url, Html string, filepath)
      */
@@ -89,29 +89,27 @@ class PdfBookletExporterTest extends TaoPhpUnitTestRunner
         //set document content as a string
         $this->assertTrue($this->pdfBookletExporter->setContent($this->HTMLString) instanceof PdfBookletExporter);
         $this->assertTrue($this->pdfBookletExporter->getContent() == $this->HTMLString);
-        
+
         //set document content as a filepath
         $this->pdfBookletExporter->setContent($HTMLFilePath);
         $this->assertTrue($this->pdfBookletExporter->getContent() == file_get_contents($HTMLFilePath));
-        
+
         $this->pdfBookletExporter->setContent('');
         $this->assertTrue($this->pdfBookletExporter->getContent() == '');
-        
+
         //set document content as a url (internet connection required)
         $this->pdfBookletExporter->setContent('http://google.com');
         $this->assertTrue($this->pdfBookletExporter->getContent() != '');
     }
-    
-    /**
-     * @expectedException oat\taoBooklet\model\export\BookletExporterException
-     * @expectedExceptionMessage Wrong content type
-     */
+
     public function testSetContentException()
     {
+        $this->expectException(BookletExporterException::class);
+        $this->expectExceptionMessage('Wrong content type');
         $this->pdfBookletExporter->setContent(null);
     }
-    
-    
+
+
     /**
      * Check pdf file saving
      */
