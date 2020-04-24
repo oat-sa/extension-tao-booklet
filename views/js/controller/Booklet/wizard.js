@@ -89,7 +89,7 @@ define([
                 refreshTree();
             }).on('error', function(err){
                 //format and display error message to user
-                feedback().error(err);
+                feedback().error(err.errorMessage);
                 // refreshTree();
                 $('#booklet-new a').click();
             }).render($oldSubmitter.closest('.form-toolbar'));
