@@ -43,6 +43,7 @@ use oat\taoOutcomeUi\model\plugins\ResultsPluginService;
 /**
  *
  * @author Joel Bout <joel@taotesting.com>
+ * @deprecated use migrations instead. See https://github.com/oat-sa/generis/wiki/Tao-Update-Process
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -195,5 +196,10 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('3.2.0', '3.4.2');
+        
+        //Updater files are deprecated. Please use migrations.
+        //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
+
+        $this->setVersion($this->getExtension()->getManifest()->getVersion());
     }
 }
