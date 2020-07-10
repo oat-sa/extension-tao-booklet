@@ -116,7 +116,7 @@ define([
             const href = $include.attr('data-href');
             if (!hrefs[href]) {
                 hrefs[href] = true;
-                const $section = $include.parents('section');
+                const $section = $include.closest('section.item');
                 // move shared stimulus in section before item
                 const $newSection = $('<section class="grid-row include"></section>');
                 $newSection.append($include);
