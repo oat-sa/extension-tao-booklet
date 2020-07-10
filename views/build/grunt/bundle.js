@@ -33,7 +33,8 @@ module.exports = function(grunt) {
                     bundles : [{
                         name : 'taoBooklet',
                         default : true,
-                        bootstrap : true
+                        bootstrap : true,
+                        babel : true
                     }]
                 }
             }
