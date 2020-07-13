@@ -41,11 +41,12 @@ define([
      */
     function showMessage(msg, type) {
         type = type || 'info';
-        $('body').append('<div class="feedback-' + type + '">' + msg + '</div>');
+        $('body').append(`<div class="feedback-${type}">${msg}</div>`);
     }
 
     /**
      * Hack the current layout to match arbitrary rules
+     * @param {JQuery} $container
      */
     function printLayoutHacking($container) {
 
@@ -103,6 +104,31 @@ define([
     }
 
     /**
+     * Extract shared stimulus from a item, put it in section before a item
+     * Remove repeated shared stimulus
+     * @param {JQuery} $container
+     */
+    function extractSharedStimulus($container) {
+        const hrefs = {};
+        // find shared stimulus
+        $container.find('.qti-include').each(function () {
+            const $include = $(this);
+            const href = $include.attr('data-href');
+            if (!hrefs[href]) {
+                hrefs[href] = true;
+                const $section = $include.closest('section.item');
+                // move shared stimulus in section before item
+                const $newSection = $('<section class="grid-row include"></section>');
+                $newSection.append($include);
+                $section.before($newSection);
+            } else {
+                // each shared stimulus is included only once
+                $include.remove();
+            }
+        });
+    }
+
+    /**
      * The renderer controller
      * @exports taoBooklet/controller/printTest/render
      */
@@ -110,8 +136,7 @@ define([
 
         /**
          * Controller entry point
-         * @param {Object} testData - the packed test data required by the testRunner
-         * @param {Object} options
+         * @param {Object} config
          */
         start: function start(config) {
             var testData = config.testData;
@@ -163,6 +188,8 @@ define([
                     if (layoutOptions['add_blank_pages']) {
                         printLayoutHacking($mainContainer);
                     }
+
+                    extractSharedStimulus($mainContainer);
 
                     clearTimeout(timeout);
 
