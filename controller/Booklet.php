@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,20 +15,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
 namespace oat\taoBooklet\controller;
 
-use common_report_Report;
-use core_kernel_classes_Class;
-use core_kernel_classes_Resource;
+use common_exception_NotFound;
+use common_ext_ExtensionException;
+use core_kernel_persistence_Exception;
+use Exception;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use oat\taoBooklet\form\EditForm;
-use oat\taoBooklet\form\GenerateForm;
 use oat\taoBooklet\form\WizardBookletForm;
 use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
@@ -37,9 +34,13 @@ use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletTaskService;
 use oat\taoBooklet\model\StorageService;
 use oat\taoBooklet\model\tasks\CompileBooklet;
-use oat\taoDeliveryRdf\model\NoTestsException;
+use RuntimeException;
+use tao_helpers_form_Form as Form;
+use tao_helpers_Http;
 use tao_helpers_Uri;
-use tao_models_classes_dataBinding_GenerisFormDataBinder;
+use tao_models_classes_dataBinding_GenerisFormDataBinder as GenerisFormDataBinder;
+use tao_models_classes_dataBinding_GenerisFormDataBindingException;
+use tao_models_classes_MissingRequestParameterException;
 
 /**
  * Controller to managed assembled deliveries
@@ -55,8 +56,9 @@ class Booklet extends AbstractBookletController
      * @access public
      * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
      * @return void
+     * @throws common_ext_ExtensionException
      */
-    public function index()
+    public function index(): void
     {
         $this->defaultData();
         $this->setView('index.tpl');
@@ -64,40 +66,35 @@ class Booklet extends AbstractBookletController
 
     /**
      * Edit action
-     * @throws \tao_models_classes_MissingRequestParameterException
-     * @throws \tao_models_classes_dataBinding_GenerisFormDataBindingException
+     * @throws core_kernel_persistence_Exception
+     * @throws common_ext_ExtensionException
+     * @throws tao_models_classes_MissingRequestParameterException
+     * @throws tao_models_classes_dataBinding_GenerisFormDataBindingException
      */
-    public function editBooklet()
+    public function editBooklet(): void
     {
         $this->defaultData();
 
-        $clazz           = $this->getCurrentClass();
-        $instance        = $this->getCurrentInstance();
-        $myFormContainer = new EditForm($clazz, $instance);
+        $currentInstance = $this->getCurrentInstance();
 
-        $myForm = $myFormContainer->getForm();
+        /** @var FileReferenceSerializer $fileReferenceSerializer */
+        $fileReferenceSerializer = $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
+        $attachmentFile = $fileReferenceSerializer->unserialize(
+            $this->getClassService()->getAttachment($currentInstance)
+        );
 
-        $fileResource = $this->getClassService()->getAttachment($instance);
-        try {
-            $file = $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID)->unserialize($fileResource);
-            $allowDownload = ($file instanceof File);
-        } catch (\common_Exception $e) {
-            $allowDownload = false;
-        }
-        $myFormContainer->setAllowDownload($allowDownload);
+        $form = (new EditForm($this->getCurrentClass(), $currentInstance))
+            ->setAllowDownload($attachmentFile instanceof File)
+            ->getForm();
 
-        if ($myForm->isSubmited() && $myForm->isValid()) {
-            $values = $myForm->getValues();
-            // save properties
-            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-            $binder->bind($values);
-
+        if ($form !== null && $form->isSubmited() && $form->isValid()) {
+            (new GenerisFormDataBinder($currentInstance))->bind($form->getValues());
             $this->setData('message', __('Booklet saved'));
             $this->setData('reload', true);
         }
 
         $this->setData('formTitle', __('Edit Booklet'));
-        $this->setData('myForm', $myForm->render());
+        $this->setData('myForm', $form->render());
         $this->setView('Booklet/edit.tpl');
     }
 
@@ -123,24 +120,27 @@ class Booklet extends AbstractBookletController
      * Used for regeneration of attached pdf
      *
      * @return mixed
-     * @throws \common_ext_ExtensionException
-     * @throws \tao_models_classes_MissingRequestParameterException
+     * @throws common_ext_ExtensionException
+     * @throws tao_models_classes_MissingRequestParameterException
      */
     public function regenerate()
     {
         $this->defaultData();
 
-        $instance  = $this->getCurrentInstance();
+        $instance = $this->getCurrentInstance();
 
-        $task = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID)->createPrintBookletTask($instance);
+        $task = $this->getServiceLocator()
+            ->get(BookletTaskService::SERVICE_ID)
+            ->createPrintBookletTask($instance);
 
         return $this->returnTaskJson($task);
     }
 
     /**
      * Invokes download of pregenerated delivery
-     * @throws \common_exception_Error
-     * @throws \tao_models_classes_MissingRequestParameterException
+     * @throws common_ext_ExtensionException
+     * @throws core_kernel_persistence_Exception
+     * @throws tao_models_classes_MissingRequestParameterException
      */
     public function download()
     {
@@ -155,22 +155,22 @@ class Booklet extends AbstractBookletController
                 $file = $this->getServiceLocator()->get(StorageService::SERVICE_ID)->getFile($fileResource);
                 if ($file->exists()) {
                     $this->prepareDownload($instance->getLabel() . '_' . $file->getBasename(), $file->getMimeType());
-                    \tao_helpers_Http::returnStream($file->readPsrStream());
+                    tao_helpers_Http::returnStream($file->readPsrStream());
                 } else {
-                    throw new \common_exception_NotFound('File does not exists: ' . $file->getPrefix());
+                    throw new common_exception_NotFound('File does not exists: ' . $file->getPrefix());
                 }
             } else {
-                throw new \common_exception_NotFound('Unknown resource ' . $fileResource);
+                throw new common_exception_NotFound('Unknown resource ' . $fileResource);
             }
-        } catch (\common_exception_NotFound $e) {
+        } catch (common_exception_NotFound $e) {
             header("HTTP/1.0 404 Not Found");
         }
     }
 
     /**
      * Overloaded delete, also takes care about attached files
-     * @throws \Exception
-     * @throws \tao_models_classes_MissingRequestParameterException
+     * @throws Exception
+     * @throws tao_models_classes_MissingRequestParameterException
      */
     public function delete()
     {
@@ -187,7 +187,7 @@ class Booklet extends AbstractBookletController
     /**
      * Creates new instance of booklet
      * @return mixed
-     * @throws \common_ext_ExtensionException
+     * @throws common_ext_ExtensionException
      */
     public function wizard()
     {
@@ -213,7 +213,7 @@ class Booklet extends AbstractBookletController
             }
 
             $this->renderForm($myForm);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }
     }
@@ -221,38 +221,48 @@ class Booklet extends AbstractBookletController
     /**
      * Creates new instance of booklet from a test instance
      * @return mixed
-     * @throws \common_ext_ExtensionException
+     * @throws common_ext_ExtensionException
      */
     public function testBooklet()
     {
         $this->defaultData();
 
         try {
+            $class = $this->getRootClass();
             $test = $this->getCurrentInstance();
-            $bookletClass = $this->getRootClass();
-            $formContainer = new WizardPrintForm($bookletClass, $test);
-            $myForm = $formContainer->getForm();
 
-            if ($myForm->isValid() && $myForm->isSubmited()) {
-                return $this->returnTaskJson(CompileBooklet::createTask($test, $bookletClass, $myForm->getValues()));
+            $form = (new WizardPrintForm($class, $test))->getForm();
+
+            if ($form === null) {
+                throw new RuntimeException('Form can not be created');
             }
 
-            $myForm->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL))->setValue($test->getLabel());
-            $this->renderForm($myForm);
-        } catch (\Exception $e) {
+            if ($form->isValid() && $form->isSubmited()) {
+                return $this->returnTaskJson(CompileBooklet::createTask($test, $class, $form->getValues()));
+            }
+
+            $label = $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL));
+
+            if ($label) {
+                $label->setValue($test->getLabel());
+            }
+
+            $this->renderForm($form);
+
+        } catch (Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }
     }
 
-    /**
-     * @param GenerateForm $form
-     */
-    protected function renderForm($form)
+    protected function renderForm(Form $form): void
     {
-        $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID)->setDefaultFormValues($form);
+        $this->getServiceLocator()
+            ->get(BookletConfigService::SERVICE_ID)
+            ->setDefaultFormValues($form);
 
         $this->setData('myForm', $form->render());
         $this->setData('formTitle', __('Create a new booklet'));
+
         $this->setView('form.tpl', 'tao');
     }
 }
