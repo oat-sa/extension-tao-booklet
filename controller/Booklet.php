@@ -203,8 +203,8 @@ class Booklet extends AbstractBookletController
                     $test = $this->getResource($myForm->getValue(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST)));
 
                     return $this->returnTaskJson(CompileBooklet::createTask(
-                        $test,
                         $bookletClass,
+                        $test,
                         $myForm->getValues()
                     ));
                 } else {
@@ -238,7 +238,7 @@ class Booklet extends AbstractBookletController
             }
 
             if ($form->isValid() && $form->isSubmited()) {
-                return $this->returnTaskJson(CompileBooklet::createTask($test, $class, $form->getValues()));
+                return $this->returnTaskJson(CompileBooklet::createTask($class, $test, $form->getValues()));
             }
 
             $label = $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL));

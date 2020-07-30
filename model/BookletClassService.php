@@ -22,57 +22,64 @@
 
 namespace oat\taoBooklet\model;
 
+use common_report_Report;
+use core_kernel_classes_Class as KernelClass;
+use core_kernel_classes_Literal;
+use core_kernel_classes_Resource as KernelResource;
+use core_kernel_persistence_Exception;
+use Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
+use oat\tao\model\OntologyClassService;
 use tao_models_classes_ClassService;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 
-class BookletClassService extends tao_models_classes_ClassService
+class BookletClassService extends OntologyClassService
 {
     use OntologyAwareTrait;
 
-    const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
-    const PROPERTY_TEST = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
-    const PROPERTY_DESCRIPTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#Description';
-    const PROPERTY_LAYOUT = 'http://www.tao.lu/Ontologies/Booklet.rdf#Layout';
-    const PROPERTY_COVER_PAGE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPage';
-    const PROPERTY_PAGE_HEADER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageHeader';
-    const PROPERTY_PAGE_FOOTER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageFooter';
-    const PROPERTY_FILE_CONTENT = 'http://www.tao.lu/Ontologies/Booklet.rdf#BookletFile';
+    public const CLASS_URI = 'http://www.tao.lu/Ontologies/Booklet.rdf#Booklet';
+    public const PROPERTY_TEST = 'http://www.tao.lu/Ontologies/Booklet.rdf#Test';
+    public const PROPERTY_DESCRIPTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#Description';
+    public const PROPERTY_LAYOUT = 'http://www.tao.lu/Ontologies/Booklet.rdf#Layout';
+    public const PROPERTY_COVER_PAGE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPage';
+    public const PROPERTY_PAGE_HEADER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageHeader';
+    public const PROPERTY_PAGE_FOOTER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageFooter';
+    public const PROPERTY_FILE_CONTENT = 'http://www.tao.lu/Ontologies/Booklet.rdf#BookletFile';
 
-    const INSTANCE_LAYOUT_COVER = 'http://www.tao.lu/Ontologies/Booklet.rdf#LayoutCover';
-    const INSTANCE_LAYOUT_HEADER = 'http://www.tao.lu/Ontologies/Booklet.rdf#LayoutHeader';
-    const INSTANCE_LAYOUT_FOOTER = 'http://www.tao.lu/Ontologies/Booklet.rdf#LayoutFooter';
-    const INSTANCE_LAYOUT_ONE_PAGE_SECTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#OnePageSection';
-    const INSTANCE_LAYOUT_ONE_PAGE_ITEM = 'http://www.tao.lu/Ontologies/Booklet.rdf#OnePageItem';
-    const INSTANCE_LAYOUT_BLANK_PAGES = 'http://www.tao.lu/Ontologies/Booklet.rdf#BlankPages';
-    const INSTANCE_LAYOUT_BUBBLE_SHEET = 'http://www.tao.lu/Ontologies/Booklet.rdf#BubbleSheet';
-    const INSTANCE_LAYOUT_SHOW_RESPONSE_IDENTIFIER = 'http://www.tao.lu/Ontologies/Booklet.rdf#ShowResponseIdentifier';
+    public const INSTANCE_LAYOUT_COVER = 'http://www.tao.lu/Ontologies/Booklet.rdf#LayoutCover';
+    public const INSTANCE_LAYOUT_HEADER = 'http://www.tao.lu/Ontologies/Booklet.rdf#LayoutHeader';
+    public const INSTANCE_LAYOUT_FOOTER = 'http://www.tao.lu/Ontologies/Booklet.rdf#LayoutFooter';
+    public const INSTANCE_LAYOUT_ONE_PAGE_SECTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#OnePageSection';
+    public const INSTANCE_LAYOUT_ONE_PAGE_ITEM = 'http://www.tao.lu/Ontologies/Booklet.rdf#OnePageItem';
+    public const INSTANCE_LAYOUT_BLANK_PAGES = 'http://www.tao.lu/Ontologies/Booklet.rdf#BlankPages';
+    public const INSTANCE_LAYOUT_BUBBLE_SHEET = 'http://www.tao.lu/Ontologies/Booklet.rdf#BubbleSheet';
+    public const INSTANCE_LAYOUT_SHOW_RESPONSE_IDENTIFIER = 'http://www.tao.lu/Ontologies/Booklet.rdf#ShowResponseIdentifier';
 
-    const INSTANCE_COVER_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageTitle';
-    const INSTANCE_COVER_PAGE_DESCRIPTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDescription';
-    const INSTANCE_COVER_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDate';
-    const INSTANCE_COVER_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageLogo';
-    const INSTANCE_COVER_PAGE_QRCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageQRCode';
-    const INSTANCE_COVER_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageUniqueId';
+    public const INSTANCE_COVER_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageTitle';
+    public const INSTANCE_COVER_PAGE_DESCRIPTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDescription';
+    public const INSTANCE_COVER_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDate';
+    public const INSTANCE_COVER_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageLogo';
+    public const INSTANCE_COVER_PAGE_QRCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageQRCode';
+    public const INSTANCE_COVER_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageUniqueId';
 
-    const INSTANCE_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLogo';
-    const INSTANCE_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle';
-    const INSTANCE_PAGE_MENTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageMention';
-    const INSTANCE_PAGE_LINK = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLink';
-    const INSTANCE_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageDate';
-    const INSTANCE_PAGE_NUMBER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber';
-    const INSTANCE_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId';
-    const INSTANCE_PAGE_QR_CODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageQRCode';
+    public const INSTANCE_PAGE_LOGO = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLogo';
+    public const INSTANCE_PAGE_TITLE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle';
+    public const INSTANCE_PAGE_MENTION = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageMention';
+    public const INSTANCE_PAGE_LINK = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageLink';
+    public const INSTANCE_PAGE_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageDate';
+    public const INSTANCE_PAGE_NUMBER = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber';
+    public const INSTANCE_PAGE_UNIQUE_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId';
+    public const INSTANCE_PAGE_QR_CODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageQRCode';
 
-    const INSTANCE_PAGE_EXPIRATION_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageExpirationDate';
-    const INSTANCE_PAGE_SMALL_PRINT = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageSmallPrint';
+    public const INSTANCE_PAGE_EXPIRATION_DATE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageExpirationDate';
+    public const INSTANCE_PAGE_SMALL_PRINT = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageSmallPrint';
 
-    const INSTANCE_PAGE_MATRIX_BARCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageMatrixBarcode';
-    const INSTANCE_PAGE_SCAN_MARKS = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageScanMarks';
+    public const INSTANCE_PAGE_MATRIX_BARCODE = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageMatrixBarcode';
+    public const INSTANCE_PAGE_SCAN_MARKS = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageScanMarks';
 
-    const INSTANCE_PAGE_CUSTOM_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageCustomId';
+    public const INSTANCE_PAGE_CUSTOM_ID = 'http://www.tao.lu/Ontologies/Booklet.rdf#PageCustomId';
 
     /**
      * (non-PHPdoc)
@@ -86,13 +93,13 @@ class BookletClassService extends tao_models_classes_ClassService
 
     /**
      *
-     * @param core_kernel_classes_Class $class
+     * @param KernelClass $class
      * @param string $label
      * @param string $test
-     * @return core_kernel_classes_Resource
-     * @throws \Exception
+     * @return KernelResource
+     * @throws Exception
      */
-    public function createBookletInstance(core_kernel_classes_Class $class, $label, $test)
+    public function createBookletInstance(KernelClass $class, string $label, string $test)
     {
         return $class->createInstanceWithProperties([
             OntologyRdfs::RDFS_LABEL => $label,
@@ -102,20 +109,26 @@ class BookletClassService extends tao_models_classes_ClassService
 
     /**
      * Get the test linked to a booklet
-     * @param core_kernel_classes_Resource $booklet
-     * @return core_kernel_classes_Resource
+     *
+     * @param KernelResource $booklet
+     *
+     * @return KernelResource
+     * @throws core_kernel_persistence_Exception
      */
-    public function getTest(core_kernel_classes_Resource $booklet)
+    public function getTest(KernelResource $booklet): KernelResource
     {
         return $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_TEST));
     }
 
     /**
      * Get the attachment linked to a booklet
-     * @param core_kernel_classes_Resource $booklet
-     * @return core_kernel_classes_Resource
+     *
+     * @param KernelResource $booklet
+     *
+     * @return string
+     * @throws core_kernel_persistence_Exception
      */
-    public function getAttachment(core_kernel_classes_Resource $booklet)
+    public function getAttachment(KernelResource $booklet): string
     {
         return (string) $booklet->getOnePropertyValue($this->getProperty(self::PROPERTY_FILE_CONTENT));
     }
@@ -124,11 +137,11 @@ class BookletClassService extends tao_models_classes_ClassService
      * @param core_kernel_classes_Resource $instance
      * @param $tmpFile
      *
-     * @return \common_report_Report
+     * @return common_report_Report
      */
     public function updateInstanceAttachment($instance, $tmpFile)
     {
-        $report = new \common_report_Report(\common_report_Report::TYPE_SUCCESS);
+        $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
         $this->removeInstanceAttachment($instance);
 
@@ -140,6 +153,7 @@ class BookletClassService extends tao_models_classes_ClassService
 
         $report->setMessage(__('%s updated', $instance->getLabel()));
         $report->setData($serial);
+
         return $report;
     }
 
@@ -153,7 +167,7 @@ class BookletClassService extends tao_models_classes_ClassService
         $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
         $contentUri = $instance->getOnePropertyValue($property);
 
-        if ($contentUri && !($contentUri instanceof \core_kernel_classes_Literal)) {
+        if ($contentUri && !($contentUri instanceof core_kernel_classes_Literal)) {
             $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
             $storageService->deleteFile($contentUri);
         }
