@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +20,7 @@
 namespace oat\taoBooklet\form;
 
 use tao_actions_form_Instance;
-use tao_helpers_form_FormFactory;
+use tao_helpers_form_FormFactory as FormFactory;
 
 /**
  * Create a form from a booklet
@@ -32,16 +31,17 @@ use tao_helpers_form_FormFactory;
  */
 class GenerateForm extends tao_actions_form_Instance
 {
-
     public function initElements()
     {
         parent::initElements();
 
-        $createElt = tao_helpers_form_FormFactory::getElement('create', 'Button');
-        $createElt->setValue(__('Generate'));
-        $createElt->setIcon("icon-play");
-        $createElt->addClass("form-submitter btn-success small");
+        $createButton = FormFactory::getElement('create', 'Button');
+        if ($createButton) {
+            $createButton->setValue(__('Generate'));
+            $createButton->setIcon("icon-play");
+            $createButton->addClass("form-submitter btn-success small");
+        }
 
-        $this->form->setActions([ $createElt ], 'bottom');
+        $this->getForm()->setActions([$createButton], 'bottom');
     }
 }
