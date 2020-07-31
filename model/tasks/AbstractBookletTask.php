@@ -133,7 +133,7 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
             $this->cleanBookletData($storageKey);
         }
 
-        if (count($pdfFiles) == 1) {
+        if (count($pdfFiles) === 1) {
             $report = $this->storePdf($rootInstance, $pdfFiles[0]);
         } else {
             $tmpFile = "${tmpFolder}booklet.pdf";
@@ -146,6 +146,9 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
 
             $report = $this->storePdf($rootInstance, $tmpFile);
         }
+
+        // check if report has errors and revert actions
+
 
         tao_helpers_File::delTree($tmpFolder);
 
@@ -214,7 +217,7 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
      */
     protected function startCliSession($userUri)
     {
-        if (PHP_SAPI == 'cli' && session_status() == PHP_SESSION_NONE) {
+        if (PHP_SAPI === 'cli' && session_status() === PHP_SESSION_NONE) {
             $user = new core_kernel_users_GenerisUser(new core_kernel_classes_Resource($userUri));
             $session = new common_session_DefaultSession($user);
 

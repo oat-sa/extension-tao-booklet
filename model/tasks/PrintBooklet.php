@@ -39,9 +39,7 @@ use taoTests_models_classes_TestsService;
  */
 class PrintBooklet extends AbstractBookletTask
 {
-    /**
-     * @var BookletClassService
-     */
+    /** @var BookletClassService */
     protected $bookletClassService;
 
     /**
@@ -60,6 +58,7 @@ class PrintBooklet extends AbstractBookletTask
     protected function getBookletConfig($instance)
     {
         $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
+
         return $configService->getConfig($instance);
     }
 
@@ -75,13 +74,11 @@ class PrintBooklet extends AbstractBookletTask
         $test = $this->bookletClassService->getTest($instance);
 
         $model = $testService->getTestModel($test);
-        if ($model->getUri() != taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
+        if ($model->getUri() !== taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
             throw new \Exception('Not a QTI test');
         }
 
-        $packer = new QtiTestPacker();
-        $this->getServiceManager()->propagate($packer);
-        return $packer->packTest($test);
+        return $this->getTestPacker()->packTest($test);
     }
 
     /**
@@ -101,5 +98,13 @@ class PrintBooklet extends AbstractBookletTask
     public function jsonSerialize()
     {
         return __CLASS__;
+    }
+
+    /**
+     * @return QtiTestPacker
+     */
+    private function getTestPacker(): QtiTestPacker
+    {
+        return $this->propagate(new QtiTestPacker());
     }
 }

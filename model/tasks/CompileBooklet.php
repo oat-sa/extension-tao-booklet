@@ -85,13 +85,12 @@ class CompileBooklet extends AbstractAction implements JsonSerializable, TaskAwa
             return Report::createFailure(__('Error on the data binding'));
         }
 
-        // set custom label while task in running
-        $booklet->setLabel('in progress');
-
         /** @var BookletTaskService $taskService */
         $taskService = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID);
-
         $taskService->createPrintBookletTask($booklet);
+
+        // set custom label while task in running
+        $booklet->setLabel('in progress');
 
         return Report::createSuccess(__('Booklet for test %s created', $test->getLabel()), $booklet);
     }
