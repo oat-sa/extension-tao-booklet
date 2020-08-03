@@ -26,15 +26,18 @@
 namespace oat\taoBooklet\model\tasks;
 
 use common_exception_MissingParameter;
+use common_report_Report;
 use common_session_DefaultSession;
 use common_session_SessionManager;
 use core_kernel_classes_Resource;
 use core_kernel_users_GenerisUser;
+use Exception;
 use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\extension\AbstractAction;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletDataService;
+use oat\taoBooklet\model\export\BookletExporterException;
 use oat\taoBooklet\model\export\PdfBookletExporter;
 use PHPSession;
 use tao_helpers_File;
@@ -66,7 +69,7 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
      * Gets the test definition data in order to print it
      * @param core_kernel_classes_Resource $instance
      * @return JsonSerializable|array
-     * @throws \Exception
+     * @throws Exception
      */
     abstract protected function getTestData($instance);
 
@@ -74,15 +77,16 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
      * Stores the generated PDF file
      * @param core_kernel_classes_Resource $instance
      * @param string $filePath
-     * @return \common_report_Report
+     * @return common_report_Report
      */
     abstract protected function storePdf($instance, $filePath);
 
     /**
      *
      * @param array $params
-     * @return \common_report_Report
-     * @throws \common_exception_MissingParameter
+     *
+     * @return common_report_Report
+     * @throws common_exception_MissingParameter|BookletExporterException
      */
     public function __invoke($params)
     {
@@ -93,7 +97,8 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
     }
 
     /**
-     * @return \common_report_Report
+     * @return common_report_Report
+     * @throws BookletExporterException
      */
     protected function generatePdf()
     {
@@ -123,8 +128,8 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
 
             try {
                 $exporter = new PdfBookletExporter($config[BookletConfigService::CONFIG_TITLE], $config);
-            } catch (\Exception $e) {
-                return \common_report_Report::createFailure($e->getMessage());
+            } catch (Exception $e) {
+                return common_report_Report::createFailure($e->getMessage());
             }
 
             $exporter->setContent($this->getRendererUrl($storageKey));
@@ -146,9 +151,6 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
 
             $report = $this->storePdf($rootInstance, $tmpFile);
         }
-
-        // check if report has errors and revert actions
-
 
         tao_helpers_File::delTree($tmpFolder);
 
