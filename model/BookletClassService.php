@@ -32,7 +32,6 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\tao\model\OntologyClassService;
 use tao_models_classes_ClassService;
-use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 
 class BookletClassService extends OntologyClassService

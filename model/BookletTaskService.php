@@ -20,6 +20,7 @@
 namespace oat\taoBooklet\model;
 
 use common_exception_Error;
+use common_exception_NotFound;
 use common_session_SessionManager;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_persistence_Exception;
@@ -60,25 +61,22 @@ class BookletTaskService extends ConfigurableService
     /**
      * Creates a task that will generate a Booklet PDF from an AssessmentTest
      *
-     * @param Resource $booklet
+     * @param string $booklet Uri of booklet instance
+     * @param string $label Label of booklet
      *
      * @return TaskInterface
-     * @throws core_kernel_persistence_Exception
      * @throws common_exception_Error
      */
-    public function createPrintBookletTask(Resource $booklet): TaskInterface
+    public function createPrintBookletTask(string $booklet, string $label): TaskInterface
     {
-        // todo: need to get label from a test, not a booklet, because it have "in progress" label
-
-        $queueParameters = [
-            'uri'  => $booklet->getUri(),
-            'user' => common_session_SessionManager::getSession()->getUserUri(),
-        ];
-
         return $this->getQueueService()->createTask(
             $this->propagate(new PrintBooklet()),
-            $queueParameters,
-            __('Generate booklet for "%s"', $booklet->getLabel())
+            [
+                'uri'  => $booklet,
+                'user' => common_session_SessionManager::getSession()->getUserUri(),
+                'label' => $label,
+            ],
+            __('Generating booklet file for "%s"', $label)
         );
     }
 
@@ -86,8 +84,12 @@ class BookletTaskService extends ConfigurableService
      * Creates a task that will generate a Booklet PDF from a DeliveryExecution
      *
      * @param Resource $resource
-     * @param array                        $printConfig
+     * @param array    $printConfig
+     *
      * @return TaskInterface
+     * @throws common_exception_NotFound
+     * @throws common_exception_Error
+     * @throws core_kernel_persistence_Exception
      */
     public function createPrintResultsTask(Resource $resource, $printConfig)
     {
