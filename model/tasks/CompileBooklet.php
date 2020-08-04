@@ -12,6 +12,7 @@ use core_kernel_persistence_Exception;
 use Exception;
 use JsonSerializable;
 use oat\generis\model\OntologyAwareTrait;
+use oat\generis\model\OntologyRdfs;
 use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\taskQueue\QueueDispatcher;
@@ -19,7 +20,6 @@ use oat\tao\model\taskQueue\Task\CallbackTask;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
-use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletTaskService;
 use oat\taoTests\models\MissingTestmodelException;
 use tao_models_classes_dataBinding_GenerisFormDataBinder as GenerisFormDataBinder;
@@ -54,45 +54,32 @@ class CompileBooklet extends AbstractAction implements JsonSerializable, TaskAwa
      */
     public function __invoke($params = []): Report
     {
-        $this->validateParameters(
-            $params,
-            self::PARAM_CLASS, self::PARAM_TEST
-        );
+        $this->validateParameters($params, self::PARAM_CLASS, self::PARAM_TEST);
 
-        $class = $this->getClass($params[self::PARAM_CLASS]);
-        $test = $this->getResource($params[self::PARAM_TEST]);
-
-        $validationReport = $this->validateTest($test);
+        $validationReport = $this->validateTest($this->getResource($params[self::PARAM_TEST]));
 
         if ($validationReport->containsError()) {
             return $validationReport;
         }
 
-        try {
-            /** @var KernelResource $booklet */
-            $booklet = BookletClassService::singleton()->createBookletInstance(
-                $class, '', $test
-            );
-        } catch (Exception $e) {
-            common_Logger::e($e->getMessage());
-            return Report::createFailure(__('Error on the create booklet instance action'));
-        }
+        [$label, $parameters] = $this->extractLabel($params[self::PARAM_PROPS]);
 
         try {
-            (new GenerisFormDataBinder($booklet))->bind($params[self::PARAM_PROPS]);
+            $booklet = $this->getClass($params[self::PARAM_CLASS])->createInstance('in progress');
+            (new GenerisFormDataBinder($booklet))->bind($parameters);
         } catch (tao_models_classes_dataBinding_GenerisFormDataBindingException $e) {
             common_Logger::e($e->getMessage());
             return Report::createFailure(__('Error on the data binding'));
+        } catch (Exception $e) {
+            common_Logger::e($e->getMessage());
+            return Report::createFailure(__('Error on the booklet creating'));
         }
 
         /** @var BookletTaskService $taskService */
         $taskService = $this->getServiceLocator()->get(BookletTaskService::SERVICE_ID);
-        $taskService->createPrintBookletTask($booklet);
+        $taskService->createPrintBookletTask($booklet->getUri(), $label);
 
-        // set custom label while task in running
-        $booklet->setLabel('in progress');
-
-        return Report::createSuccess(__('Booklet for test %s created', $test->getLabel()), $booklet);
+        return Report::createSuccess(__('Booklet for test %s created', $label), $booklet);
     }
 
     /**
@@ -110,6 +97,19 @@ class CompileBooklet extends AbstractAction implements JsonSerializable, TaskAwa
                 );
             }
         }
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return array
+     */
+    private function extractLabel(array $parameters): array
+    {
+        $label = $parameters[OntologyRdfs::RDFS_LABEL] ?? '';
+        unset($parameters[OntologyRdfs::RDFS_LABEL]);
+
+        return [$label, $parameters];
     }
 
     /**
