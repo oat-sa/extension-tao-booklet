@@ -25,10 +25,14 @@
 
 namespace oat\taoBooklet\model\tasks;
 
+use common_exception_MissingParameter;
+use common_report_Report;
 use core_kernel_classes_Resource;
+use Exception;
 use JsonSerializable;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
+use oat\taoBooklet\model\export\BookletExporterException;
 use oat\taoQtiPrint\model\QtiTestPacker;
 use taoQtiTest_models_classes_QtiTestService;
 use taoTests_models_classes_TestsService;
@@ -51,6 +55,26 @@ class PrintBooklet extends AbstractBookletTask
     }
 
     /**
+     * @param array $params
+     *
+     * @return common_report_Report
+     * @throws common_exception_MissingParameter
+     * @throws BookletExporterException
+     */
+    public function __invoke($params)
+    {
+        $report = parent::__invoke($params);
+
+        if ($report === null || $report->containsError()) {
+            $this->getResource($params['uri'])->delete(true);
+        } else {
+            $this->getResource($params['uri'])->setLabel($params['label']);
+        }
+
+        return $report;
+    }
+
+    /**
      * Gets the config for a booklet instance using either the instance itself or an array of properties
      * @param core_kernel_classes_Resource $instance
      * @return mixed
@@ -66,7 +90,7 @@ class PrintBooklet extends AbstractBookletTask
      * Gets the test definition data in order to print it
      * @param core_kernel_classes_Resource $instance
      * @return JsonSerializable|array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getTestData($instance)
     {
@@ -75,7 +99,7 @@ class PrintBooklet extends AbstractBookletTask
 
         $model = $testService->getTestModel($test);
         if ($model->getUri() !== taoQtiTest_models_classes_QtiTestService::INSTANCE_TEST_MODEL_QTI) {
-            throw new \Exception('Not a QTI test');
+            throw new Exception('Not a QTI test');
         }
 
         return $this->getTestPacker()->packTest($test);
@@ -85,7 +109,7 @@ class PrintBooklet extends AbstractBookletTask
      * Stores the generated PDF file
      * @param core_kernel_classes_Resource $instance
      * @param string $filePath
-     * @return \common_report_Report
+     * @return common_report_Report
      */
     protected function storePdf($instance, $filePath)
     {
@@ -106,5 +130,13 @@ class PrintBooklet extends AbstractBookletTask
     private function getTestPacker(): QtiTestPacker
     {
         return $this->propagate(new QtiTestPacker());
+    }
+
+    /**
+     * @return array|string[]
+     */
+    protected function getMandatoryParams(): array
+    {
+        return array_merge(parent::getMandatoryParams(), ['label']);
     }
 }
