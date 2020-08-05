@@ -76,7 +76,7 @@ class BookletTaskService extends ConfigurableService
                 'user' => common_session_SessionManager::getSession()->getUserUri(),
                 'label' => $label,
             ],
-            __('Generating booklet file for "%s"', $label)
+            __('Generating PDF file for booklet "%s"', $label)
         );
     }
 

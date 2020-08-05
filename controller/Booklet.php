@@ -122,6 +122,7 @@ class Booklet extends AbstractBookletController
      * @return mixed
      * @throws common_ext_ExtensionException
      * @throws tao_models_classes_MissingRequestParameterException
+     * @throws core_kernel_persistence_Exception
      */
     public function regenerate()
     {
@@ -131,7 +132,7 @@ class Booklet extends AbstractBookletController
 
         $task = $this->getServiceLocator()
             ->get(BookletTaskService::SERVICE_ID)
-            ->createPrintBookletTask($instance);
+            ->createPrintBookletTask($instance->getUri(), $instance->getLabel());
 
         return $this->returnTaskJson($task);
     }
