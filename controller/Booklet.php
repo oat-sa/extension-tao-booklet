@@ -19,6 +19,7 @@
 
 namespace oat\taoBooklet\controller;
 
+use common_Exception;
 use common_exception_NotFound;
 use common_ext_ExtensionException;
 use core_kernel_persistence_Exception;
@@ -79,11 +80,16 @@ class Booklet extends AbstractBookletController
 
         $this->setData('isPreviewEnabled', $currentInstance->getLabel() !== 'in progress');
 
-        /** @var FileReferenceSerializer $fileReferenceSerializer */
-        $fileReferenceSerializer = $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
-        $attachmentFile = $fileReferenceSerializer->unserialize(
-            $this->getClassService()->getAttachment($currentInstance)
-        );
+        try {
+            /** @var FileReferenceSerializer $fileReferenceSerializer */
+            $fileReferenceSerializer = $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
+
+            $attachmentFile = $fileReferenceSerializer->unserialize(
+                $this->getClassService()->getAttachment($currentInstance)
+            );
+        } catch (common_Exception $e) {
+            $attachmentFile = null;
+        }
 
         $form = (new EditForm($this->getCurrentClass(), $currentInstance))
             ->setAllowDownload($attachmentFile instanceof File)
@@ -95,8 +101,8 @@ class Booklet extends AbstractBookletController
             $this->setData('reload', true);
         }
 
-        $this->setData('formTitle', __('Edit Booklet'));
-        $this->setData('myForm', $form->render());
+        $this->setData('form-title', __('Edit Booklet'));
+        $this->setData('form-fields', $form->render());
         $this->setView('Booklet/edit.tpl');
     }
 
