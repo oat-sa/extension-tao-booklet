@@ -39,6 +39,7 @@ class SetupStorage extends InstallAction
      */
     public function __invoke($params)
     {
+
         $fsService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
         if (!$fsService->hasDirectory(StorageService::FILE_SYSTEM_ID)) {
             $fsService->createFileSystem(StorageService::FILE_SYSTEM_ID, 'taoBooklet');

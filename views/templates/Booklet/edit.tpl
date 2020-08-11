@@ -13,3 +13,13 @@ Template::inc('form_context.tpl', 'tao');
 </div>
 
 <?php Template::inc('footer.tpl', 'tao'); ?>
+
+<script>
+    requirejs.config({
+        config: {
+            'taoBooklet/controller/Booklet/editBooklet' : {
+                'isPreviewEnabled' : <?= json_encode(get_data('isPreviewEnabled')) ?>
+            }
+        }
+    });
+</script>

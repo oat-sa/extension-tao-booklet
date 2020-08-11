@@ -77,6 +77,8 @@ class Booklet extends AbstractBookletController
 
         $currentInstance = $this->getCurrentInstance();
 
+        $this->setData('isPreviewEnabled', $currentInstance->getLabel() !== 'in progress');
+
         /** @var FileReferenceSerializer $fileReferenceSerializer */
         $fileReferenceSerializer = $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
         $attachmentFile = $fileReferenceSerializer->unserialize(
