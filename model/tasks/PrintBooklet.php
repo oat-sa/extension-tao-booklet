@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,12 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
- *
- */
-
-/**
- * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
+ * Copyright (c) 2017-2020 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoBooklet\model\tasks;
@@ -39,6 +33,7 @@ use taoTests_models_classes_TestsService;
 
 /**
  * Class PrintBooklet
+ * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  * @package oat\taoBooklet\model\tasks
  */
 class PrintBooklet extends AbstractBookletTask
