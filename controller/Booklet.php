@@ -203,25 +203,24 @@ class Booklet extends AbstractBookletController
         $this->defaultData();
 
         try {
-            $bookletClass  = $this->getCurrentClass();
-            $formContainer = new WizardBookletForm($bookletClass);
-            $myForm        = $formContainer->getForm();
+            $form = (new WizardBookletForm($this->getCurrentClass()))->getForm();
 
-            if ($myForm->isSubmited()) {
-                if ($myForm->isValid()) {
-                    $test = $this->getResource($myForm->getValue(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST)));
+            if ($form !== null && $form->isSubmited()) {
+                if ($form->isValid()) {
+                    $test = $this->getResource(
+                        $form->getValue(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST))
+                    );
 
-                    return $this->returnTaskJson(CompileBooklet::createTask(
-                        $bookletClass,
-                        $test,
-                        $myForm->getValues()
-                    ));
-                } else {
-                    return $this->returnJsonError(__('Fill in all required fields'));
+                    return $this->returnTaskJson(
+                        CompileBooklet::createTask($this->getCurrentClass(), $test, $form->getValues())
+                    );
                 }
+
+                return $this->returnJsonError(__('Fill in all required fields'));
             }
 
-            $this->renderForm($myForm);
+            $this->renderForm($form);
+
         } catch (Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }
