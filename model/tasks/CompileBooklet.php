@@ -171,7 +171,8 @@ class CompileBooklet extends AbstractAction implements JsonSerializable, TaskAwa
                 self::PARAM_PROPS => $properties
             ],
             __('Creating booklet instance for test "%s"', $test->getLabel()),
-            null, true
+            null,
+            true
         );
     }
 }

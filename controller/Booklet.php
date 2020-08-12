@@ -256,7 +256,6 @@ class Booklet extends AbstractBookletController
             }
 
             $this->renderForm($form);
-
         } catch (Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }

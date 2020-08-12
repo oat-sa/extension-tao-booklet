@@ -72,7 +72,7 @@ class BookletTaskService extends ConfigurableService
         return $this->getQueueService()->createTask(
             $this->propagate(new PrintBooklet()),
             [
-                'uri'  => $booklet,
+                'uri' => $booklet,
                 'user' => common_session_SessionManager::getSession()->getUserUri(),
                 'label' => $label,
             ],
