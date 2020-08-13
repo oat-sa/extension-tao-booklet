@@ -22,7 +22,7 @@ final class Version202008131526252376_taoBooklet extends AbstractMigration
     public function up(Schema $schema): void
     {
         /** @var TaskLogInterface $taskLogService */
-        $taskLogService = $this->propagate(TaskLogInterface::SERVICE_ID);
+        $taskLogService = $this->getServiceLocator()->get(TaskLogInterface::SERVICE_ID);
 
         $taskLogService->linkTaskToCategory(PrintBooklet::class, TaskLogInterface::CATEGORY_UPDATE);
 
@@ -32,7 +32,7 @@ final class Version202008131526252376_taoBooklet extends AbstractMigration
     public function down(Schema $schema): void
     {
         /** @var TaskLogInterface $taskLogService */
-        $taskLogService = $this->propagate(TaskLogInterface::SERVICE_ID);
+        $taskLogService = $this->getServiceLocator()->get(TaskLogInterface::SERVICE_ID);
 
         $associations = $taskLogService->getOption(TaskLogInterface::OPTION_TASK_TO_CATEGORY_ASSOCIATIONS);
 
