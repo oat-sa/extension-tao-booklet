@@ -224,9 +224,6 @@ class Booklet extends AbstractBookletController
             return $this->returnTaskJson(
                 CompileBooklet::createTask($this->getCurrentClass(), $test, $form->getValues())
             );
-
-            $this->renderForm($form);
-
         } catch (Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }
