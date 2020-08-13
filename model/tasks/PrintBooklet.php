@@ -147,6 +147,8 @@ class PrintBooklet extends AbstractBookletTask
             $this->getResource($params['uri'])->setLabel($params['label']);
         }
 
+
+
         return $report;
     }
 }

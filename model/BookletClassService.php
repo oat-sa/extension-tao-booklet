@@ -19,6 +19,7 @@
 
 namespace oat\taoBooklet\model;
 
+use common_exception_Error;
 use common_report_Report;
 use core_kernel_classes_Class as KernelClass;
 use core_kernel_classes_Literal;
@@ -136,22 +137,30 @@ class BookletClassService extends OntologyClassService
      * @param string                       $bookletLabel
      *
      * @return common_report_Report
-     * @throws core_kernel_persistence_Exception
+     * @throws common_exception_Error
      */
     public function updateInstanceAttachment($instance, $tmpFile, string $bookletLabel = '')
     {
-        $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
+        $report = common_report_Report::createSuccess(
+            __('PDF File for booklet \'%s\' updated', $bookletLabel ?? $instance->getLabel())
+        );
+
+        $instanceReport = common_report_Report::createSuccess(
+            __('Booklet updated by generated file')
+        );
+        $instanceReport->setData($instance);
 
         $this->removeInstanceAttachment($instance);
 
         /** @var StorageService $storageService */
         $storageService = $this->getServiceLocator()->get(StorageService::SERVICE_ID);
+
         $property = $this->getProperty(self::PROPERTY_FILE_CONTENT);
         $serial = $storageService->storeFile($tmpFile);
         $instance->editPropertyValues($property, $serial);
 
-        $report->setMessage(__('PDF File for booklet \'%s\' updated', $bookletLabel ?? $instance->getLabel()));
         $report->setData($serial);
+        $report->add($instanceReport);
 
         return $report;
     }
