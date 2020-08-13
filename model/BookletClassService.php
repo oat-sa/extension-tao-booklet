@@ -131,11 +131,14 @@ class BookletClassService extends OntologyClassService
 
     /**
      * @param core_kernel_classes_Resource $instance
-     * @param $tmpFile
+     * @param                              $tmpFile
+     *
+     * @param string                       $bookletLabel
      *
      * @return common_report_Report
+     * @throws core_kernel_persistence_Exception
      */
-    public function updateInstanceAttachment($instance, $tmpFile)
+    public function updateInstanceAttachment($instance, $tmpFile, string $bookletLabel = '')
     {
         $report = new common_report_Report(common_report_Report::TYPE_SUCCESS);
 
@@ -147,7 +150,7 @@ class BookletClassService extends OntologyClassService
         $serial = $storageService->storeFile($tmpFile);
         $instance->editPropertyValues($property, $serial);
 
-        $report->setMessage(__('%s updated', $instance->getLabel()));
+        $report->setMessage(__('PDF File for booklet \'%s\' updated', $bookletLabel ?? $instance->getLabel()));
         $report->setData($serial);
 
         return $report;

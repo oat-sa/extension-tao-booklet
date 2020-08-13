@@ -19,14 +19,12 @@
 
 namespace oat\taoBooklet\model\tasks;
 
-use common_exception_MissingParameter;
 use common_report_Report as Report;
 use core_kernel_classes_Resource;
 use Exception;
 use JsonSerializable;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
-use oat\taoBooklet\model\export\BookletExporterException;
 use oat\taoQtiPrint\model\QtiTestPacker;
 use taoQtiTest_models_classes_QtiTestService;
 use taoTests_models_classes_TestsService;
@@ -100,11 +98,15 @@ class PrintBooklet extends AbstractBookletTask
      * Stores the generated PDF file
      * @param core_kernel_classes_Resource $instance
      * @param string $filePath
-     * @return common_report_Report
+     * @return Report
      */
     protected function storePdf($instance, $filePath)
     {
-        return $this->bookletClassService->updateInstanceAttachment($instance, $filePath);
+        return $this->bookletClassService->updateInstanceAttachment(
+            $instance,
+            $filePath,
+            $this->getParam('label')
+        );
     }
 
     /**
