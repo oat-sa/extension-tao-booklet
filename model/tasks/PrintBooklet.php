@@ -20,7 +20,7 @@
 namespace oat\taoBooklet\model\tasks;
 
 use common_exception_MissingParameter;
-use common_report_Report;
+use common_report_Report as Report;
 use core_kernel_classes_Resource;
 use Exception;
 use JsonSerializable;
@@ -52,21 +52,17 @@ class PrintBooklet extends AbstractBookletTask
     /**
      * @param array $params
      *
-     * @return common_report_Report
-     * @throws common_exception_MissingParameter
-     * @throws BookletExporterException
+     * @return Report
      */
     public function __invoke($params)
     {
-        $report = parent::__invoke($params);
-
-        if ($report === null || $report->containsError()) {
-            $this->getResource($params['uri'])->delete(true);
-        } else {
-            $this->getResource($params['uri'])->setLabel($params['label']);
+        try {
+            $report = parent::__invoke($params);
+        } catch (Exception $e) {
+            $report = Report::createFailure($e->getMessage());
         }
 
-        return $report;
+        return $this->processReportOutput($report, $params);
     }
 
     /**
@@ -133,5 +129,22 @@ class PrintBooklet extends AbstractBookletTask
     protected function getMandatoryParams(): array
     {
         return array_merge(parent::getMandatoryParams(), ['label']);
+    }
+
+    /**
+     * @param Report $report
+     * @param array  $params
+     *
+     * @return Report
+     */
+    private function processReportOutput(Report $report, array $params): Report
+    {
+        if ($report === null || $report->containsError()) {
+            $this->getResource($params['uri'])->delete(true);
+        } else {
+            $this->getResource($params['uri'])->setLabel($params['label']);
+        }
+
+        return $report;
     }
 }
