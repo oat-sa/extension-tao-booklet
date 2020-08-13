@@ -17,9 +17,7 @@ Template::inc('form_context.tpl', 'tao');
 <script>
     requirejs.config({
         config: {
-            'taoBooklet/controller/Booklet/editBooklet' : {
-                'isPreviewEnabled' : <?= json_encode(get_data('isPreviewEnabled')) ?>
-            }
+            'taoBooklet/controller/Booklet/editBooklet' : <?= get_data('module-config') ?>
         }
     })
 </script>
