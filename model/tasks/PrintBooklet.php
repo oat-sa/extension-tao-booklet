@@ -141,13 +141,15 @@ class PrintBooklet extends AbstractBookletTask
      */
     private function processReportOutput(Report $report, array $params): Report
     {
-        if ($report === null || $report->containsError()) {
+        if (
+            $report === null
+            || $report->containsError()
+            || in_array($report->getType(), [Report::TYPE_ERROR, Report::TYPE_WARNING], true)
+        ) {
             $this->getResource($params['uri'])->delete(true);
         } else {
             $this->getResource($params['uri'])->setLabel($params['label']);
         }
-
-
 
         return $report;
     }
