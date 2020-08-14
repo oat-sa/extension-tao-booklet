@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,17 +14,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA ;
- *
+ * Copyright (c) 2017-2020 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoBooklet\model;
 
+use common_exception_Error;
+use common_exception_NotFound;
 use common_session_SessionManager;
-use core_kernel_classes_Resource;
+use core_kernel_classes_Resource as Resource;
+use core_kernel_persistence_Exception;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
-use oat\oatbox\task\Task;
+use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\TaskInterface;
 use oat\taoBooklet\model\tasks\PrintDelivery;
@@ -38,11 +39,11 @@ use oat\taoDelivery\model\execution\ServiceProxy;
  */
 class BookletTaskService extends ConfigurableService
 {
-    const SERVICE_ID = 'taoBooklet/bookletTaskService';
+    use ServiceManagerAwareTrait;
 
-    /**
-     * @var QueueDispatcherInterface
-     */
+    public const SERVICE_ID = 'taoBooklet/bookletTaskService';
+
+    /** @var QueueDispatcherInterface */
     protected $queueService;
 
     /**
@@ -60,37 +61,38 @@ class BookletTaskService extends ConfigurableService
     /**
      * Creates a task that will generate a Booklet PDF from an AssessmentTest
      *
-     * @param core_kernel_classes_Resource $bookletResource
+     * @param string $booklet Uri of booklet instance
+     * @param string $label Label of booklet
+     *
      * @return TaskInterface
+     * @throws common_exception_Error
      */
-    public function createPrintBookletTask(core_kernel_classes_Resource $bookletResource)
+    public function createPrintBookletTask(string $booklet, string $label): TaskInterface
     {
-        $action = new PrintBooklet();
-        $this->getServiceManager()->propagate($action);
-        $queueParameters = [
-            'uri'  => $bookletResource->getUri(),
-            'user' => common_session_SessionManager::getSession()->getUserUri(),
-        ];
-
         return $this->getQueueService()->createTask(
-            $action,
-            $queueParameters,
-            __('Generate booklet for "%s"', $bookletResource->getLabel())
+            $this->propagate(new PrintBooklet()),
+            [
+                'uri' => $booklet,
+                'user' => common_session_SessionManager::getSession()->getUserUri(),
+                'label' => $label,
+            ],
+            __('Generating PDF file for booklet "%s"', $label)
         );
     }
 
     /**
      * Creates a task that will generate a Booklet PDF from a DeliveryExecution
      *
-     * @param core_kernel_classes_Resource $resource
-     * @param array                        $printConfig
+     * @param Resource $resource
+     * @param array    $printConfig
+     *
      * @return TaskInterface
+     * @throws common_exception_NotFound
+     * @throws common_exception_Error
+     * @throws core_kernel_persistence_Exception
      */
-    public function createPrintResultsTask(core_kernel_classes_Resource $resource, $printConfig)
+    public function createPrintResultsTask(Resource $resource, $printConfig)
     {
-        $action = new PrintResults();
-        $this->getServiceManager()->propagate($action);
-
         $deliveryExecution = ServiceProxy::singleton()->getDeliveryExecution($resource);
         $delivery = $deliveryExecution->getDelivery();
 
@@ -109,7 +111,7 @@ class BookletTaskService extends ConfigurableService
         }
 
         return $this->getQueueService()->createTask(
-            $action,
+            $this->propagate(new PrintResults()),
             $queueParameters,
             __('Generate booklet for results of "%s"', $label)
         );
@@ -118,15 +120,12 @@ class BookletTaskService extends ConfigurableService
     /**
      * Creates a task that will generate a Booklet PDF from a Delivery
      *
-     * @param core_kernel_classes_Resource $resource
+     * @param Resource $resource
      * @param array                        $printConfig
      * @return TaskInterface
      */
-    public function createPrintDeliveryTask(core_kernel_classes_Resource $resource, $printConfig)
+    public function createPrintDeliveryTask(Resource $resource, $printConfig)
     {
-        $action = new PrintDelivery();
-        $this->getServiceManager()->propagate($action);
-
         $queueParameters = [
             'uri'    => $resource->getUri(),
             'user'   => common_session_SessionManager::getSession()->getUserUri(),
@@ -139,7 +138,7 @@ class BookletTaskService extends ConfigurableService
         }
 
         return $this->getQueueService()->createTask(
-            $action,
+            $this->propagate(new PrintDelivery()),
             $queueParameters,
             __('Generate booklet for delivery "%s"', $label)
         );

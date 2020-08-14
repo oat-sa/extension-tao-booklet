@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,10 +15,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
  */
 
+use oat\taoBooklet\scripts\update\Updater;
 use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
 use oat\taoBooklet\scripts\install\SetupEventListeners;
@@ -59,12 +57,10 @@ return [
         'rdf' => [
             __DIR__ . '/scripts/install/booklet.rdf',
         ],
-        'checks' => [
-        ]
+        'checks' => []
     ],
-    'uninstall' => [
-    ],
-    'update' => 'oat\\taoBooklet\\scripts\\update\\Updater',
+    'uninstall' => [],
+    'update' => Updater::class,
     'routes' => [
         '/taoBooklet' => 'oat\\taoBooklet\\controller'
     ],
