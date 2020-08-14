@@ -142,7 +142,7 @@ class BookletClassService extends OntologyClassService
     public function updateInstanceAttachment($instance, $tmpFile, string $bookletLabel = '')
     {
         $report = common_report_Report::createSuccess(
-            __('PDF File for booklet \'%s\' updated', $bookletLabel ?? $instance->getLabel())
+            __('PDF File for booklet \'%s\' updated', $bookletLabel ?: $instance->getLabel())
         );
 
         $instanceReport = common_report_Report::createSuccess(
