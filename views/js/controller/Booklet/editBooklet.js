@@ -24,12 +24,23 @@ define([
     'util/url',
     'ui/taskQueue/taskQueue',
     'ui/taskQueueButton/treeButton',
+    'layout/actions',
     'layout/actions/binder'
-], function ($, _, __, module, urlHelper, taskQueue, treeTaskButtonFactory, binder) {
+], function (
+    $,
+    _,
+    __,
+    module,
+    urlHelper,
+    taskQueue,
+    treeTaskButtonFactory,
+    actions,
+    binder
+) {
     'use strict';
 
     return {
-        start: function () {
+        start() {
 
             var $downloader = $('<iframe/>').hide();
             var $regenerateBtn = $('#booklet-regenerate');
@@ -65,6 +76,13 @@ define([
                     id: $form.find('input[name="id"]').val()
                 }));
             });
+
+            const config = module.config();
+            const previewAction = actions.getBy('booklet-preview');
+            if (previewAction) {
+                previewAction.state.disabled = !config.isPreviewEnabled;
+                actions.updateState();
+            }
         }
     };
 });
