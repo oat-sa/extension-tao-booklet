@@ -37,6 +37,7 @@ use oat\tao\model\taskQueue\Task\CallbackTask;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
+use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletTaskService;
 use oat\taoTests\models\MissingTestmodelException;
 use tao_models_classes_dataBinding_GenerisFormDataBinder as GenerisFormDataBinder;
@@ -73,7 +74,8 @@ class CompileBooklet extends AbstractAction implements JsonSerializable, TaskAwa
     {
         $this->validateParameters($params, self::PARAM_CLASS, self::PARAM_TEST);
 
-        $validationReport = $this->validateTest($this->getResource($params[self::PARAM_TEST]));
+        $testResource = $this->getResource($params[self::PARAM_TEST]);
+        $validationReport = $this->validateTest($testResource);
 
         if ($validationReport->containsError()) {
             return $validationReport;
@@ -83,6 +85,11 @@ class CompileBooklet extends AbstractAction implements JsonSerializable, TaskAwa
 
         try {
             $booklet = $this->getClass($params[self::PARAM_CLASS])->createInstance('in progress');
+            $booklet->setPropertyValue(
+                $this->getProperty(BookletClassService::PROPERTY_TEST),
+                $testResource
+            );
+
             (new GenerisFormDataBinder($booklet))->bind($parameters);
         } catch (tao_models_classes_dataBinding_GenerisFormDataBindingException $e) {
             common_Logger::e($e->getMessage());
