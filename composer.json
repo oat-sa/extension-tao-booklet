@@ -22,9 +22,9 @@
     "minimum-stability" : "dev",
     "require": {
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-        "mikehaertl/phpwkhtmltopdf": "dev-master",
-        "tecnickcom/tcpdf" : "dev-master",
-        "jurosh/pdf-merge": "dev-master"
+        "mikehaertl/phpwkhtmltopdf": "^2.4",
+        "tecnickcom/tcpdf" : "^6.3",
+        "jurosh/pdf-merge": "^2.0"
     },
     "autoload" : {
         "psr-4" : {
