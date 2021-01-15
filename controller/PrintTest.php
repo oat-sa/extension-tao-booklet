@@ -84,7 +84,7 @@ class PrintTest extends tao_actions_CommonModule
                 throw new \common_exception_NotFound('Not a QTI test');
             }
 
-            $packer = $this->propagate(new QtiTestPacker());
+            $packer = $this->propagate(new QtiTestPacker(true));
             $configService = $this->getServiceLocator()->get(BookletConfigService::SERVICE_ID);
             $bookletData = [
                 'testData' => $packer->packTest($test),
