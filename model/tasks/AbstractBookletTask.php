@@ -116,6 +116,7 @@ abstract class AbstractBookletTask extends AbstractAction implements JsonSeriali
 
             $config = $this->getBookletConfig($instance);
             $config[BookletConfigService::CONFIG_URI] = $uri;
+            $config[BookletConfigService::CONFIG_TITLE] = $this->getParam('label');
             $storageKey = $this->cacheBookletData($uri, [
                 'testData' => $this->getTestData($instance),
                 'config' => $config,
