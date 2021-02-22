@@ -24,7 +24,15 @@
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
         "mikehaertl/phpwkhtmltopdf": "^2.4",
         "tecnickcom/tcpdf": "^6.2",
-        "jurosh/pdf-merge": "^2.0"
+        "jurosh/pdf-merge": "^2.0",
+        "oat-sa/generis" : ">=14.0.0",
+        "oat-sa/tao-core" : ">=47.0.0",
+        "oat-sa/extension-tao-delivery" : ">=15.0.0",
+        "oat-sa/extension-tao-delivery-rdf" : ">=14.0.0",
+        "oat-sa/extension-tao-outcome" : ">=13.0.0",
+        "oat-sa/extension-tao-outcomeui" : ">=10.0.0",
+        "oat-sa/extension-tao-test" : ">=15.0.0",
+        "oat-sa/extension-tao-qtiprint" : ">=2.0.0"
     },
     "autoload" : {
         "psr-4" : {
