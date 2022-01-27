@@ -62,7 +62,8 @@ wkhtmltopdf -V
 ```
 
 Please refer to https://wkhtmltopdf.org/downloads.html for an updated list of
-`wkhtmltopdf` packages for Ubuntu and other distributions. 
+`wkhtmltopdf` packages for Ubuntu and other distributions. You may find a list of
+source, binary and packages for v0.12.5 at [GitHub](https://github.com/wkhtmltopdf/wkhtmltopdf/releases/tag/0.12.5) as well.
 
 Deprecated:
 Please note that the version 0.12.4 has a bug which was fixed in the version 0.12.5: sometimes footers and headers not provided in the pdf
