@@ -29,15 +29,40 @@ sudo apt-get update
 sudo apt-get install wkhtmltopdf
 ```
 
-However, depending of the version of your system, the installed version of `wkhtmltopdf` may not fully comply with the requirements, as there is some issues with QT when trying to render header and footers.
-If you encounter errors when generating the document, you should install the tool using these commands:
+However, depending on the version of your system, the installed version of `wkhtmltopdf` may
+not fully comply with the requirements, as there is some issues with QT when trying to render
+header and footers. If you encounter errors when generating the document, you should install
+the tool using these commands:
 
 ```
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.jessie_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.5-1.jessie_amd64.deb
 ```
-after that you can use `/usr/local/bin/wkhtmltopdf` in your configuration
+After that you can use `/usr/local/bin/wkhtmltopdf` in your configuration
 
+For Debian-based distributions, you may need to do an additional step to install some
+dependencies:
+
+```
+sudo apt-get update
+sudo apt-get install wkhtmltopdf
+sudo apt-get install libxrender1 fontconfig xvfb
+sudo apt --fix-broken-install
+```
+
+If the previous steps fail, you may try to use a binary, non-packaged distribution instead.
+
+```
+wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+tar xf  wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+cd ./wkhtmltox/bin/
+sudo cp -R ./* /usr/bin/
+sudo cp -R ./* /usr/local/bin/
+wkhtmltopdf -V
+```
+
+Please refer to https://wkhtmltopdf.org/downloads.html for an updated list of
+`wkhtmltopdf` packages for Ubuntu and other distributions. 
 
 Deprecated:
 Please note that the version 0.12.4 has a bug which was fixed in the version 0.12.5: sometimes footers and headers not provided in the pdf
