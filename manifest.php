@@ -21,6 +21,7 @@ use oat\taoBooklet\scripts\update\Updater;
 use oat\taoBooklet\scripts\install\RegisterTestResultsPlugins;
 use oat\taoBooklet\scripts\install\SetupBookletConfigService;
 use oat\taoBooklet\scripts\install\SetupEventListeners;
+use oat\taoBooklet\scripts\install\SetupServices;
 use oat\taoBooklet\scripts\install\SetupStorage;
 
 return [
@@ -43,6 +44,7 @@ return [
             SetupBookletConfigService::class,
             RegisterTestResultsPlugins::class,
             SetupEventListeners::class,
+            SetupServices::class,
         ],
         'rdf' => [
             __DIR__ . '/scripts/install/booklet.rdf',
