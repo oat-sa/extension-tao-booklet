@@ -10,8 +10,15 @@ The polyfills are now linked only when the code is bundled, and are not reachabl
 For that reason, and because `wkhtmltopdf` is not supporting ES2015 and requires polyfills,
 the generation of PDF only works with bundled version (aka production mode).
 
-As a reminder, to activate the production mode, open the config file `config/generis.conf.php`, line 50,
-and set the constant `DEBUG_MODE` to `false`:
+From version `4.2.0` of `taoBooklet`, the page rendered to get the PDF will always use bundles transpiled to ES5. This applies no matter if the mode is set to development or production.
+This implies that any change made to the source code will need to pass trough a re-bundling:
+```sh
+cd tao/views/build
+npx grunt taobookletbundle
+```
+
+For version `4.1.1` and older, you still need to activate the production mode as follows: 
+- open the config file `config/generis.conf.php`, and set the constant `DEBUG_MODE` to `false` (around line 50):
 ```php
 #mode
 define('DEBUG_MODE', false);
