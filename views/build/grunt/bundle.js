@@ -20,22 +20,55 @@
  * configure the extension bundles
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     'use strict';
 
     grunt.config.merge({
-        bundle : {
-            taobooklet : {
-                options : {
-                    extension : 'taoBooklet',
-                    outputDir : 'loader',
-                    dependencies : ['taoQtiPrint', 'taoItems', 'taoQtiItem'],
-                    bundles : [{
-                        name : 'taoBooklet',
-                        default : true,
-                        bootstrap : true,
-                        babel : true
-                    }]
+        bundle: {
+            taobooklet: {
+                options: {
+                    extension: 'taoBooklet',
+                    outputDir: 'loader',
+                    dependencies: ['taoQtiPrint', 'taoItems', 'taoQtiItem'],
+                    allowExternal: ['qtiCustomInteractionContext', 'qtiInfoControlContext'],
+                    bundles: [
+                        {
+                            name: 'taoBooklet',
+                            default: true,
+                            bootstrap: true,
+                            babel: true
+                        },
+                        {
+                            name: 'taoBookletRunner',
+                            entryPoint: 'taoBooklet/controller/PrintTest/render',
+                            standalone: true,
+                            babel: true,
+                            targets: {
+                                ie: '11'
+                            },
+                            include: [
+                                'taoItems/assets/**/*',
+                                'taoItems/preview/**/*',
+                                'taoItems/previewer/**/*',
+                                'taoItems/runner/**/*',
+                                'taoItems/runtime/**/*',
+                                'taoQtiItem/mathRenderer/mathRenderer',
+                                'taoQtiItem/portableElementRegistry/**/*',
+                                'taoQtiItem/qtiCommonRenderer/**/*',
+                                'taoQtiItem/reviewRenderer/**/*',
+                                'taoQtiItem/qtiCreator/**/*',
+                                'taoQtiItem/qtiItem/**/*',
+                                'taoQtiItem/qtiRunner/**/*',
+                                'taoQtiItem/qtiXmlRenderer/**/*',
+                                'qtiCustomInteractionContext',
+                                'qtiInfoControlContext',
+                                'taoQtiPrint/lib/**/*',
+                                'taoQtiPrint/qtiCommonRenderer/**/*',
+                                'taoQtiPrint/qtiPrintRenderer/**/*',
+                                'taoQtiPrint/runner/**/*'
+                            ]
+                        }
+                    ]
                 }
             }
         }
