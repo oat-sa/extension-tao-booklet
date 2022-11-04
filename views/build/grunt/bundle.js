@@ -30,7 +30,6 @@ module.exports = function (grunt) {
                     extension: 'taoBooklet',
                     outputDir: 'loader',
                     dependencies: ['taoQtiPrint', 'taoItems', 'taoQtiItem'],
-                    allowExternal: ['qtiCustomInteractionContext', 'qtiInfoControlContext'],
                     bundles: [
                         {
                             name: 'taoBooklet',
@@ -39,33 +38,17 @@ module.exports = function (grunt) {
                             babel: true
                         },
                         {
-                            name: 'taoBookletRunner',
-                            entryPoint: 'taoBooklet/controller/PrintTest/render',
-                            standalone: true,
+                            name: 'taoBooklet.es5',
+                            default: true,
+                            bootstrap: true,
                             babel: true,
                             targets: {
                                 ie: '11'
                             },
-                            include: [
-                                'taoItems/assets/**/*',
-                                'taoItems/preview/**/*',
-                                'taoItems/previewer/**/*',
-                                'taoItems/runner/**/*',
-                                'taoItems/runtime/**/*',
-                                'taoQtiItem/mathRenderer/mathRenderer',
-                                'taoQtiItem/portableElementRegistry/**/*',
-                                'taoQtiItem/qtiCommonRenderer/**/*',
-                                'taoQtiItem/reviewRenderer/**/*',
-                                'taoQtiItem/qtiCreator/**/*',
-                                'taoQtiItem/qtiItem/**/*',
-                                'taoQtiItem/qtiRunner/**/*',
-                                'taoQtiItem/qtiXmlRenderer/**/*',
-                                'qtiCustomInteractionContext',
-                                'qtiInfoControlContext',
-                                'taoQtiPrint/lib/**/*',
-                                'taoQtiPrint/qtiCommonRenderer/**/*',
-                                'taoQtiPrint/qtiPrintRenderer/**/*',
-                                'taoQtiPrint/runner/**/*'
+                            dependencies: [
+                                'taoQtiPrint/loader/taoQtiPrint.es5.min',
+                                'taoItems/loader/taoItemsRunner.es5.min',
+                                'taoQtiItem/loader/taoQtiItemRunner.es5.min'
                             ]
                         }
                     ]
