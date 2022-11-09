@@ -4,6 +4,7 @@ extension-tao-booklet
 An extension for TAO to create test booklets (publishable in MS-Word and PDF along with Answer Sheets)
 
 ## Warning
+
 Due to the move to `ES2015`, some code might not work on legacy browsers. 
 Especially for code that use to rely on polyfills, like for the `Promise`.
 The polyfills are now linked only when the code is bundled, and are not reachable anymore in development mode.
@@ -23,6 +24,26 @@ For version `4.1.1` and older, you still need to activate the production mode as
 #mode
 define('DEBUG_MODE', false);
 ```
+
+## Configuration
+
+The file `config/taoBooklet/wkhtmltopdf.conf.php` contains entries for setting up the tool:
+- `'binary'` - The path to the installed binary, usually `/usr/local/bin/wkhtmltopdf`.
+- `'options'` - A set of option for controlling the rendering. See below.
+
+### wkhtmltopdf options
+
+| Option               | Description                                          | Default value                                        |
+|----------------------|------------------------------------------------------|------------------------------------------------------|
+| `'header-html'`      | The path to the header template added to each page.  | `'taoBooklet/views/templates/PrintTest/header.html'` |
+| `'footer-html'`      | The path to the header template added to each page.  | `'taoBooklet/views/templates/PrintTest/footer.html'` |
+| `'margin-bottom'`    | The margin added to top of the page.                 | `10mm`                                               |
+| `'margin-top'`       | The margin added to bottom of the page.              | `10mm`                                               |
+| `'page-size'`        | The page size format: A4, Letter, etc.               | `'A4'`                                               |
+| `'orientation'`      | The page orientation: Portrait or Landscape.         | `'Portrait'`                                         |
+| `'user-style-sheet'` | Specify a user style sheet, to load with every page. | none                                                 |
+
+Note: additional options supported by wkhtmltopdf can be added here too. For a complete list, see: https://wkhtmltopdf.org/usage/wkhtmltopdf.txt
 
 ## Requirements
 
