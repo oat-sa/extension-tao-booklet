@@ -20,22 +20,38 @@
  * configure the extension bundles
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     'use strict';
 
     grunt.config.merge({
-        bundle : {
-            taobooklet : {
-                options : {
-                    extension : 'taoBooklet',
-                    outputDir : 'loader',
-                    dependencies : ['taoQtiPrint', 'taoItems', 'taoQtiItem'],
-                    bundles : [{
-                        name : 'taoBooklet',
-                        default : true,
-                        bootstrap : true,
-                        babel : true
-                    }]
+        bundle: {
+            taobooklet: {
+                options: {
+                    extension: 'taoBooklet',
+                    outputDir: 'loader',
+                    dependencies: ['taoQtiPrint', 'taoItems', 'taoQtiItem'],
+                    bundles: [
+                        {
+                            name: 'taoBooklet',
+                            default: true,
+                            bootstrap: true,
+                            babel: true
+                        },
+                        {
+                            name: 'taoBooklet.es5',
+                            default: true,
+                            bootstrap: true,
+                            babel: true,
+                            targets: {
+                                ie: '11'
+                            },
+                            dependencies: [
+                                'taoQtiPrint/loader/taoQtiPrint.es5.min',
+                                'taoItems/loader/taoItemsRunner.es5.min',
+                                'taoQtiItem/loader/taoQtiItemRunner.es5.min'
+                            ]
+                        }
+                    ]
                 }
             }
         }
