@@ -39,5 +39,10 @@ return [
 
         // the page orientation: Portrait or Landscape
         'orientation' => 'Portrait',
+
+        // additional options supported by wkhtmltopdf can be added here.
+        // for a complete list, see: https://wkhtmltopdf.org/usage/wkhtmltopdf.txt
+        // example for a custom stylesheet added to each page of the booklet:
+        // 'user-style-sheet' => 'taoCustom/views/css/booklet/style.css'
     ]
 ];
