@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 2023.05\n"
-"PO-Revision-Date: 2023-04-18T13:40:48\n"
+"PO-Revision-Date: 2023-04-18T16:06:52\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: pt-BR\n"
@@ -20,15 +20,12 @@ msgid "%s completed"
 msgstr ""
 
 msgid "%s created"
-msgstr "%s criada"
+msgstr ""
 
 msgid "%s is not a QTI test"
 msgstr ""
 
 msgid "%s rendered"
-msgstr ""
-
-msgid "%s updated"
 msgstr ""
 
 #, tao-public
@@ -37,9 +34,6 @@ msgstr ""
 
 #, tao-public
 msgid "Booklet"
-msgstr ""
-
-msgid "Booklet %s created"
 msgstr ""
 
 msgid "Booklet for test %s created"
@@ -65,26 +59,20 @@ msgstr ""
 msgid "Create a test"
 msgstr ""
 
-msgid "Creating \"%s"
-msgstr ""
-
 msgid "Creating booklet instance for test \"%s"
 msgstr ""
 
 #, tao-public
 msgid "Delete"
-msgstr "Excluir"
+msgstr ""
 
 msgid "Edit Booklet"
 msgstr ""
 
 msgid "Error"
-msgstr "Erro"
-
-msgid "Error on the booklet creating"
 msgstr ""
 
-msgid "Error on the create booklet instance action"
+msgid "Error on the booklet creating"
 msgstr ""
 
 msgid "Error on the data binding"
@@ -101,9 +89,6 @@ msgid "Generate"
 msgstr ""
 
 msgid "Generate booklet"
-msgstr ""
-
-msgid "Generate booklet for \"%s"
 msgstr ""
 
 msgid "Generate booklet for delivery \"%s"
