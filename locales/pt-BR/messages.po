@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint119\n"
-"PO-Revision-Date: 2020-01-17T09:36:02\n"
+"Project-Id-Version: TAO 2023.05\n"
+"PO-Revision-Date: 2023-04-18T13:40:48\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: pt-BR\n"
@@ -42,7 +42,13 @@ msgstr ""
 msgid "Booklet %s created"
 msgstr ""
 
+msgid "Booklet for test %s created"
+msgstr ""
+
 msgid "Booklet saved"
+msgstr ""
+
+msgid "Booklet updated by generated file"
 msgstr ""
 
 #, tao-public
@@ -62,6 +68,9 @@ msgstr ""
 msgid "Creating \"%s"
 msgstr ""
 
+msgid "Creating booklet instance for test \"%s"
+msgstr ""
+
 #, tao-public
 msgid "Delete"
 msgstr "Excluir"
@@ -71,6 +80,9 @@ msgstr ""
 
 msgid "Error"
 msgstr "Erro"
+
+msgid "Error on the booklet creating"
+msgstr ""
 
 msgid "Error on the create booklet instance action"
 msgstr ""
@@ -103,6 +115,9 @@ msgstr ""
 msgid "Generate Results"
 msgstr ""
 
+msgid "Generating PDF file for booklet \"%s"
+msgstr ""
+
 #, tao-public
 msgid "Manage Schema"
 msgstr ""
@@ -121,6 +136,9 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
+msgstr ""
+
+msgid "PDF File for booklet \'%s\' updated"
 msgstr ""
 
 #, tao-public
