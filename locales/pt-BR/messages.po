@@ -1,0 +1,173 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-3x\n"
+"PO-Revision-Date: 2023-04-21 15:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: pt-BR\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /taoBooklet/locales/pt-BR/messages.po\n"
+"X-Crowdin-File-ID: 1871\n"
+"Language-Team: Portuguese, Brazilian\n"
+
+msgid "%s Booklet"
+msgstr "%s Livraria"
+
+msgid "%s completed"
+msgstr "%s concluído"
+
+msgid "%s created"
+msgstr "%s criado"
+
+msgid "%s is not a QTI test"
+msgstr "%s não é um teste QTI"
+
+msgid "%s rendered"
+msgstr "%s renderizado"
+
+#, tao-public
+msgid "Allow to generate publishable versions of deliveries "
+msgstr "Permitir a geração de versões publicáveis de entregas "
+
+#, tao-public
+msgid "Booklet"
+msgstr "Livraria"
+
+msgid "Booklet for test %s created"
+msgstr "Livraria para teste %s criada"
+
+msgid "Booklet saved"
+msgstr "Livraria salva"
+
+msgid "Booklet updated by generated file"
+msgstr "Booklet atualizado pelo arquivo gerado"
+
+#, tao-public
+msgid "Booklets"
+msgstr "Livros"
+
+#, tao-public
+msgid "Booklets library"
+msgstr "Biblioteca de Favoritos"
+
+msgid "Create a new booklet"
+msgstr "Criar um novo booklet"
+
+msgid "Create a test"
+msgstr "Criar um teste"
+
+msgid "Creating booklet instance for test \"%s"
+msgstr "Criando instância do booklet para teste \"%s"
+
+#, tao-public
+msgid "Delete"
+msgstr "excluir"
+
+msgid "Edit Booklet"
+msgstr "Editar Booklet"
+
+msgid "Error"
+msgstr "ERRO"
+
+msgid "Error on the booklet creating"
+msgstr "Erro na criação do booklet"
+
+msgid "Error on the data binding"
+msgstr "Erro no vínculo de dados"
+
+msgid "Fill in all required fields"
+msgstr "Preencha todos os campos obrigatórios"
+
+#, tao-public
+msgid "Filter"
+msgstr "filtro"
+
+msgid "Generate"
+msgstr "Gerar"
+
+msgid "Generate booklet"
+msgstr "Gerar booklet"
+
+msgid "Generate booklet for delivery \"%s"
+msgstr "Gerar um booklet para entrega \"%s"
+
+msgid "Generate booklet for results of \"%s"
+msgstr "Gerar um booklet para resultados de \"%s"
+
+msgid "Generate Results"
+msgstr "Gerar Resultados"
+
+msgid "Generating PDF file for booklet \"%s"
+msgstr "Gerando arquivo PDF para o booklet \"%s"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "Gerenciar esquema"
+
+#, tao-public
+msgid "Manage tests"
+msgstr "Gerenciar testes"
+
+#, tao-public
+msgid "Move"
+msgstr "Mover-se"
+
+#, tao-public
+msgid "New booklet"
+msgstr "Novo booklet"
+
+#, tao-public
+msgid "New class"
+msgstr "Nova classe"
+
+msgid "PDF File for booklet \\'%s\\' updated"
+msgstr "Arquivo PDF para o booklet \\'%s\\' atualizado"
+
+#, tao-public
+msgid "Preview"
+msgstr "Pré-visualizar"
+
+msgid "Print"
+msgstr "Impressão"
+
+msgid "Print the results"
+msgstr "Imprimir os resultados"
+
+#, tao-public
+msgid "Properties"
+msgstr "propriedades"
+
+msgid "Publish a new booklet"
+msgstr "Publicar um novo booklet"
+
+#, tao-public
+msgid "Regenerate"
+msgstr "Regenerar"
+
+#, tao-public
+msgid "Search"
+msgstr "Pesquisa"
+
+msgid "Show detailed report"
+msgstr "Mostrar relatório detalhado"
+
+msgid "Test Model does not exist for the test %s"
+msgstr "Modelo de teste não existe para o teste %s"
+
+#, tao-public
+msgid "Tests"
+msgstr "Testes"
+
+msgid "There are currently no tests available to publish."
+msgstr "Atualmente, não há testes disponíveis para publicação."
+
