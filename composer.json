@@ -29,9 +29,9 @@
         "oat-sa/tao-core" : ">=50.26.0",
         "oat-sa/extension-tao-delivery" : "dev-feature/AUT-2995",
         "oat-sa/extension-tao-delivery-rdf" : "dev-feature/AUT-2995",
-        "oat-sa/extension-tao-outcome" : ">=13.0.0",
-        "oat-sa/extension-tao-outcomeui" : ">=10.0.0",
-        "oat-sa/extension-tao-test" : ">=15.0.0",
+        "oat-sa/extension-tao-outcome" : "dev-feature/AUT-2995",
+        "oat-sa/extension-tao-outcomeui" : "dev-feature/AUT-2995",
+        "oat-sa/extension-tao-test" : "dev-feature/AUT-2995",
         "oat-sa/extension-tao-qtiprint" : ">=3.2.0"
     },
     "autoload" : {
