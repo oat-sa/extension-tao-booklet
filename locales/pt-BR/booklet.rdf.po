@@ -1,0 +1,334 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-3x\n"
+"PO-Revision-Date: 2023-04-21 15:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: pt-BR\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /taoBooklet/locales/pt-BR/booklet.rdf.po\n"
+"X-Crowdin-File-ID: 1869\n"
+"Language-Team: Portuguese, Brazilian\n"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#Booklet
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Booklet"
+msgstr "Livraria"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#Booklet
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Booklet"
+msgstr "Livraria"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDescription
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Description"
+msgstr "Descrição:"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#Description
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Description of the test"
+msgstr "Descrição do teste"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#BookletFile
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Booklet File"
+msgstr "Arquivo de booklet"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#BookletFile
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Booklet File"
+msgstr "Arquivo de booklet"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#Test
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Test"
+msgstr "teste"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#Test
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Booklet's Test"
+msgstr "Teste do livrinho"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#Layout
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Layout"
+msgstr "Disposição"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#LayoutOptions
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Layout options"
+msgstr "Opções de layout"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#LayoutOptions
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Layout options"
+msgstr "Opções de layout"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPage
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Cover page"
+msgstr "Página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#LayoutCover
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Insert a cover page"
+msgstr "Inserir uma página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#LayoutHeader
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Header"
+msgstr "Cabeçalho"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageHeader
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display a header line on each page"
+msgstr "Exibir um cabeçalho em cada página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#LayoutFooter
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Footer"
+msgstr "Rodapé"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageFooter
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display a footer line on each page"
+msgstr "Exibir uma linha de rodapé em cada página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#OnePageSection
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "One Section per page"
+msgstr "Uma seção por página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#OnePageSection
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Place each Section on a dedicated page"
+msgstr "Coloque cada seção em uma página dedicada"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#ShowResponseIdentifier
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Show Response Identifier"
+msgstr "Mostrar Identificador de Resposta"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#ShowResponseIdentifier
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Show the interaction's response identifier"
+msgstr "Mostrar a identificação de resposta da interação"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#OnePageItem
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "One Item per page"
+msgstr "Um item por página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#OnePageItem
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Place each Item on a dedicated page"
+msgstr "Coloque cada Item em uma página dedicada"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#BlankPages
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Add blank pages"
+msgstr "Adicionar páginas em branco"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#BlankPages
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Add blank pages before sections"
+msgstr "Adicionar páginas em branco antes das seções"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#BubbleSheet
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Use bubble sheet"
+msgstr "Usar folha de bolha"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#BubbleSheet
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Use bubble sheet"
+msgstr "Usar folha de bolha"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageOptions
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Cover page options"
+msgstr "Opções da página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageOptions
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Cover page options"
+msgstr "Opções da página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Title"
+msgstr "Título"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageTitle
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the title on the cover page"
+msgstr "Exibir o título na página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDescription
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the description on the cover page"
+msgstr "Exibir a descrição na página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageDate
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Date"
+msgstr "Encontro"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageDate
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the date on the cover page"
+msgstr "Exibir a data na página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageLogo
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Logo"
+msgstr "Logotipo"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageLogo
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the logo on the cover page"
+msgstr "Exibir o logotipo na página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageQRCode
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Booklet URL (QR Code)"
+msgstr "Booklet URL (QR Code)"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#CoverPageQRCode
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the QR-code on the cover page"
+msgstr "Exibir o código QR na página de capa"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Unique identifier"
+msgstr "Unique identifier"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageUniqueId
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display unique identifier of the booklet"
+msgstr "Exibir identificador exclusivo do booklet"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageHeader
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Page header"
+msgstr "Cabeçalho da página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageFooter
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Page footer"
+msgstr "Rodapé da página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Page options"
+msgstr "Opções de página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageOptions
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Page options"
+msgstr "Opções de página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageLogo
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the logo"
+msgstr "Mostrar o logotipo"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageTitle
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the title of the test"
+msgstr "Exibir o título do teste"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageMention
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Mention"
+msgstr "Mencionar"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageMention
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the mention"
+msgstr "Exibir menção"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageLink
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Link"
+msgstr "Vincular"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageLink
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display a link"
+msgstr "Exibir um link"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageDate
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the print date"
+msgstr "Exibir data de impressão"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Page number"
+msgstr "Número da página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageNumber
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the page number"
+msgstr "Exibir o número da página"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageMatrixBarcode
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Custom matrix barcode"
+msgstr "Código de barras matrix personalizado"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageMatrixBarcode
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display custom matrix barcode"
+msgstr "Exibir código de barras da matriz personalizado"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageCustomId
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Custom identifier"
+msgstr "Identificador personalizado"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageCustomId
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display custom identifier"
+msgstr "Exibir identificador personalizado"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageExpirationDate
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Expiration date"
+msgstr "Data de validade"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageExpirationDate
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display expiration date"
+msgstr "Exibir data de vencimento"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageSmallPrint
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Small print"
+msgstr "Impressão pequena"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageSmallPrint
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display the small print"
+msgstr "Exibir a impressão pequena"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageScanMarks
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Scan marks"
+msgstr "Scan marks"
+
+# http://www.tao.lu/Ontologies/Booklet.rdf#PageScanMarks
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Display scan marks"
+msgstr "Exibir digitalização de marcas"
+
