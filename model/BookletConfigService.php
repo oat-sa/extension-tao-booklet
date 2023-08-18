@@ -39,6 +39,7 @@ class BookletConfigService extends ConfigurableService
 
     /** @deprecated  */
     const OPTION_LOGO = 'logo';
+
     const OPTION_LOGO_URL = 'logo_url';
     const OPTION_LOGO_PATH = 'logo_path';
 
