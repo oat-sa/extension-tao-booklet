@@ -36,7 +36,9 @@ class BookletConfigService extends ConfigurableService
     const OPTION_DEFAULT_VALUES = 'default_values';
     const OPTION_MENTION = 'mention'; // string
     const OPTION_LINK = 'link';       // string
-    const OPTION_LOGO = 'logo';       // string
+
+    /** @deprecated  */
+    const OPTION_LOGO = 'logo';
     const OPTION_LOGO_URL = 'logo_url';
     const OPTION_LOGO_PATH = 'logo_path';
 
@@ -220,7 +222,7 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_LINK => $this->getOption(self::OPTION_LINK),
             self::CONFIG_LOGO => !empty($this->getOption(self::OPTION_LOGO))
                 ? $this->getOption(self::OPTION_LOGO)
-                : $this->getOption(self::OPTION_LOGO_URL) . $this->getOption(self::OPTION_LOGO_PATH),
+                : sprintf("%s%s", $this->getOption(self::OPTION_LOGO_URL), $this->getOption(self::OPTION_LOGO_PATH)),
             self::CONFIG_DATE => $this->formatValue(
                 $this->getOption(self::OPTION_CREATION_STRING),
                 $this->getDate()
