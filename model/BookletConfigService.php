@@ -221,9 +221,7 @@ class BookletConfigService extends ConfigurableService
             self::CONFIG_PAGE_FOOTER => [],
             self::CONFIG_MENTION => $this->getOption(self::OPTION_MENTION),
             self::CONFIG_LINK => $this->getOption(self::OPTION_LINK),
-            self::CONFIG_LOGO => !empty($this->getOption(self::OPTION_LOGO))
-                ? $this->getOption(self::OPTION_LOGO)
-                : sprintf("%s%s", $this->getOption(self::OPTION_LOGO_URL), $this->getOption(self::OPTION_LOGO_PATH)),
+            self::CONFIG_LOGO => $this->getOption(self::OPTION_LOGO) ?? sprintf("%s%s", $this->getOption(self::OPTION_LOGO_URL), $this->getOption(self::OPTION_LOGO_PATH)),
             self::CONFIG_DATE => $this->formatValue(
                 $this->getOption(self::OPTION_CREATION_STRING),
                 $this->getDate()
