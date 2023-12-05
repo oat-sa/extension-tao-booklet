@@ -56,7 +56,7 @@ define([
             }).render($regenerateBtn);
 
             binder.register('booklet_regenerate', function register(actionContext) {
-                var data = _.pick(actionContext, ['uri', 'classUri', 'id']);
+                var data = _.pickBy(actionContext, ['uri', 'classUri', 'id']);
                 var uniqueValue = data.uri || data.classUri || '';
                 taskRegenerateButton.setTaskConfig({
                     taskCreationUrl : this.url,
