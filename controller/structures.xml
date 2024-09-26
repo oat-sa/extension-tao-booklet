@@ -66,7 +66,7 @@
         <sections>
             <section id="manage_tests" name="Manage tests" url="/taoTests/Tests/index">
                 <actions allowClassActions="true">
-                    <action id="test-booklet" name="New booklet" url="taoBooklet/Booklet/testBooklet" context="instance" group="tree">
+                    <action id="test-booklet" name="New booklet" url="taoBooklet/Booklet/wizard" context="instance" group="tree">
                         <icon id="icon-delivery"/>
                     </action>
                 </actions>
