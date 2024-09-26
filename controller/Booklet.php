@@ -27,13 +27,16 @@ use Exception;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
+use oat\tao\model\TaoOntology;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\WizardBookletForm;
+use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletTaskService;
 use oat\taoBooklet\model\StorageService;
 use oat\taoBooklet\model\tasks\CompileBooklet;
+use oat\taoQtiItem\model\qti\Resource;
 use RuntimeException;
 use tao_helpers_form_Form as Form;
 use tao_helpers_Http;
@@ -201,54 +204,53 @@ class Booklet extends AbstractBookletController
      */
     public function wizard()
     {
+        $fromTest = false;
+        if ($this->isRequestComingFromTests()) {
+            $fromTest = true;
+        }
         $this->defaultData();
 
         try {
+            $test = null;
             $currentClass = $this->getCurrentClass();
 
-            $this->wizardForm($currentClass);
-        } catch (Exception $e) {
-            $this->setView('Booklet/wizard.tpl');
-        }
-    }
-
-    /**
-     * Creates new instance of booklet from a test instance
-     * @return mixed
-     * @throws common_ext_ExtensionException
-     */
-    public function testBooklet()
-    {
-        $this->defaultData();
-
-        try {
-            $rootClass = $this->getRootClass();
-            try {
-                $test = $this->getCurrentInstance();
-            } catch (Exception $e) {
-                $test = $this->getCurrentInstance(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
+            if ($fromTest) {
+                $currentClass = $this->getRootClass();
+                try {
+                    $test = $this->getCurrentInstance();
+                } catch (Exception $e) {
+                    $test = $this->getCurrentInstance(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
+                }
             }
 
-            $this->wizardForm($rootClass, $test);
+            $this->prepareWizardForm($currentClass, $test);
         } catch (Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }
     }
 
-    private function wizardForm(\core_kernel_classes_Class $targetClass, \core_kernel_classes_Resource $attachedTest = null)
+    private function isRequestComingFromTests()
     {
+        $referer = $this->getPsrRequest()->getHeader('Referer')[0] ?? '';
 
+        return false !== str_contains($referer, 'ext=taoTests');
+    }
+
+    private function prepareWizardForm(\core_kernel_classes_Class $targetClass, \core_kernel_classes_Resource $attachedTest = null)
+    {
         try {
             $form = (new WizardBookletForm($targetClass))->getForm();
-            if ($attachedTest) {
+            if ($attachedTest && !$form->isSubmited()) {
                 $label = $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL));
 
                 if ($label) {
                     $label->setValue($attachedTest->getLabel());
                 }
 
-                $testElement = $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
-                $testElement->setValue($attachedTest->getUri());
+                $formElement = new \tao_helpers_form_elements_xhtml_Hidden(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
+                $formElement->setValue($attachedTest->getUri());
+                $form->removeElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
+                $form->addElement($formElement);
             }
 
             if ($form === null || !$form->isSubmited()) {
