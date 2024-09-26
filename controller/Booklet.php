@@ -29,7 +29,6 @@ use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use oat\taoBooklet\form\EditForm;
 use oat\taoBooklet\form\WizardBookletForm;
-use oat\taoBooklet\form\WizardPrintForm;
 use oat\taoBooklet\model\BookletClassService;
 use oat\taoBooklet\model\BookletConfigService;
 use oat\taoBooklet\model\BookletTaskService;
@@ -205,7 +204,52 @@ class Booklet extends AbstractBookletController
         $this->defaultData();
 
         try {
-            $form = (new WizardBookletForm($this->getCurrentClass()))->getForm();
+            $currentClass = $this->getCurrentClass();
+
+            $this->wizardForm($currentClass);
+        } catch (Exception $e) {
+            $this->setView('Booklet/wizard.tpl');
+        }
+    }
+
+    /**
+     * Creates new instance of booklet from a test instance
+     * @return mixed
+     * @throws common_ext_ExtensionException
+     */
+    public function testBooklet()
+    {
+        $this->defaultData();
+
+        try {
+            $rootClass = $this->getRootClass();
+            try {
+                $test = $this->getCurrentInstance();
+            } catch (Exception $e) {
+                $test = $this->getCurrentInstance(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
+            }
+
+            $this->wizardForm($rootClass, $test);
+        } catch (Exception $e) {
+            $this->setView('Booklet/wizard.tpl');
+        }
+    }
+
+    private function wizardForm(\core_kernel_classes_Class $targetClass, \core_kernel_classes_Resource $attachedTest = null)
+    {
+
+        try {
+            $form = (new WizardBookletForm($targetClass))->getForm();
+            if ($attachedTest) {
+                $label = $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL));
+
+                if ($label) {
+                    $label->setValue($attachedTest->getLabel());
+                }
+
+                $testElement = $form->getElement(tao_helpers_Uri::encode(BookletClassService::PROPERTY_TEST));
+                $testElement->setValue($attachedTest->getUri());
+            }
 
             if ($form === null || !$form->isSubmited()) {
                 $this->renderForm($form);
@@ -224,41 +268,6 @@ class Booklet extends AbstractBookletController
             return $this->returnTaskJson(
                 CompileBooklet::createTask($this->getCurrentClass(), $test, $form->getValues())
             );
-        } catch (Exception $e) {
-            $this->setView('Booklet/wizard.tpl');
-        }
-    }
-
-    /**
-     * Creates new instance of booklet from a test instance
-     * @return mixed
-     * @throws common_ext_ExtensionException
-     */
-    public function testBooklet()
-    {
-        $this->defaultData();
-
-        try {
-            $class = $this->getRootClass();
-            $test = $this->getCurrentInstance();
-
-            $form = (new WizardPrintForm($class, $test))->getForm();
-
-            if ($form === null) {
-                throw new RuntimeException('Form can not be created');
-            }
-
-            if ($form->isValid() && $form->isSubmited()) {
-                return $this->returnTaskJson(CompileBooklet::createTask($class, $test, $form->getValues()));
-            }
-
-            $label = $form->getElement(tao_helpers_Uri::encode(OntologyRdfs::RDFS_LABEL));
-
-            if ($label) {
-                $label->setValue($test->getLabel());
-            }
-
-            $this->renderForm($form);
         } catch (Exception $e) {
             $this->setView('Booklet/wizard.tpl');
         }
