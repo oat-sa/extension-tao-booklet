@@ -204,17 +204,13 @@ class Booklet extends AbstractBookletController
      */
     public function wizard()
     {
-        $fromTest = false;
-        if ($this->isRequestComingFromTests()) {
-            $fromTest = true;
-        }
         $this->defaultData();
 
         try {
             $test = null;
             $currentClass = $this->getCurrentClass();
 
-            if ($fromTest) {
+            if ($this->isRequestComingFromTests()) {
                 $currentClass = $this->getRootClass();
                 try {
                     $test = $this->getCurrentInstance();
