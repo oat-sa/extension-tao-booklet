@@ -1,0 +1,26 @@
+name: Continuous integration
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.operating-system }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ ubuntu-latest ]
+        php-version: [ '8.1', '8.2', '8.3' ]
+        include:
+          - php-version: '8.1'
+            coverage: true
+
+    steps:
+      - name: CI
+        uses: oat-sa/tao-extension-ci-action@v1
+        with:
+          php: ${{ matrix.php-version }}
+          coverage: ${{ matrix.coverage }}
+          test-suites-path: test
